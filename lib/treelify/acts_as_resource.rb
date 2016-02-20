@@ -8,7 +8,7 @@ module Treelify
     module ClassMethods
       def acts_as_resource
         has_many :members, through: :hierarchy
-        has_one :hierarchy, as: :resource
+        has_one :hierarchy, as: :resource, dependent: :destroy
 
         scope :in, (lambda do |resource|
           joins(:hierarchy).where("hierarchies.parent_id": resource.hierarchy.id)
@@ -20,6 +20,14 @@ module Treelify
           .joins('INNER JOIN "members" ON "members"."hierarchy_id" = "hierarchy_hierarchies"."descendant_id"')
           .where("members.user_id": user.id).uniq
         end)
+
+        after_create :ensure_hierarchy
+
+        def ensure_hierarchy
+          unless hierarchy
+            Hierarchy.create(resource: self)
+          end
+        end
 
         include Treelify::ActsAsResource::LocalInstanceMethods
       end
