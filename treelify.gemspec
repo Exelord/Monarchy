@@ -10,8 +10,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Exelord"]
   s.email       = [""]
   s.homepage    = "https://github.com/Exelord/Treelify"
-  s.summary     = ""
-  s.description = ""
+  s.summary     = "Hierarchical access management system with roles inheritance."
+  s.description = "Hierarchical access management system with roles inheritance."
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
