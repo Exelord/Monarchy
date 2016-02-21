@@ -2,8 +2,8 @@ class TreelifyCreateHierarchies < ActiveRecord::Migration
   def change
     create_table :hierarchies do |t|
       t.integer :parent_id
-      t.integer :resource_id
-      t.string :resource_type
+      t.integer :resource_id, null: false
+      t.string :resource_type, null: false
       t.timestamps null: false
     end
 

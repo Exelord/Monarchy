@@ -7,10 +7,13 @@ class TreelifyCreateMemberships < ActiveRecord::Migration
     end
 
     create_table :roles do |t|
-      t.string :name
-      t.integer :level
+      t.string :name, null: false
+      t.integer :level, default: 0, null: false
+      t.boolean :inherited, default: true, null: false
       t.timestamps null: false
     end
+
+    add_index :roles, :name, unique: true
 
     create_table :members_roles do |t|
       t.belongs_to :role

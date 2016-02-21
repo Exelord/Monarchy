@@ -70,6 +70,8 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    pry-rails (0.3.4)
+      pry (>= 0.9.10)
     rack (1.6.4)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -143,7 +145,7 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 1.10)
-  pry
+  pry-rails (= 0.3.4)
   rake (~> 10.0)
   rspec
   rspec-rails

@@ -2,7 +2,6 @@
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'treelify/version'
-require 'pry'
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
@@ -35,7 +34,4 @@ Gem::Specification.new do |s|
   s.add_development_dependency "bundler", "~> 1.10"
   s.add_development_dependency "rake", "~> 10.0"
   s.add_development_dependency "rspec"
-  s.add_development_dependency "rspec-rails"
-  s.add_development_dependency "pry"
-  s.add_development_dependency "shoulda-matchers"
 end

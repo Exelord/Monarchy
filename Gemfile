@@ -13,3 +13,8 @@ gemspec
 # To use a debugger
 # gem 'byebug', group: [:development, :test]
 
+group :development, :test do
+  gem 'pry-rails', '0.3.4'
+  gem 'shoulda-matchers'
+  gem 'rspec-rails'
+end

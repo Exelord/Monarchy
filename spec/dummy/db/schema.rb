@@ -11,12 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160220215254) do
+ActiveRecord::Schema.define(version: 20160221133215) do
 
   create_table "hierarchies", force: :cascade do |t|
     t.integer  "parent_id"
-    t.integer  "resource_id"
-    t.string   "resource_type"
+    t.integer  "resource_id",   null: false
+    t.string   "resource_type", null: false
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
   end
@@ -45,11 +45,14 @@ ActiveRecord::Schema.define(version: 20160220215254) do
   end
 
   create_table "roles", force: :cascade do |t|
-    t.string   "name"
-    t.integer  "level"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "name",                      null: false
+    t.integer  "level",      default: 0,    null: false
+    t.boolean  "inherited",  default: true, null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
   end
+
+  add_index "roles", ["name"], name: "index_roles_on_name", unique: true
 
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
