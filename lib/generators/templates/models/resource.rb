@@ -1,2 +1,2 @@
-class <%= class_name %> > Resourcify
+class <%= class_name %> > Treelify::Resourcify
 end

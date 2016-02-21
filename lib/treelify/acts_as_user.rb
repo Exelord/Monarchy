@@ -6,7 +6,7 @@ module Treelify
     end
 
     module ClassMethods
-      def acts_as_resource
+      def acts_as_user
         has_many :members
 
         include Treelify::ActsAsUser::LocalInstanceMethods

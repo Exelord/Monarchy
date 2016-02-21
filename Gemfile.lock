@@ -119,6 +119,8 @@ GEM
       rspec-mocks (~> 3.4.0)
       rspec-support (~> 3.4.0)
     rspec-support (3.4.1)
+    shoulda-matchers (3.1.1)
+      activesupport (>= 4.0.0)
     slop (3.6.0)
     sprockets (3.5.2)
       concurrent-ruby (~> 1.0)
@@ -145,6 +147,7 @@ DEPENDENCIES
   rake (~> 10.0)
   rspec
   rspec-rails
+  shoulda-matchers
   sqlite3
   treelify!
 
