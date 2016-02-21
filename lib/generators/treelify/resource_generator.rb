@@ -9,7 +9,7 @@ module Treelify
 
     def create_resource_file
       template "models/resource.rb", "app/models/#{file_name}.rb"
-      template_migration "migrations/resource.rb", "db/migrate/#create_#{file_name}_resource.rb"
+      migration_template "migrations/resource.rb", "db/migrate/create_#{file_name}_resource.rb"
     end
 
     def self.next_migration_number(dirname)
