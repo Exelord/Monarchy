@@ -1,4 +1,4 @@
-class TreelifyCreateProjectResource < ActiveRecord::Migration
+class CreateProjectResource < ActiveRecord::Migration
   def change
     create_table :projects do |t|
       t.string :name

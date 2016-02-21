@@ -21,24 +21,24 @@ module Treelify
         end)
 
         include Treelify::ActsAsResource::InstanceMethods
-
-        protected
-
-        def ensure_hierarchy
-          unless self.hierarchy
-            Hierarchy.create(resource: self)
-          end
-        end
       end
     end
 
     module InstanceMethods
       def parent
-        hierarchy.parent.resource
+        hierarchy.try(:parent).try(:resource)
       end
 
       def parent=(resource)
         hierarchy.update(parent: resource.hierarchy)
+      end
+
+      protected
+
+      def ensure_hierarchy
+        unless hierarchy
+          self.hierarchy = Hierarchy.create(resource: self)
+        end
       end
     end
   end

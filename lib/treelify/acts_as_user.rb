@@ -12,7 +12,9 @@ module Treelify
 
     module InstanceMethods
       def role_for(resource)
-        Role.joins(:members).where(members: { hierarchy_id: resource.hierarchy.self_and_ancestors_ids, user_id: id}).order(level: :desc).first
+        Role.where(inherited: true).joins(:members)
+            .where(members: { hierarchy_id: resource.hierarchy.self_and_ancestors_ids, user_id: id})
+            .order(level: :desc).first
       end
     end
   end

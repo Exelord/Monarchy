@@ -1,4 +1,4 @@
-class TreelifyCreateMemoResource < ActiveRecord::Migration
+class CreateMemoResource < ActiveRecord::Migration
   def change
     create_table :memos do |t|
       t.string :name
