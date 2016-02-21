@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160221142309) do
+ActiveRecord::Schema.define(version: 20160221154113) do
 
   create_table "hierarchies", force: :cascade do |t|
     t.integer  "parent_id"
@@ -51,6 +51,12 @@ ActiveRecord::Schema.define(version: 20160221142309) do
   end
 
   create_table "projects", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "resources", force: :cascade do |t|
     t.string   "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

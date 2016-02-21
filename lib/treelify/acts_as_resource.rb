@@ -13,7 +13,7 @@ module Treelify
           joins(:hierarchy).where("hierarchies.parent_id": resource.hierarchy.id)
         end)
 
-        scope :accessible_by, (lambda do |user|
+        scope :accessible_for, (lambda do |user|
           joins(:hierarchy)
           .joins('INNER JOIN "hierarchy_hierarchies" ON "hierarchies"."id" = "hierarchy_hierarchies"."ancestor_id"')
           .joins('INNER JOIN "members" ON "members"."hierarchy_id" = "hierarchy_hierarchies"."descendant_id"')
