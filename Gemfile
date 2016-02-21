@@ -17,4 +17,7 @@ group :development, :test do
   gem 'pry-rails', '0.3.4'
   gem 'shoulda-matchers'
   gem 'rspec-rails'
+  gem 'factory_girl_rails', '4.5.0'
+  gem 'ffaker', '2.1.0'
+  gem 'database_cleaner', '1.4.1'
 end
