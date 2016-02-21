@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.test_files = Dir["test/**/*"]
 
   if s.respond_to?(:metadata)
-    s.metadata['allowed_push_host'] = "TODO: Set to 'http://mygemserver.com'"
+    s.metadata['allowed_push_host'] = "https://rubygems.org"
   else
     raise "RubyGems 2.0 or newer is required to protect against public gem pushes."
   end
@@ -30,8 +30,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'rails', '~> 4.2', '>= 4.2.4'
   s.add_dependency "closure_tree", "6.0.0"
 
-  s.add_development_dependency "sqlite3"
+  s.add_development_dependency "sqlite3", "~> 0"
   s.add_development_dependency "bundler", "~> 1.10"
   s.add_development_dependency "rake", "~> 10.0"
-  s.add_development_dependency "rspec"
+  s.add_development_dependency "rspec", "~> 0"
 end
