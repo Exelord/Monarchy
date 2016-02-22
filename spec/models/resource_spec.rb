@@ -4,18 +4,52 @@ describe Resource, type: :model do
   it { is_expected.to have_many(:members).through(:hierarchy) }
   it { is_expected.to have_one(:hierarchy).dependent(:destroy) }
 
-  context 'scope in' do
-    let(:project) { create :project }
-    let!(:memo_root) { create :memo }
+  context '#children' do
     let!(:memo1) { create :memo }
     let!(:memo2) { create :memo }
     let!(:memo3) { create :memo }
+    let(:project) { create :project, children: [memo1, memo2, memo3] }
 
-    let!(:parentize) do
-      memo1.parent = project
-      memo2.parent = project
-      memo3.parent = project
+    it { expect(project.children).to eq([memo1, memo2, memo3]) }
+  end
+
+  context '#children=' do
+    let!(:memo1) { create :memo }
+    let!(:memo2) { create :memo }
+    let!(:memo3) { create :memo }
+    let(:project) { create :project }
+
+    before do
+      project.children = [memo1, memo2, memo3]
     end
+
+    it { expect(Project.find(project.id).children).to eq([memo1, memo2, memo3]) }
+  end
+
+  context '#parent' do
+    let!(:project) { create :project }
+    let(:memo) { create :memo, parent: project }
+
+    it { expect(Memo.find(memo.id).parent).to eq(project) }
+  end
+
+  context '#parent=' do
+    let(:project) { create :project }
+    let!(:memo) { create :memo }
+
+    before do
+      memo.parent = project
+    end
+
+    it { expect(Memo.find(memo.id).parent).to eq(project) }
+  end
+
+  context 'scope in' do
+    let(:project) { create :project }
+    let!(:memo_root) { create :memo }
+    let!(:memo1) { create :memo, parent: project }
+    let!(:memo2) { create :memo, parent: project }
+    let!(:memo3) { create :memo, parent: project }
 
     it { expect(Memo.in(project)).to eq([memo1, memo2, memo3]) }
   end
@@ -25,17 +59,10 @@ describe Resource, type: :model do
     let(:manager_role) { create(:role, name: :manager, level: 2) }
 
     let!(:project) { create :project }
-    let!(:memo1) { create :memo }
-    let!(:memo2) { create :memo }
-    let!(:memo3) { create :memo }
-    let!(:memo4) { create :memo }
-
-    let!(:parentize) do
-      memo1.parent = project
-      memo2.parent = project
-      memo3.parent = memo2
-      memo4.parent = memo3
-    end
+    let!(:memo1) { create :memo, parent: project }
+    let!(:memo2) { create :memo, parent: project }
+    let!(:memo3) { create :memo, parent: memo2 }
+    let!(:memo4) { create :memo, parent: memo3 }
 
     let!(:user) { create :user }
 

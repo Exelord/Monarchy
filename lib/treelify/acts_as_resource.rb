@@ -26,19 +26,45 @@ module Treelify
 
     module InstanceMethods
       def parent
-        hierarchy.try(:parent).try(:resource)
+        @parent = hierarchy.try(:parent).try(:resource) || @parent
       end
 
       def parent=(resource)
-        hierarchy.update(parent: resource.hierarchy)
+        if hierarchy
+          hierarchy.update(parent: resource.hierarchy)
+        else
+          @parent = resource
+        end
+      end
+
+      def children
+        @children ||= children_resources
+      end
+
+      def children=(array)
+        if hierarchy
+          hierarchy.update(children: hierarchies_for(array))
+        end
+
+        @children = array
       end
 
       protected
 
       def ensure_hierarchy
-        unless hierarchy
-          self.hierarchy = Hierarchy.create(resource: self)
-        end
+        self.hierarchy ||= Hierarchy.create(resource: self, parent: parent.try(:hierarchy), children: hierarchies_for(children))
+      end
+
+      private
+
+      def children_resources
+        c = hierarchy.try(:children)
+        return nil if c.nil?
+        c.includes(:resource).map { |hierarchy| hierarchy.resource }
+      end
+
+      def hierarchies_for(array)
+        Array(array).map { |resource| resource.hierarchy }
       end
     end
   end

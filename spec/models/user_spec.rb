@@ -9,9 +9,7 @@ describe User, type: :model do
 
     let(:user) { create :user }
     let(:project) { create :project }
-    let(:memo) { create :memo }
-
-    let!(:parentize) { memo.parent = project }
+    let(:memo) { create :memo, parent: project }
 
     let!(:memo_member) { create(:member, user: user, hierarchy: memo.hierarchy, roles: [member_role]) }
     let!(:project_member) { create(:member, user: user, hierarchy: project.hierarchy, roles: [manager_role]) }
