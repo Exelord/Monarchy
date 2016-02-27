@@ -49,13 +49,11 @@ module Treelify
         @children = array
       end
 
-      protected
+      private
 
       def ensure_hierarchy
         self.hierarchy ||= Hierarchy.create(resource: self, parent: parent.try(:hierarchy), children: hierarchies_for(children))
       end
-
-      private
 
       def children_resources
         c = hierarchy.try(:children)
