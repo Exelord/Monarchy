@@ -20,5 +20,7 @@ class TreelifyCreateMemberships < ActiveRecord::Migration
       t.belongs_to :member
       t.timestamps null: false
     end
+
+    add_index :members_roles, [:role_id, :member_id], unique: true
   end
 end
