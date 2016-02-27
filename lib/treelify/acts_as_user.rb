@@ -14,14 +14,16 @@ module Treelify
       def role_for(resource)
         ansestors_ids = resource.hierarchy.self_and_ancestors_ids
         Role.joins(:members)
-            .where("((roles.inherited = 't' AND members.hierarchy_id IN (#{ansestors_ids.join(',')})) OR (members.hierarchy_id = #{resource.hierarchy.id})) AND members.user_id = #{id}")
+            .where("((roles.inherited = 't' "\
+                   "AND members.hierarchy_id IN (#{ansestors_ids.join(',')})) "\
+                   "OR (members.hierarchy_id = #{resource.hierarchy.id})) AND members.user_id = #{id}")
             .order(level: :desc).first
       end
 
       def grant(role_name, resource)
         ActiveRecord::Base.transaction do
           Member.create(build_members(resource.hierarchy.empty_ancestors_for(self)))
-          member = grant_or_create_member(role_name, resource)
+          grant_or_create_member(role_name, resource)
         end
       end
 
@@ -44,8 +46,8 @@ module Treelify
         member
       end
 
-      def build_members(hierarchies, roles=[])
-        Array(hierarchies).map { |hierarchy| { user: self, hierarchy: hierarchy, roles: roles} }
+      def build_members(hierarchies, roles = [])
+        Array(hierarchies).map { |hierarchy| { user: self, hierarchy: hierarchy, roles: roles } }
       end
     end
   end

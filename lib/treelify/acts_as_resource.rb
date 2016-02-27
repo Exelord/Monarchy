@@ -3,7 +3,7 @@ module Treelify
     extend ActiveSupport::Concern
 
     module ClassMethods
-      def acts_as_resource
+      def acts_as_resource # rubocop:disable MethodLength, AbcSize
         after_create :ensure_hierarchy
 
         has_many :members, through: :hierarchy
@@ -21,7 +21,7 @@ module Treelify
         end)
 
         include Treelify::ActsAsResource::InstanceMethods
-      end
+      end # rubocop:enable MethodLength, AbcSize
     end
 
     module InstanceMethods
@@ -42,9 +42,7 @@ module Treelify
       end
 
       def children=(array)
-        if hierarchy
-          hierarchy.update(children: hierarchies_for(array))
-        end
+        hierarchy.update(children: hierarchies_for(array)) if hierarchy
 
         @children = array
       end
@@ -52,17 +50,21 @@ module Treelify
       private
 
       def ensure_hierarchy
-        self.hierarchy ||= Hierarchy.create(resource: self, parent: parent.try(:hierarchy), children: hierarchies_for(children))
+        self.hierarchy ||= Hierarchy.create(
+          resource: self,
+          parent: parent.try(:hierarchy),
+          children: hierarchies_for(children)
+        )
       end
 
       def children_resources
         c = hierarchy.try(:children)
         return nil if c.nil?
-        c.includes(:resource).map { |hierarchy| hierarchy.resource }
+        c.includes(:resource).map(&:resource)
       end
 
       def hierarchies_for(array)
-        Array(array).map { |resource| resource.hierarchy }
+        Array(array).map(&:hierarchy)
       end
     end
   end

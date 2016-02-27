@@ -1,0 +1,21 @@
+AllCops:
+  TargetRubyVersion: 2.2
+  Rails:
+    Enabled: true
+  Exclude:
+   - 'spec/dummy/db/seeds.rb'
+   - 'spec/dummy/db/migrate/*'
+   - 'spec/dummy/db/schema.rb'
+   - 'lib/generators/templates/*'
+Documentation:
+  Enabled: false
+Metrics/LineLength:
+  Max: 120
+Style/CaseIndentation:
+  Enabled: false
+Style/StructInheritance:
+  Enabled: false
+Style/ClassAndModuleChildren:
+  Enabled: false
+Rails/HasAndBelongsToMany:
+  Enabled: false

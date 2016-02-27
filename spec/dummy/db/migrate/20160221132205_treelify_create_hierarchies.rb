@@ -14,9 +14,9 @@ class TreelifyCreateHierarchies < ActiveRecord::Migration
     end
 
     add_index :hierarchy_hierarchies, [:ancestor_id, :descendant_id, :generations],
-      unique: true,
-      name: "hierarchy_anc_desc_idx"
+              unique: true,
+              name: 'hierarchy_anc_desc_idx'
 
-    add_index :hierarchy_hierarchies, [:descendant_id], name: "hierarchy_desc_idx"
+    add_index :hierarchy_hierarchies, [:descendant_id], name: 'hierarchy_desc_idx'
   end
 end
