@@ -22,7 +22,8 @@ To create initials migrations and necessary files run:
 rails g treelify:setup
 ```
 
-This will create for you
+This will create for you:
+
 1. Migrations:
   - `treelify_create_users`
   - `treelify_create_hierarchis`
@@ -67,7 +68,7 @@ end
 
 To generate a new resource you can use:
 ```
-rake treelify:resource [resource_name]
+rails g treelify:resource [resource_name]
 ```
 
 ## Contributing
