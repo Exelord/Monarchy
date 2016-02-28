@@ -13,7 +13,11 @@ gemspec
 # To use a debugger
 # gem 'byebug', group: [:development, :test]
 
+gem 'configurations', '~> 2.2.0'
+
 group :development, :test do
+  gem 'sqlite3'
+  gem 'rubocop'
   gem 'pry-rails', '0.3.4'
   gem 'shoulda-matchers'
   gem 'rspec-rails'

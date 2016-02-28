@@ -8,6 +8,8 @@ module Treelify
     source_root File.expand_path('../../templates', __FILE__)
 
     def setup_treelify
+      template 'config.rb', 'config/initializers/treelify.rb'
+
       template 'models/user.rb', 'app/models/user.rb'
       template 'models/hierarchy.rb', 'app/models/hierarchy.rb'
 

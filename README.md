@@ -1,9 +1,5 @@
 # Treelify
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/treelify`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
-
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -20,22 +16,69 @@ Or install it yourself as:
 
     $ gem install treelify
 
+## Setup
+To create initials migrations and necessary files run:
+```
+rails g treelify:setup
+```
+
+This will create for you
+1. Migrations:
+  - `treelify_create_users`
+  - `treelify_create_hierarchis`
+  - `treelify_create_memberships`
+
+
+2. Configuration file in `config/initializers/treelify`
+3. Default `User` model
+
+**If you want to use your current `User` model just skip generation of: **
+ - `db/migrate/treelify_create_users.rb`
+ - `app/models/user.rb`
+
+and add `acts_as_user` like:
+
+``` ruby
+class User < ActiveRecord::Base
+  acts_as_user
+end
+```
+
+### ** Warning!!! **
+This gem uses internal models like `Member`, `Role`, `MemberRoles`, `Hierarchy`, `HierarchyHierarchies`. If you currently use name of one of them you have to remove them.
+
+## Configuration
+You can configure Treelify in `config/initializers/treelify.rb` file.
+
+``` ruby
+Treelify.configure do |config|
+  config.default_role.name = :guest
+  config.default_role.level = 0
+  config.default_role.inherited = false
+end
+```
+
 ## Usage
+1. [Resource Model]()
+2. [User Model]()
+2. [Roles]()
 
-TODO: Write usage instructions here
+### Resource Model
 
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To generate a new resource you can use:
+```
+rake treelify:resource [resource_name]
+```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/treelify. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/exelord/treelify. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](contributor-covenant.org) code of conduct.
 
+## Development
+Gem dependencies:
+https://github.com/mceachen/closure_tree
+https://github.com/beatrichartz/configurations
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
