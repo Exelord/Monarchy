@@ -1,4 +1,4 @@
-# Treelify
+# Treelify [![Build Status](https://travis-ci.org/Exelord/Treelify.svg?branch=master)](https://travis-ci.org/Exelord/Treelify)
 
 ## Installation
 
