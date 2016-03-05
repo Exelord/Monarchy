@@ -19,9 +19,9 @@ class Member < ActiveRecord::Base
   def set_default_role
     roles = self.roles
     roles << Role.find_or_create_by(
-              name: Treelify.configuration.default_role.name,
-              inherited: Treelify.configuration.default_role.inherited,
-              level: Treelify.configuration.default_role.level)
+      name: Treelify.configuration.default_role.name,
+      inherited: Treelify.configuration.default_role.inherited,
+      level: Treelify.configuration.default_role.level)
     self.roles = roles.uniq
   end
 end

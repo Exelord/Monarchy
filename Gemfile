@@ -25,3 +25,5 @@ group :development, :test do
   gem 'ffaker', '2.1.0'
   gem 'database_cleaner', '1.4.1'
 end
+
+gem 'simplecov', require: false, group: :test
