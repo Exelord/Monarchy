@@ -1,4 +1,6 @@
+# frozen_string_literal: true
 source 'https://rubygems.org'
+ruby '2.3.0'
 
 # Declare your gem's dependencies in treelify.gemspec.
 # Bundler will treat runtime dependencies like base dependencies, and

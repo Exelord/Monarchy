@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Treelify
   module ActsAsResource
     extend ActiveSupport::Concern

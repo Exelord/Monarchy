@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Member < ActiveRecord::Base
   has_many :members_roles
   has_many :roles, through: :members_roles
