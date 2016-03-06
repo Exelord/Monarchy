@@ -60,16 +60,69 @@ end
 ```
 
 ## Usage
-1. [Resource Model]()
+1. [Resource Model](#resource-model)
 2. [User Model]()
 2. [Roles]()
 
-### Resource Model
-
+### 1. Resource Model
+#### Acts as resource
 To generate a new resource you can use:
 ```
 rails g treelify:resource [resource_name]
 ```
+or add to an existing model `acts_as_resource`, eg:
+```ruby
+class Resource < ActiveRecord::Base
+  acts_as_resource
+end
+```
+
+##### - Options
+You can pass an options to `acts_as_resource`:
+- `parent_as: :[association_name]`
+
+  This let you directly assign parent when you assign an association,
+  eg:
+  ``` ruby
+  resource.update(project: Project.last)
+  resource.parent  # returns Project.last
+  ```
+___
+#### #parent
+You can easily assign parent by using `parent=` method, eg:
+``` ruby
+resource.parent = Project.last
+```
+and read value by using `parent` method:
+``` ruby
+resource.parent   # returns Project.last
+```
+
+Parents can be only models that have `acts_as_resource`
+
+#### #children
+You can easily assign children by using `children=` method, eg:
+``` ruby
+resource.children = [child1, child2, child3]
+```
+and read value by using `parent` method:
+``` ruby
+resource.children   # returns [child1, child2, child3]
+```
+Children can be only models that have `acts_as_resource`
+
+#### .accessible_for
+You can select all resources accessible for specyfic user by using scope: `accessible_for`, eg:
+``` ruby
+Resource.accessible_for(current_user)   # returns [resource1, resource2, resource5]
+```
+
+#### .in
+You can select all resources scoped into another by using scope: `in`, eg:
+``` ruby
+Resource.in(Project.first) # returns [resource1, resource5]
+```
+It will returns for you all `resources` which parent is `Project.first`
 
 ## Contributing
 
