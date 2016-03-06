@@ -60,7 +60,7 @@ end
 ```
 
 ## Usage
-1. [Resource Model](#resource-model)
+1. [Resource Model](#1-resource-model)
 2. [User Model]()
 2. [Roles]()
 
@@ -87,6 +87,7 @@ You can pass an options to `acts_as_resource`:
   resource.update(project: Project.last)
   resource.parent  # returns Project.last
   ```
+
 ___
 #### #parent
 You can easily assign parent by using `parent=` method, eg:
