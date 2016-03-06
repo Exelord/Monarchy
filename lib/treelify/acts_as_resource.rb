@@ -1,14 +1,23 @@
+# frozen_string_literal: true
 module Treelify
   module ActsAsResource
     extend ActiveSupport::Concern
 
     module ClassMethods
-      def acts_as_resource # rubocop:disable MethodLength, AbcSize
+      def acts_as_resource
         after_create :ensure_hierarchy
 
         has_many :members, through: :hierarchy
         has_one :hierarchy, as: :resource, dependent: :destroy
 
+        include_scopes
+
+        include Treelify::ActsAsResource::InstanceMethods
+      end
+
+      private
+
+      def include_scopes
         scope :in, (lambda do |resource|
           joins(:hierarchy).where("hierarchies.parent_id": resource.hierarchy.id)
         end)
@@ -19,9 +28,7 @@ module Treelify
           .joins('INNER JOIN "members" ON "members"."hierarchy_id" = "hierarchy_hierarchies"."descendant_id"')
           .where("members.user_id": user.id).uniq
         end)
-
-        include Treelify::ActsAsResource::InstanceMethods
-      end # rubocop:enable MethodLength, AbcSize
+      end
     end
 
     module InstanceMethods
