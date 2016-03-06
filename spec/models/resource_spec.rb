@@ -4,47 +4,68 @@ describe Resource, type: :model do
   it { is_expected.to have_many(:members).through(:hierarchy) }
   it { is_expected.to have_one(:hierarchy).dependent(:destroy) }
 
-  context '#children' do
-    let!(:memo1) { create :memo }
-    let!(:memo2) { create :memo }
-    let!(:memo3) { create :memo }
-    let(:project) { create :project, children: [memo1, memo2, memo3] }
+  describe 'after create' do
+    describe 'ensure_hierarchy' do
+      subject { resource.hierarchy }
 
-    it { expect(project.children).to eq([memo1, memo2, memo3]) }
+      context 'create hierarchy if not exist' do
+        let(:resource) { Project.create }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'not create hierarchy if exist' do
+        let(:hierarchy) { Hierarchy.create }
+        let(:resource) { Project.create(hierarchy: hierarchy) }
+
+        it { is_expected.to eq(hierarchy) }
+      end
+    end
   end
 
-  context '#children=' do
+  describe '#children' do
+    subject { Project.find(project.id).children }
     let!(:memo1) { create :memo }
     let!(:memo2) { create :memo }
     let!(:memo3) { create :memo }
-    let(:project) { create :project }
 
-    before do
-      project.children = [memo1, memo2, memo3]
+    context 'getter' do
+      let(:project) { create :project, children: [memo1, memo2, memo3] }
+
+      it { is_expected.to eq([memo1, memo2, memo3]) }
     end
 
-    it { expect(Project.find(project.id).children).to eq([memo1, memo2, memo3]) }
+    context 'setter' do
+      let(:project) { create :project }
+
+      it do
+        project.children = [memo1, memo2, memo3]
+        is_expected.to eq([memo1, memo2, memo3])
+      end
+    end
   end
 
-  context '#parent' do
+  describe '#parent' do
     let!(:project) { create :project }
-    let(:memo) { create :memo, parent: project }
+    subject { Memo.find(memo.id).parent }
 
-    it { expect(Memo.find(memo.id).parent).to eq(project) }
-  end
+    context 'getter' do
+      let(:memo) { create :memo, parent: project }
 
-  context '#parent=' do
-    let(:project) { create :project }
-    let!(:memo) { create :memo }
-
-    before do
-      memo.parent = project
+      it { is_expected.to eq(project) }
     end
 
-    it { expect(Memo.find(memo.id).parent).to eq(project) }
+    context 'setter' do
+      let!(:memo) { create :memo }
+
+      it do
+        memo.parent = project
+        is_expected.to eq(project)
+      end
+    end
   end
 
-  context 'scope in' do
+  describe '.in' do
     let(:project) { create :project }
     let!(:memo_root) { create :memo }
     let!(:memo1) { create :memo, parent: project }
@@ -54,7 +75,7 @@ describe Resource, type: :model do
     it { expect(Memo.in(project)).to eq([memo1, memo2, memo3]) }
   end
 
-  context 'scope accessible_for' do
+  describe '.accessible_for' do
     let(:member_role) { create(:role, name: :member, level: 1) }
     let(:manager_role) { create(:role, name: :manager, level: 2) }
 
@@ -66,16 +87,19 @@ describe Resource, type: :model do
 
     let!(:user) { create :user }
 
-    context 'user has access to all parents and self of memo4' do
-      let!(:memo_member) { create(:member, user: user, hierarchy: memo4.hierarchy, roles: [member_role]) }
+    context 'user has access to all parents and self of' do
+      subject { Memo.accessible_for(user) }
+      context 'memo4' do
+        let!(:memo_member) { create(:member, user: user, hierarchy: memo4.hierarchy, roles: [member_role]) }
 
-      it { expect(Memo.accessible_for(user)).to match_array([memo2, memo3, memo4]) }
-    end
+        it { is_expected.to match_array([memo2, memo3, memo4]) }
+      end
 
-    context 'user has access to all parents and self of memo3' do
-      let!(:memo_member) { create(:member, user: user, hierarchy: memo3.hierarchy, roles: [member_role]) }
+      context 'memo3' do
+        let!(:memo_member) { create(:member, user: user, hierarchy: memo3.hierarchy, roles: [member_role]) }
 
-      it { expect(Memo.accessible_for(user)).to match_array([memo2, memo3]) }
+        it { is_expected.to match_array([memo2, memo3]) }
+      end
     end
 
     context 'accessible_for in' do
