@@ -4,7 +4,9 @@ module Treelify
     extend ActiveSupport::Concern
 
     module ClassMethods
-      def acts_as_resource
+      def acts_as_resource(options = {})
+        parent_as(options[:parent_as]) if options[:parent_as]
+
         after_create :ensure_hierarchy
 
         has_many :members, through: :hierarchy
@@ -16,6 +18,13 @@ module Treelify
       end
 
       private
+
+      def parent_as(name)
+        define_method "#{name}=" do |value|
+          super(value)
+          self.parent = value
+        end
+      end
 
       def include_scopes
         scope :in, (lambda do |resource|
@@ -38,7 +47,7 @@ module Treelify
 
       def parent=(resource)
         if hierarchy
-          hierarchy.update(parent: resource.hierarchy)
+          hierarchy.update(parent: resource.try(:hierarchy))
         else
           @parent = resource
         end
