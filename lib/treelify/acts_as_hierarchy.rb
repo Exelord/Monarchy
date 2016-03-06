@@ -16,7 +16,7 @@ module Treelify
     end
 
     module InstanceMethods
-      def empty_ancestors_for(user)
+      def memberless_ancestors_for(user)
         ancestors.joins('LEFT JOIN members on hierarchies.id = members.hierarchy_id')
                  .where("members.user_id != #{user.id} OR members.id IS NULL")
       end

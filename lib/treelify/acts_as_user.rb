@@ -22,7 +22,7 @@ module Treelify
 
       def grant(role_name, resource)
         ActiveRecord::Base.transaction do
-          Member.create(build_members(resource.hierarchy.empty_ancestors_for(self)))
+          Member.create(build_members(resource.hierarchy.memberless_ancestors_for(self)))
           grant_or_create_member(role_name, resource)
         end
       end
@@ -40,7 +40,7 @@ module Treelify
         if member
           MembersRole.create(member: member, role: role)
         else
-          member = Member.create(build_members(resource.hierarchy, [role]))
+          member = Member.create(build_members(resource.hierarchy, [role])).first
         end
 
         member
