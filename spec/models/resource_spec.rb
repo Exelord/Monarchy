@@ -5,6 +5,20 @@ describe Resource, type: :model do
   it { is_expected.to have_many(:members).through(:hierarchy) }
   it { is_expected.to have_one(:hierarchy).dependent(:destroy) }
 
+  describe 'acts_as_resource' do
+    context 'parent_as setter' do
+      let(:memo) { create :memo }
+      let(:resource) { Resource.create }
+
+      subject { resource.parent }
+
+      it 'assign parent if assing memo' do
+        resource.update(memo: memo)
+        is_expected.to eq(memo)
+      end
+    end
+  end
+
   describe 'after create' do
     describe 'ensure_hierarchy' do
       subject { resource.hierarchy }
@@ -62,6 +76,11 @@ describe Resource, type: :model do
       it do
         memo.parent = project
         is_expected.to eq(project)
+      end
+
+      it 'can assign nil' do
+        memo.parent = nil
+        is_expected.to be_nil
       end
     end
   end
