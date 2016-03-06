@@ -60,7 +60,7 @@ end
 ```
 
 ## Usage
-1. [Resource Model](#resource-model)
+1. [Resource Model](#1-resource-model)
 2. [User Model]()
 2. [Roles]()
 
