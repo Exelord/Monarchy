@@ -1,12 +1,10 @@
 AllCops:
   TargetRubyVersion: 2.2
-  Rails:
-    Enabled: true
   Exclude:
    - 'spec/dummy/db/seeds.rb'
-   - 'spec/dummy/db/migrate/*'
+   - 'spec/dummy/db/migrate/**'
    - 'spec/dummy/db/schema.rb'
-   - 'lib/generators/templates/*'
+   - 'lib/generators/templates/**/*'
 Documentation:
   Enabled: false
 Metrics/LineLength:
