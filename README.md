@@ -87,6 +87,7 @@ You can pass an options to `acts_as_resource`:
   resource.update(project: Project.last)
   resource.parent  # returns Project.last
   ```
+
 ___
 #### #parent
 You can easily assign parent by using `parent=` method, eg:
