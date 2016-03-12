@@ -32,6 +32,15 @@ module Treelify
         resource.hierarchy.members.where("members.user_id": id).first
       end
 
+      def revoke(resource)
+        self_and_descendant_ids = resource.hierarchy.self_and_descendant_ids
+
+        ActiveRecord::Base.transaction do
+          members_role_for(self_and_descendant_ids).destroy_all
+          try_revoke_ancestors_for(resource)
+        end
+      end
+
       private
 
       def grant_or_create_member(role_name, resource)
@@ -49,6 +58,22 @@ module Treelify
 
       def build_members(hierarchies, roles = [])
         Array(hierarchies).map { |hierarchy| { user: self, hierarchy: hierarchy, roles: roles } }
+      end
+
+      def default_role?(role)
+        role.name == Treelify.configuration.default_role.name.to_s
+      end
+
+      def members_role_for(hierarchy_ids)
+        MembersRole.joins(:member).where("members.hierarchy_id": hierarchy_ids, "members.user_id": id)
+      end
+
+      def try_revoke_ancestors_for(resource)
+        resource.hierarchy.ancestors.each do |hierarchy|
+          member_roles = members_role_for(hierarchy.self_and_descendant_ids)
+          only_guest = member_roles.count == 1 && default_role?(member_roles.first.role)
+          only_guest ? member_roles.destroy_all : break
+        end
       end
     end
   end
