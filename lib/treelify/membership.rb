@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 class Member < ActiveRecord::Base
-  has_many :members_roles
+  has_many :members_roles, dependent: :destroy
   has_many :roles, through: :members_roles
 
   belongs_to :user
@@ -28,7 +28,7 @@ class Member < ActiveRecord::Base
 end
 
 class Role < ActiveRecord::Base
-  has_many :members_roles
+  has_many :members_roles, dependent: :destroy
   has_many :members, through: :members_roles
 end
 
