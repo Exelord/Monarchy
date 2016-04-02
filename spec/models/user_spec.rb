@@ -111,7 +111,7 @@ describe User, type: :model do
     it { expect(user.member_for(memo)).to eq(memo_member) }
   end
 
-  describe '#revoke' do
+  describe '#revoke access' do
     let!(:memo2) { create :memo, parent: memo }
     let!(:memo3) { create :memo, parent: memo2 }
     let!(:memo4) { create :memo, parent: memo }
@@ -120,7 +120,7 @@ describe User, type: :model do
       before do
         user.grant(:manager, memo3)
         user.grant(:member, memo4)
-        user.revoke(memo2)
+        user.revoke_access(memo2)
       end
 
       it { expect(user.role_for(memo2)).to be_nil }
@@ -133,7 +133,7 @@ describe User, type: :model do
     context 'sholud revoke bellow self and parents' do
       before do
         user.grant(:manager, memo3)
-        user.revoke(memo2)
+        user.revoke_access(memo2)
       end
 
       it { expect(user.role_for(project)).to be_nil }
@@ -149,7 +149,7 @@ describe User, type: :model do
       before do
         user.grant(:manager, memo3)
         user.grant(:manager, memo4)
-        user.revoke(memo2)
+        user.revoke_access(memo2)
       end
 
       it { expect(user.role_for(project)).to eq(guest_role) }

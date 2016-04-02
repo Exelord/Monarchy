@@ -32,11 +32,11 @@ module Treelify
         resource.hierarchy.members.where("members.user_id": id).first
       end
 
-      def revoke(resource)
+      def revoke_access(resource)
         self_and_descendant_ids = resource.hierarchy.self_and_descendant_ids
 
         ActiveRecord::Base.transaction do
-          members_role_for(self_and_descendant_ids).destroy_all
+          members_roles_for(self_and_descendant_ids).destroy_all
           try_revoke_ancestors_for(resource)
         end
       end
@@ -64,13 +64,13 @@ module Treelify
         role.name == Treelify.configuration.default_role.name.to_s
       end
 
-      def members_role_for(hierarchy_ids)
+      def members_roles_for(hierarchy_ids)
         MembersRole.joins(:member).where("members.hierarchy_id": hierarchy_ids, "members.user_id": id)
       end
 
       def try_revoke_ancestors_for(resource)
         resource.hierarchy.ancestors.each do |hierarchy|
-          member_roles = members_role_for(hierarchy.self_and_descendant_ids)
+          member_roles = members_roles_for(hierarchy.self_and_descendant_ids)
           only_guest = member_roles.count == 1 && default_role?(member_roles.first.role)
           only_guest ? member_roles.destroy_all : break
         end
