@@ -41,6 +41,16 @@ module Treelify
         end
       end
 
+      def revoke_role(role_name, resource)
+        members_roles = member_for(resource).members_roles
+
+        if only_this_role(members_roles, role_name)
+          revoke_access(resource)
+        else
+          members_roles.joins(:role).where("roles.name": role_name).destroy_all
+        end
+      end
+
       private
 
       def grant_or_create_member(role_name, resource)
@@ -60,8 +70,13 @@ module Treelify
         Array(hierarchies).map { |hierarchy| { user: self, hierarchy: hierarchy, roles: roles } }
       end
 
-      def default_role?(role)
-        role.name == Treelify.configuration.default_role.name.to_s
+      def equal_role_name?(role, role_name)
+        role.name == role_name.to_s
+      end
+
+      def only_this_role(members_roles, role_name = nil)
+        role_name ||= Treelify.configuration.default_role.name.to_s
+        members_roles.count == 1 && equal_role_name?(members_roles.first.role, role_name)
       end
 
       def members_roles_for(hierarchy_ids)
@@ -70,9 +85,8 @@ module Treelify
 
       def try_revoke_ancestors_for(resource)
         resource.hierarchy.ancestors.each do |hierarchy|
-          member_roles = members_roles_for(hierarchy.self_and_descendant_ids)
-          only_guest = member_roles.count == 1 && default_role?(member_roles.first.role)
-          only_guest ? member_roles.destroy_all : break
+          members_roles = members_roles_for(hierarchy.self_and_descendant_ids)
+          only_this_role(members_roles) ? members_roles.destroy_all : break
         end
       end
     end

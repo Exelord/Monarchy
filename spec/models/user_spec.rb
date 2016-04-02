@@ -159,4 +159,40 @@ describe User, type: :model do
       it { expect(user.role_for(memo4)).to eq(manager_role) }
     end
   end
+
+  describe '#revoke role' do
+    let!(:memo2) { create :memo, parent: memo }
+    let!(:memo3) { create :memo, parent: memo2 }
+    let!(:memo4) { create :memo, parent: memo }
+
+    context 'sholud revoke only one role' do
+      before do
+        user.grant(:manager, memo4)
+        user.grant(:member, memo4)
+      end
+
+      subject { user.revoke_role(:manager, memo4) }
+
+      it do
+        subject
+        expect(user.role_for(memo4)).to eq(member_role)
+      end
+
+      it { expect{ subject }.to change{ MembersRole.count }.by(-1) }
+    end
+
+    context 'sholud revoke access recursively' do
+      before do
+        user.grant(:manager, memo3)
+        user.revoke_role(:guest, memo3)
+        user.revoke_role(:manager, memo3)
+      end
+
+      it { expect(user.role_for(project)).to be_nil }
+      it { expect(user.role_for(memo)).to be_nil }
+      it { expect(user.role_for(memo2)).to be_nil }
+      it { expect(user.role_for(memo3)).to be_nil }
+      it { expect(user.role_for(memo4)).to be_nil }
+    end
+  end
 end
