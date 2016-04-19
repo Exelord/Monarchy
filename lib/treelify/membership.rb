@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 module Treelify
   class Member < ActiveRecord::Base
+    self.table_name = 'treelify_members'
+
     has_many :members_roles, dependent: :destroy
     has_many :roles, through: :members_roles
 
@@ -29,11 +31,15 @@ module Treelify
   end
 
   class Role < ActiveRecord::Base
+    self.table_name = 'treelify_roles'
+
     has_many :members_roles, dependent: :destroy
     has_many :members, through: :members_roles
   end
 
   class MembersRole < ActiveRecord::Base
+    self.table_name = 'treelify_members_roles'
+
     belongs_to :member
     belongs_to :role
 

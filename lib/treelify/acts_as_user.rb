@@ -15,9 +15,9 @@ module Treelify
       def role_for(resource)
         ansestors_ids = resource.hierarchy.self_and_ancestors_ids
         Treelify::Role.joins(:members)
-            .where("((roles.inherited = 't' "\
-                   "AND members.hierarchy_id IN (#{ansestors_ids.join(',')})) "\
-                   "OR (members.hierarchy_id = #{resource.hierarchy.id})) AND members.user_id = #{id}")
+            .where("((treelify_roles.inherited = 't' "\
+                   "AND treelify_members.hierarchy_id IN (#{ansestors_ids.join(',')})) "\
+                   "OR (treelify_members.hierarchy_id = #{resource.hierarchy.id})) AND treelify_members.user_id = #{id}")
             .order(level: :desc).first
       end
 
@@ -29,7 +29,7 @@ module Treelify
       end
 
       def member_for(resource)
-        resource.hierarchy.members.where("members.user_id": id).first
+        resource.hierarchy.members.where("treelify_members.user_id": id).first
       end
 
       def revoke_access(resource)
@@ -47,7 +47,7 @@ module Treelify
         if only_this_role(members_roles, role_name)
           revoke_access(resource)
         else
-          members_roles.joins(:role).where("roles.name": role_name).destroy_all
+          members_roles.joins(:role).where("treelify_roles.name": role_name).destroy_all
         end
       end
 
@@ -80,7 +80,7 @@ module Treelify
       end
 
       def members_roles_for(hierarchy_ids)
-        Treelify::MembersRole.joins(:member).where("members.hierarchy_id": hierarchy_ids, "members.user_id": id)
+        Treelify::MembersRole.joins(:member).where("treelify_members.hierarchy_id": hierarchy_ids, "treelify_members.user_id": id)
       end
 
       def try_revoke_ancestors_for(resource)
