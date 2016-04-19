@@ -5,7 +5,7 @@ module Treelify
 
     module ClassMethods
       def acts_as_user
-        has_many :members
+        has_many :members, class_name: 'Treelify::Member'
 
         include Treelify::ActsAsUser::InstanceMethods
       end
@@ -13,23 +13,24 @@ module Treelify
 
     module InstanceMethods
       def role_for(resource)
-        ansestors_ids = resource.hierarchy.self_and_ancestors_ids
-        Role.joins(:members)
-            .where("((roles.inherited = 't' "\
-                   "AND members.hierarchy_id IN (#{ansestors_ids.join(',')})) "\
-                   "OR (members.hierarchy_id = #{resource.hierarchy.id})) AND members.user_id = #{id}")
-            .order(level: :desc).first
+        ancestors_ids = resource.hierarchy.self_and_ancestors_ids
+        Treelify::Role.joins(:members)
+                      .where("((treelify_roles.inherited = 't' "\
+                       "AND treelify_members.hierarchy_id IN (#{ancestors_ids.join(',')})) "\
+                       "OR (treelify_members.hierarchy_id = #{resource.hierarchy.id})) "\
+                       "AND treelify_members.user_id = #{id}")
+                      .order(level: :desc).first
       end
 
       def grant(role_name, resource)
         ActiveRecord::Base.transaction do
-          Member.create(build_members(resource.hierarchy.memberless_ancestors_for(self)))
+          Treelify::Member.create(build_members(resource.hierarchy.memberless_ancestors_for(self)))
           grant_or_create_member(role_name, resource)
         end
       end
 
       def member_for(resource)
-        resource.hierarchy.members.where("members.user_id": id).first
+        resource.hierarchy.members.where("treelify_members.user_id": id).first
       end
 
       def revoke_access(resource)
@@ -47,20 +48,20 @@ module Treelify
         if only_this_role(members_roles, role_name)
           revoke_access(resource)
         else
-          members_roles.joins(:role).where("roles.name": role_name).destroy_all
+          members_roles.joins(:role).where("treelify_roles.name": role_name).destroy_all
         end
       end
 
       private
 
       def grant_or_create_member(role_name, resource)
-        role = Role.find_by(name: role_name)
+        role = Treelify::Role.find_by(name: role_name)
         member = member_for(resource)
 
         if member
-          MembersRole.create(member: member, role: role)
+          Treelify::MembersRole.create(member: member, role: role)
         else
-          member = Member.create(build_members(resource.hierarchy, [role])).first
+          member = Treelify::Member.create(build_members(resource.hierarchy, [role])).first
         end
 
         member
@@ -80,7 +81,8 @@ module Treelify
       end
 
       def members_roles_for(hierarchy_ids)
-        MembersRole.joins(:member).where("members.hierarchy_id": hierarchy_ids, "members.user_id": id)
+        Treelify::MembersRole.joins(:member)
+                             .where(treelify_members: { hierarchy_id: hierarchy_ids, user_id: id })
       end
 
       def try_revoke_ancestors_for(resource)

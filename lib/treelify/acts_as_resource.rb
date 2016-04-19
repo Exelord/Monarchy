@@ -10,7 +10,7 @@ module Treelify
         after_create :ensure_hierarchy
 
         has_many :members, through: :hierarchy
-        has_one :hierarchy, as: :resource, dependent: :destroy
+        has_one :hierarchy, as: :resource, dependent: :destroy, class_name: 'Treelify::Hierarchy'
 
         include_scopes
 
@@ -26,19 +26,23 @@ module Treelify
         end
       end
 
+      # rubocop:disable MethodLength
       def include_scopes
         scope :in, (lambda do |resource|
-          joins(:hierarchy).where("hierarchies.parent_id": resource.hierarchy.id)
+          joins(:hierarchy).where(treelify_hierarchies: { parent_id: resource.hierarchy.id })
         end)
 
         scope :accessible_for, (lambda do |user|
           joins(:hierarchy)
-          .joins('INNER JOIN "hierarchy_hierarchies" ON "hierarchies"."id" = "hierarchy_hierarchies"."ancestor_id"')
-          .joins('INNER JOIN "members" ON "members"."hierarchy_id" = "hierarchy_hierarchies"."descendant_id"')
-          .where("members.user_id": user.id).uniq
+          .joins('INNER JOIN "treelify_hierarchy_hierarchies" ON '\
+            '"treelify_hierarchies"."id" = "treelify_hierarchy_hierarchies"."ancestor_id"')
+          .joins('INNER JOIN "treelify_members" ON '\
+            '"treelify_members"."hierarchy_id" = "treelify_hierarchy_hierarchies"."descendant_id"')
+          .where(treelify_members: { user_id: user.id }).uniq
         end)
       end
     end
+    # rubocop:enable MethodLength
 
     module InstanceMethods
       def parent
@@ -66,7 +70,7 @@ module Treelify
       private
 
       def ensure_hierarchy
-        self.hierarchy ||= Hierarchy.create(
+        self.hierarchy ||= Treelify::Hierarchy.create(
           resource: self,
           parent: parent.try(:hierarchy),
           children: hierarchies_for(children)

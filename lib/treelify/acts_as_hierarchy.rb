@@ -7,7 +7,7 @@ module Treelify
       def acts_as_hierarchy
         has_closure_tree dependent: :destroy
 
-        has_many :members
+        has_many :members, class_name: 'Treelify::Member'
         belongs_to :resource, polymorphic: true, dependent: :destroy
 
         validates :resource, presence: true
@@ -18,8 +18,8 @@ module Treelify
 
     module InstanceMethods
       def memberless_ancestors_for(user)
-        ancestors.joins('LEFT JOIN members on hierarchies.id = members.hierarchy_id')
-                 .where("members.user_id != #{user.id} OR members.id IS NULL")
+        ancestors.joins('LEFT JOIN treelify_members on treelify_hierarchies.id = treelify_members.hierarchy_id')
+                 .where("treelify_members.user_id != #{user.id} OR treelify_members.id IS NULL")
       end
     end
   end

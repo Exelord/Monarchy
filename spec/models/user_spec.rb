@@ -65,7 +65,7 @@ describe User, type: :model do
   end
 
   describe '#grant' do
-    let(:default_role) { Role.find_by_name(Treelify.configuration.default_role.name) }
+    let(:default_role) { Treelify::Role.find_by_name(Treelify.configuration.default_role.name) }
 
     context 'inherited resource' do
       let(:grant_user) { user.grant(:manager, memo) }
@@ -74,21 +74,21 @@ describe User, type: :model do
         grant_user
       end
 
-      it { expect(Member.count).to be(2) }
+      it { expect(Treelify::Member.count).to be(2) }
 
       it 'project with default role' do
         expect(project.members.first.roles).to match_array([default_role])
       end
 
       it 'memo with selected role' do
-        expect(memo.members.first.roles).to match_array([Role.find_by_name(:manager), default_role])
+        expect(memo.members.first.roles).to match_array([Treelify::Role.find_by_name(:manager), default_role])
       end
 
       it 'with doubled grant' do
         2.times do
           grant_user
           expect(project.members.first.roles).to match_array([default_role])
-          expect(memo.members.first.roles).to match_array([Role.find_by_name(:manager), default_role])
+          expect(memo.members.first.roles).to match_array([Treelify::Role.find_by_name(:manager), default_role])
         end
       end
     end
@@ -100,8 +100,8 @@ describe User, type: :model do
         grant_user
       end
 
-      it { expect(Member.count).to be(1) }
-      it { expect(project.members.first.roles).to match_array([Role.find_by_name(:manager), default_role]) }
+      it { expect(Treelify::Member.count).to be(1) }
+      it { expect(project.members.first.roles).to match_array([Treelify::Role.find_by_name(:manager), default_role]) }
     end
   end
 
@@ -178,7 +178,7 @@ describe User, type: :model do
         expect(user.role_for(memo4)).to eq(member_role)
       end
 
-      it { expect{ subject }.to change{ MembersRole.count }.by(-1) }
+      it { expect { subject }.to change { Treelify::MembersRole.count }.by(-1) }
     end
 
     context 'sholud revoke access recursively' do

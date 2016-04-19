@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-describe Member, type: :model do
+describe Treelify::Member, type: :model do
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:hierarchy) }
   it { is_expected.to have_many(:roles).through(:members_roles) }
@@ -14,7 +14,7 @@ describe Member, type: :model do
   describe 'after create' do
     context 'set default role' do
       let(:member) { create(:member) }
-      let(:default_role) { Role.find_by_name(Treelify.configuration.default_role.name) }
+      let(:default_role) { Treelify::Role.find_by_name(Treelify.configuration.default_role.name) }
 
       subject { member.roles }
 

@@ -1,40 +1,48 @@
 # frozen_string_literal: true
-class Member < ActiveRecord::Base
-  has_many :members_roles, dependent: :destroy
-  has_many :roles, through: :members_roles
+module Treelify
+  class Member < ActiveRecord::Base
+    self.table_name = 'treelify_members'
 
-  belongs_to :user
-  belongs_to :hierarchy
+    has_many :members_roles, dependent: :destroy
+    has_many :roles, through: :members_roles
 
-  delegate :resource, to: :hierarchy
-  delegate :resource=, to: :hierarchy
+    belongs_to :user
+    belongs_to :hierarchy
 
-  validates :user_id, uniqueness: { scope: :hierarchy_id }
-  validates :user, presence: true
-  validates :hierarchy, presence: true
+    delegate :resource, to: :hierarchy
+    delegate :resource=, to: :hierarchy
 
-  before_create :set_default_role
+    validates :user_id, uniqueness: { scope: :hierarchy_id }
+    validates :user, presence: true
+    validates :hierarchy, presence: true
 
-  private
+    before_create :set_default_role
 
-  def set_default_role
-    roles = self.roles
-    roles << Role.find_or_create_by(
-      name: Treelify.configuration.default_role.name,
-      inherited: Treelify.configuration.default_role.inherited,
-      level: Treelify.configuration.default_role.level)
-    self.roles = roles.uniq
+    private
+
+    def set_default_role
+      roles = self.roles
+      roles << Treelify::Role.find_or_create_by(
+        name: Treelify.configuration.default_role.name,
+        inherited: Treelify.configuration.default_role.inherited,
+        level: Treelify.configuration.default_role.level)
+      self.roles = roles.uniq
+    end
   end
-end
 
-class Role < ActiveRecord::Base
-  has_many :members_roles, dependent: :destroy
-  has_many :members, through: :members_roles
-end
+  class Role < ActiveRecord::Base
+    self.table_name = 'treelify_roles'
 
-class MembersRole < ActiveRecord::Base
-  belongs_to :member
-  belongs_to :role
+    has_many :members_roles, dependent: :destroy
+    has_many :members, through: :members_roles
+  end
 
-  validates :role_id, uniqueness: { scope: :member_id }
+  class MembersRole < ActiveRecord::Base
+    self.table_name = 'treelify_members_roles'
+
+    belongs_to :member
+    belongs_to :role
+
+    validates :role_id, uniqueness: { scope: :member_id }
+  end
 end
