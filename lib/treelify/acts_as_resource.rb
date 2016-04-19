@@ -29,7 +29,7 @@ module Treelify
       # rubocop:disable MethodLength
       def include_scopes
         scope :in, (lambda do |resource|
-          joins(:hierarchy).where("treelify_hierarchies.parent_id": resource.hierarchy.id)
+          joins(:hierarchy).where(treelify_hierarchies: { parent_id: resource.hierarchy.id })
         end)
 
         scope :accessible_for, (lambda do |user|
@@ -38,7 +38,7 @@ module Treelify
             '"treelify_hierarchies"."id" = "treelify_hierarchy_hierarchies"."ancestor_id"')
           .joins('INNER JOIN "treelify_members" ON '\
             '"treelify_members"."hierarchy_id" = "treelify_hierarchy_hierarchies"."descendant_id"')
-          .where("treelify_members.user_id": user.id).uniq
+          .where(treelify_members: { user_id: user.id }).uniq
         end)
       end
     end
