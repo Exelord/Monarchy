@@ -1,4 +1,4 @@
 # frozen_string_literal: true
-class Hierarchy < ActiveRecord::Base
+class Treelify::Hierarchy < ActiveRecord::Base
   acts_as_hierarchy
 end

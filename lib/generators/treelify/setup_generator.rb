@@ -12,7 +12,7 @@ module Treelify
       template 'config.rb', 'config/initializers/treelify.rb'
 
       template 'models/user.rb', 'app/models/user.rb'
-      template 'models/hierarchy.rb', 'app/models/hierarchy.rb'
+      template 'models/hierarchy.rb', 'app/models/treelify/hierarchy.rb'
 
       migration_template 'migrations/hierarchy.rb', 'db/migrate/treelify_create_hierarchies.rb'
       migration_template 'migrations/membership.rb', 'db/migrate/treelify_create_memberships.rb'

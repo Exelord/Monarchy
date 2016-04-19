@@ -10,7 +10,7 @@ module Treelify
         after_create :ensure_hierarchy
 
         has_many :members, through: :hierarchy
-        has_one :hierarchy, as: :resource, dependent: :destroy
+        has_one :hierarchy, as: :resource, dependent: :destroy, class_name: 'Treelify::Hierarchy'
 
         include_scopes
 
@@ -66,7 +66,7 @@ module Treelify
       private
 
       def ensure_hierarchy
-        self.hierarchy ||= Hierarchy.create(
+        self.hierarchy ||= Treelify::Hierarchy.create(
           resource: self,
           parent: parent.try(:hierarchy),
           children: hierarchies_for(children)
