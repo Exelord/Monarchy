@@ -178,7 +178,7 @@ describe User, type: :model do
         expect(user.role_for(memo4)).to eq(member_role)
       end
 
-      it { expect{ subject }.to change{ Treelify::MembersRole.count }.by(-1) }
+      it { expect { subject }.to change { Treelify::MembersRole.count }.by(-1) }
     end
 
     context 'sholud revoke access recursively' do

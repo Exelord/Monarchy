@@ -15,10 +15,11 @@ module Treelify
       def role_for(resource)
         ansestors_ids = resource.hierarchy.self_and_ancestors_ids
         Treelify::Role.joins(:members)
-            .where("((treelify_roles.inherited = 't' "\
+                      .where("((treelify_roles.inherited = 't' "\
                    "AND treelify_members.hierarchy_id IN (#{ansestors_ids.join(',')})) "\
-                   "OR (treelify_members.hierarchy_id = #{resource.hierarchy.id})) AND treelify_members.user_id = #{id}")
-            .order(level: :desc).first
+                   "OR (treelify_members.hierarchy_id = #{resource.hierarchy.id})) "\
+                   "AND treelify_members.user_id = #{id}")
+                      .order(level: :desc).first
       end
 
       def grant(role_name, resource)
@@ -80,7 +81,8 @@ module Treelify
       end
 
       def members_roles_for(hierarchy_ids)
-        Treelify::MembersRole.joins(:member).where("treelify_members.hierarchy_id": hierarchy_ids, "treelify_members.user_id": id)
+        Treelify::MembersRole.joins(:member)
+                             .where("treelify_members.hierarchy_id": hierarchy_ids, "treelify_members.user_id": id)
       end
 
       def try_revoke_ancestors_for(resource)
