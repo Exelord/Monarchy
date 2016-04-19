@@ -7,7 +7,7 @@ module Treelify
       def acts_as_hierarchy
         has_closure_tree dependent: :destroy
 
-        has_many :members
+        has_many :members, class_name: 'Treelify::Member'
         belongs_to :resource, polymorphic: true, dependent: :destroy
 
         validates :resource, presence: true
