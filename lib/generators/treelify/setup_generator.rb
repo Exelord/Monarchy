@@ -1,22 +1,21 @@
 # frozen_string_literal: true
 require 'rails/generators/active_record'
 
-module Treelify
+module Monarchy
   class SetupGenerator < Rails::Generators::Base
     include Rails::Generators::Migration
 
-    desc 'This generator setups Treelify'
+    desc 'This generator setups Monarchy'
     source_root File.expand_path('../../templates', __FILE__)
 
-    def setup_treelify
-      template 'config.rb', 'config/initializers/treelify.rb'
-
+    def setup_monarchy
+      template 'config.rb', 'config/initializers/monarchy.rb'
       template 'models/user.rb', 'app/models/user.rb'
-      template 'models/hierarchy.rb', 'app/models/treelify/hierarchy.rb'
+      template 'models/hierarchy.rb', 'app/models/monarchy/hierarchy.rb'
 
-      migration_template 'migrations/hierarchy.rb', 'db/migrate/treelify_create_hierarchies.rb'
-      migration_template 'migrations/membership.rb', 'db/migrate/treelify_create_memberships.rb'
-      migration_template 'migrations/user.rb', 'db/migrate/treelify_create_users.rb'
+      migration_template 'migrations/hierarchy.rb', 'db/migrate/monarchy_create_hierarchies.rb'
+      migration_template 'migrations/membership.rb', 'db/migrate/monarchy_create_memberships.rb'
+      migration_template 'migrations/user.rb', 'db/migrate/monarchy_create_users.rb'
     end
 
     def self.next_migration_number(dirname)

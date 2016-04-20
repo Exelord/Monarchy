@@ -2,13 +2,13 @@
 require 'closure_tree'
 require 'configurations'
 
-require 'treelify/acts_as_hierarchy'
-require 'treelify/acts_as_resource'
-require 'treelify/acts_as_user'
-require 'treelify/membership'
-require 'treelify/hierarchy'
+require 'monarchy/acts_as_hierarchy'
+require 'monarchy/acts_as_resource'
+require 'monarchy/acts_as_user'
+require 'monarchy/membership'
+require 'monarchy/hierarchy'
 
-module Treelify
+module Monarchy
   include Configurations
 
   not_configured do |prop|

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-module Treelify
+module Monarchy
   class Member < ActiveRecord::Base
-    self.table_name = 'treelify_members'
+    self.table_name = 'monarchy_members'
 
     has_many :members_roles, dependent: :destroy
     has_many :roles, through: :members_roles
@@ -22,23 +22,23 @@ module Treelify
 
     def set_default_role
       roles = self.roles
-      roles << Treelify::Role.find_or_create_by(
-        name: Treelify.configuration.default_role.name,
-        inherited: Treelify.configuration.default_role.inherited,
-        level: Treelify.configuration.default_role.level)
+      roles << Monarchy::Role.find_or_create_by(
+        name: Monarchy.configuration.default_role.name,
+        inherited: Monarchy.configuration.default_role.inherited,
+        level: Monarchy.configuration.default_role.level)
       self.roles = roles.uniq
     end
   end
 
   class Role < ActiveRecord::Base
-    self.table_name = 'treelify_roles'
+    self.table_name = 'monarchy_roles'
 
     has_many :members_roles, dependent: :destroy
     has_many :members, through: :members_roles
   end
 
   class MembersRole < ActiveRecord::Base
-    self.table_name = 'treelify_members_roles'
+    self.table_name = 'monarchy_members_roles'
 
     belongs_to :member
     belongs_to :role

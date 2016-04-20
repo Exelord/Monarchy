@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 FactoryGirl.define do
-  factory :member, class: Treelify::Member do
+  factory :member, class: Monarchy::Member do
     user
     hierarchy
   end

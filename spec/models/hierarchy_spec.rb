@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-describe Treelify::Hierarchy, type: :model do
+describe Monarchy::Hierarchy, type: :model do
   it { is_expected.to have_many(:members) }
   it { is_expected.to belong_to(:resource) }
 
