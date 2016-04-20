@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'rails', '~> 4.2', '>= 4.2.4'
   s.add_dependency 'closure_tree', '6.0.0'
+  s.add_dependency 'configurations', '2.2.0'
 
   s.add_development_dependency 'bundler', '~> 1.10'
   s.add_development_dependency 'rake', '~> 10.0'
