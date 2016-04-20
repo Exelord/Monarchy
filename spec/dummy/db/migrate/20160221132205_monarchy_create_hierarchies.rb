@@ -7,7 +7,6 @@ class MonarchyCreateHierarchies < ActiveRecord::Migration
       t.timestamps null: false
     end
 
-
     create_table :monarchy_hierarchy_hierarchies, id: false do |t|
       t.integer :ancestor_id, null: false
       t.integer :descendant_id, null: false

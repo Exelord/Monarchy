@@ -65,15 +65,7 @@ describe User, type: :model do
   end
 
   describe '#grant' do
-<<<<<<< Updated upstream
     let(:default_role) { Monarchy::Role.find_by_name(Monarchy.configuration.default_role.name) }
-=======
-<<<<<<< Updated upstream
-    let(:default_role) { Role.find_by_name(Monarchy.configuration.default_role.name) }
-=======
-    let(:default_role) { Monarchy::Role.find_by_name(Monarchy.configuration.default_role.name) }
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 
     context 'inherited resource' do
       let(:grant_user) { user.grant(:manager, memo) }
@@ -82,45 +74,21 @@ describe User, type: :model do
         grant_user
       end
 
-<<<<<<< Updated upstream
       it { expect(Monarchy::Member.count).to be(2) }
-=======
-<<<<<<< Updated upstream
-      it { expect(Member.count).to be(2) }
-=======
-      it { expect(Monarchy::Member.count).to be(2) }
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 
       it 'project with default role' do
         expect(project.members.first.roles).to match_array([default_role])
       end
 
       it 'memo with selected role' do
-<<<<<<< Updated upstream
         expect(memo.members.first.roles).to match_array([Monarchy::Role.find_by_name(:manager), default_role])
-=======
-<<<<<<< Updated upstream
-        expect(memo.members.first.roles).to match_array([Role.find_by_name(:manager), default_role])
-=======
-        expect(memo.members.first.roles).to match_array([Monarchy::Role.find_by_name(:manager), default_role])
->>>>>>> Stashed changes
->>>>>>> Stashed changes
       end
 
       it 'with doubled grant' do
         2.times do
           grant_user
           expect(project.members.first.roles).to match_array([default_role])
-<<<<<<< Updated upstream
           expect(memo.members.first.roles).to match_array([Monarchy::Role.find_by_name(:manager), default_role])
-=======
-<<<<<<< Updated upstream
-          expect(memo.members.first.roles).to match_array([Role.find_by_name(:manager), default_role])
-=======
-          expect(memo.members.first.roles).to match_array([Monarchy::Role.find_by_name(:manager), default_role])
->>>>>>> Stashed changes
->>>>>>> Stashed changes
         end
       end
     end
@@ -132,18 +100,8 @@ describe User, type: :model do
         grant_user
       end
 
-<<<<<<< Updated upstream
       it { expect(Monarchy::Member.count).to be(1) }
       it { expect(project.members.first.roles).to match_array([Monarchy::Role.find_by_name(:manager), default_role]) }
-=======
-<<<<<<< Updated upstream
-      it { expect(Member.count).to be(1) }
-      it { expect(project.members.first.roles).to match_array([Role.find_by_name(:manager), default_role]) }
-=======
-      it { expect(Monarchy::Member.count).to be(1) }
-      it { expect(project.members.first.roles).to match_array([Monarchy::Role.find_by_name(:manager), default_role]) }
->>>>>>> Stashed changes
->>>>>>> Stashed changes
     end
   end
 
@@ -220,15 +178,7 @@ describe User, type: :model do
         expect(user.role_for(memo4)).to eq(member_role)
       end
 
-<<<<<<< Updated upstream
       it { expect { subject }.to change { Monarchy::MembersRole.count }.by(-1) }
-=======
-<<<<<<< Updated upstream
-      it { expect{ subject }.to change{ MembersRole.count }.by(-1) }
-=======
-      it { expect { subject }.to change { Monarchy::MembersRole.count }.by(-1) }
->>>>>>> Stashed changes
->>>>>>> Stashed changes
     end
 
     context 'sholud revoke access recursively' do

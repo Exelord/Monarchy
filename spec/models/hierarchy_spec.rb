@@ -1,15 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-<<<<<<< Updated upstream
 describe Monarchy::Hierarchy, type: :model do
-=======
-<<<<<<< Updated upstream
-describe Hierarchy, type: :model do
-=======
-describe Monarchy::Hierarchy, type: :model do
->>>>>>> Stashed changes
->>>>>>> Stashed changes
   it { is_expected.to have_many(:members) }
   it { is_expected.to belong_to(:resource) }
 

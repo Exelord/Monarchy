@@ -10,17 +10,8 @@ module Monarchy
 
     def setup_monarchy
       template 'config.rb', 'config/initializers/monarchy.rb'
-
       template 'models/user.rb', 'app/models/user.rb'
-<<<<<<< Updated upstream
-      template 'models/hierarchy.rb', 'app/models/tonarchy/hierarchy.rb'
-=======
-<<<<<<< Updated upstream
-      template 'models/hierarchy.rb', 'app/models/hierarchy.rb'
-=======
       template 'models/hierarchy.rb', 'app/models/monarchy/hierarchy.rb'
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 
       migration_template 'migrations/hierarchy.rb', 'db/migrate/monarchy_create_hierarchies.rb'
       migration_template 'migrations/membership.rb', 'db/migrate/monarchy_create_memberships.rb'
