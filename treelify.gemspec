@@ -2,15 +2,15 @@
 # frozen_string_literal: true
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'treelify/version'
+require 'monarchy/version'
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
-  s.name        = 'treelify'
-  s.version     = Treelify::VERSION
+  s.name        = 'monarchy'
+  s.version     = Monarchy::VERSION
   s.authors     = ['Exelord']
   s.email       = ['']
-  s.homepage    = 'https://github.com/Exelord/Treelify'
+  s.homepage    = 'https://github.com/Exelord/Monarchy'
   s.summary     = 'Hierarchical access management system with roles inheritance.'
   s.description = 'Hierarchical access management system with roles inheritance.'
   s.license     = 'MIT'

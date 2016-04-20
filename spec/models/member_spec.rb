@@ -1,7 +1,15 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-describe Treelify::Member, type: :model do
+<<<<<<< Updated upstream
+describe Monarchy::Member, type: :model do
+=======
+<<<<<<< Updated upstream
+describe Member, type: :model do
+=======
+describe Monarchy::Member, type: :model do
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:hierarchy) }
   it { is_expected.to have_many(:roles).through(:members_roles) }
@@ -14,7 +22,15 @@ describe Treelify::Member, type: :model do
   describe 'after create' do
     context 'set default role' do
       let(:member) { create(:member) }
-      let(:default_role) { Treelify::Role.find_by_name(Treelify.configuration.default_role.name) }
+<<<<<<< Updated upstream
+      let(:default_role) { Monarchy::Role.find_by_name(Monarchy.configuration.default_role.name) }
+=======
+<<<<<<< Updated upstream
+      let(:default_role) { Role.find_by_name(Monarchy.configuration.default_role.name) }
+=======
+      let(:default_role) { Monarchy::Role.find_by_name(Monarchy.configuration.default_role.name) }
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
       subject { member.roles }
 

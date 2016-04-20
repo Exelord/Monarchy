@@ -30,7 +30,15 @@ describe Resource, type: :model do
       end
 
       context 'not create hierarchy if exist' do
-        let(:hierarchy) { Treelify::Hierarchy.create }
+<<<<<<< Updated upstream
+        let(:hierarchy) { Monarchy::Hierarchy.create }
+=======
+<<<<<<< Updated upstream
+        let(:hierarchy) { Hierarchy.create }
+=======
+        let(:hierarchy) { Monarchy::Hierarchy.create }
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
         let(:resource) { Project.create(hierarchy: hierarchy) }
 
         it { is_expected.to eq(hierarchy) }

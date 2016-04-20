@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails/generators/active_record'
 
-module Treelify
+module Monarchy
   class ResourceGenerator < Rails::Generators::NamedBase
     include Rails::Generators::Migration
 

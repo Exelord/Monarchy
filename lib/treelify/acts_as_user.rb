@@ -1,36 +1,79 @@
 # frozen_string_literal: true
-module Treelify
+module Monarchy
   module ActsAsUser
     extend ActiveSupport::Concern
 
     module ClassMethods
       def acts_as_user
-        has_many :members, class_name: 'Treelify::Member'
+<<<<<<< Updated upstream
+        has_many :members, class_name: 'Monarchy::Member'
+=======
+<<<<<<< Updated upstream
+        has_many :members
+=======
+        has_many :members, class_name: 'Monarchy::Member'
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
-        include Treelify::ActsAsUser::InstanceMethods
+        include Monarchy::ActsAsUser::InstanceMethods
       end
     end
 
     module InstanceMethods
       def role_for(resource)
+<<<<<<< Updated upstream
         ancestors_ids = resource.hierarchy.self_and_ancestors_ids
-        Treelify::Role.joins(:members)
-                      .where("((treelify_roles.inherited = 't' "\
-                       "AND treelify_members.hierarchy_id IN (#{ancestors_ids.join(',')})) "\
-                       "OR (treelify_members.hierarchy_id = #{resource.hierarchy.id})) "\
-                       "AND treelify_members.user_id = #{id}")
+        Monarchy::Role.joins(:members)
+                      .where("((tonarchy_roles.inherited = 't' "\
+                       "AND tonarchy_members.hierarchy_id IN (#{ancestors_ids.join(',')})) "\
+                       "OR (tonarchy_members.hierarchy_id = #{resource.hierarchy.id})) "\
+                       "AND tonarchy_members.user_id = #{id}")
                       .order(level: :desc).first
+=======
+<<<<<<< Updated upstream
+        ansestors_ids = resource.hierarchy.self_and_ancestors_ids
+        Role.joins(:members)
+            .where("((roles.inherited = 't' "\
+                   "AND members.hierarchy_id IN (#{ansestors_ids.join(',')})) "\
+                   "OR (members.hierarchy_id = #{resource.hierarchy.id})) AND members.user_id = #{id}")
+            .order(level: :desc).first
+=======
+        ancestors_ids = resource.hierarchy.self_and_ancestors_ids
+        Monarchy::Role.joins(:members)
+                      .where("((monarchy_roles.inherited = 't' "\
+                       "AND monarchy_members.hierarchy_id IN (#{ancestors_ids.join(',')})) "\
+                       "OR (monarchy_members.hierarchy_id = #{resource.hierarchy.id})) "\
+                       "AND monarchy_members.user_id = #{id}")
+                      .order(level: :desc).first
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
       end
 
       def grant(role_name, resource)
         ActiveRecord::Base.transaction do
-          Treelify::Member.create(build_members(resource.hierarchy.memberless_ancestors_for(self)))
+<<<<<<< Updated upstream
+          Monarchy::Member.create(build_members(resource.hierarchy.memberless_ancestors_for(self)))
+=======
+<<<<<<< Updated upstream
+          Member.create(build_members(resource.hierarchy.memberless_ancestors_for(self)))
+=======
+          Monarchy::Member.create(build_members(resource.hierarchy.memberless_ancestors_for(self)))
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
           grant_or_create_member(role_name, resource)
         end
       end
 
       def member_for(resource)
-        resource.hierarchy.members.where("treelify_members.user_id": id).first
+<<<<<<< Updated upstream
+        resource.hierarchy.members.where("tonarchy_members.user_id": id).first
+=======
+<<<<<<< Updated upstream
+        resource.hierarchy.members.where("members.user_id": id).first
+=======
+        resource.hierarchy.members.where("monarchy_members.user_id": id).first
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
       end
 
       def revoke_access(resource)
@@ -48,20 +91,46 @@ module Treelify
         if only_this_role(members_roles, role_name)
           revoke_access(resource)
         else
-          members_roles.joins(:role).where("treelify_roles.name": role_name).destroy_all
+<<<<<<< Updated upstream
+          members_roles.joins(:role).where("tonarchy_roles.name": role_name).destroy_all
+=======
+<<<<<<< Updated upstream
+          members_roles.joins(:role).where("roles.name": role_name).destroy_all
+=======
+          members_roles.joins(:role).where("monarchy_roles.name": role_name).destroy_all
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
         end
       end
 
       private
 
       def grant_or_create_member(role_name, resource)
-        role = Treelify::Role.find_by(name: role_name)
+<<<<<<< Updated upstream
+        role = Monarchy::Role.find_by(name: role_name)
+=======
+<<<<<<< Updated upstream
+        role = Role.find_by(name: role_name)
+>>>>>>> Stashed changes
         member = member_for(resource)
 
         if member
-          Treelify::MembersRole.create(member: member, role: role)
+          Monarchy::MembersRole.create(member: member, role: role)
         else
-          member = Treelify::Member.create(build_members(resource.hierarchy, [role])).first
+<<<<<<< Updated upstream
+          member = Monarchy::Member.create(build_members(resource.hierarchy, [role])).first
+=======
+          member = Member.create(build_members(resource.hierarchy, [role])).first
+=======
+        role = Monarchy::Role.find_by(name: role_name)
+        member = member_for(resource)
+
+        if member
+          Monarchy::MembersRole.create(member: member, role: role)
+        else
+          member = Monarchy::Member.create(build_members(resource.hierarchy, [role])).first
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
         end
 
         member
@@ -76,13 +145,22 @@ module Treelify
       end
 
       def only_this_role(members_roles, role_name = nil)
-        role_name ||= Treelify.configuration.default_role.name.to_s
+        role_name ||= Monarchy.configuration.default_role.name.to_s
         members_roles.count == 1 && equal_role_name?(members_roles.first.role, role_name)
       end
 
       def members_roles_for(hierarchy_ids)
-        Treelify::MembersRole.joins(:member)
-                             .where(treelify_members: { hierarchy_id: hierarchy_ids, user_id: id })
+<<<<<<< Updated upstream
+        Monarchy::MembersRole.joins(:member)
+                             .where(tonarchy_members: { hierarchy_id: hierarchy_ids, user_id: id })
+=======
+<<<<<<< Updated upstream
+        MembersRole.joins(:member).where("members.hierarchy_id": hierarchy_ids, "members.user_id": id)
+=======
+        Monarchy::MembersRole.joins(:member)
+                             .where(monarchy_members: { hierarchy_id: hierarchy_ids, user_id: id })
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
       end
 
       def try_revoke_ancestors_for(resource)
@@ -95,4 +173,4 @@ module Treelify
   end
 end
 
-ActiveRecord::Base.send :include, Treelify::ActsAsUser
+ActiveRecord::Base.send :include, Monarchy::ActsAsUser

@@ -1,4 +1,4 @@
 # frozen_string_literal: true
-module Treelify
+module Monarchy
   VERSION = '0.0.2'
 end
