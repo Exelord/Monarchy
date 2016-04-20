@@ -1,5 +1,5 @@
-![Monarchy Logo](monarchy.png?raw=true)
 [![Build Status](https://travis-ci.org/Exelord/Monarchy.svg?branch=master)](https://travis-ci.org/Exelord/Monarchy)
+![Monarchy Logo](monarchy.png?raw=true)
 
 ## Documentation
 There is existing fully documentation for that project in our Wiki. Take a look at [Monarchy Documentation] (https://github.com/Exelord/Monarchy/wiki)
