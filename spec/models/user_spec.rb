@@ -64,6 +64,58 @@ describe User, type: :model do
     end
   end
 
+  describe '#roles_for' do
+    let!(:memo_member) { create(:member, user: user, hierarchy: memo.hierarchy, roles: [member_role]) }
+    let!(:project_member) { create(:member, user: user, hierarchy: project.hierarchy, roles: [manager_role]) }
+    subject { user.roles_for(memo) }
+
+    context 'user has no direct access to memo' do
+      let!(:memo_member) {}
+
+      it { is_expected.to match_array([manager_role]) }
+    end
+
+    context 'user has no direct access to project' do
+      let!(:project_member) {}
+
+      it { is_expected.to match_array([member_role, guest_role]) }
+    end
+
+    context 'parent role is inherited' do
+      it { is_expected.to match_array([manager_role, member_role, guest_role]) }
+
+      context 'model role is inherited' do
+        let(:member_role) { create(:role, name: :member, level: 1) }
+
+        it { is_expected.to match_array([manager_role, member_role, guest_role]) }
+      end
+
+      context 'model role is not inherited' do
+        let(:member_role) { create(:role, name: :member, level: 1, inherited: false) }
+
+        it { is_expected.to match_array([manager_role, member_role, guest_role]) }
+      end
+    end
+
+    context 'parent role in not inherited' do
+      let(:manager_role) { create(:role, name: :manager, level: 2, inherited: false) }
+
+      it { is_expected.to match_array([member_role, guest_role]) }
+
+      context 'model role is not inherited' do
+        let(:member_role) { create(:role, name: :member, level: 1, inherited: false) }
+
+        it { is_expected.to match_array([member_role, guest_role]) }
+      end
+
+      context 'model role is inherited' do
+        let(:member_role) { create(:role, name: :member, level: 1) }
+
+        it { is_expected.to match_array([member_role, guest_role]) }
+      end
+    end
+  end
+
   describe '#grant' do
     let(:default_role) { Monarchy::Role.find_by_name(Monarchy.configuration.default_role.name) }
 
@@ -181,11 +233,47 @@ describe User, type: :model do
       it { expect { subject }.to change { Monarchy::MembersRole.count }.by(-1) }
     end
 
+    context 'sholud grant default role if no role exist' do
+      before do
+        user.grant(:manager, memo3)
+        user.revoke_role(:manager, memo3)
+        user.revoke_role(:guest, memo3)
+      end
+
+      it { expect(user.role_for(project)).to eq(guest_role) }
+      it { expect(user.role_for(memo)).to eq(guest_role) }
+      it { expect(user.role_for(memo2)).to eq(guest_role) }
+      it { expect(user.role_for(memo3)).to eq(guest_role) }
+      it { expect(user.role_for(memo4)).to be_nil }
+    end
+  end
+
+  describe '#revoke role!' do
+    let!(:memo2) { create :memo, parent: memo }
+    let!(:memo3) { create :memo, parent: memo2 }
+    let!(:memo4) { create :memo, parent: memo }
+
+    context 'sholud revoke only one role' do
+      before do
+        user.grant(:manager, memo4)
+        user.grant(:member, memo4)
+      end
+
+      subject { user.revoke_role!(:manager, memo4) }
+
+      it do
+        subject
+        expect(user.role_for(memo4)).to eq(member_role)
+      end
+
+      it { expect { subject }.to change { Monarchy::MembersRole.count }.by(-1) }
+    end
+
     context 'sholud revoke access recursively' do
       before do
         user.grant(:manager, memo3)
-        user.revoke_role(:guest, memo3)
-        user.revoke_role(:manager, memo3)
+        user.revoke_role!(:guest, memo3)
+        user.revoke_role!(:manager, memo3)
       end
 
       it { expect(user.role_for(project)).to be_nil }
