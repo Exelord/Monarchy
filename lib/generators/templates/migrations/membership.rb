@@ -9,7 +9,7 @@ class MonarchyCreateMemberships < ActiveRecord::Migration
     create_table :monarchy_roles do |t|
       t.string :name, null: false
       t.integer :level, default: 0, null: false
-      t.boolean :inherited, default: true, null: false
+      t.boolean :inherited, default: false, null: false
       t.timestamps null: false
     end
 
