@@ -126,10 +126,10 @@ describe User, type: :model do
         grant_user
       end
 
-      it { expect(Monarchy::Member.count).to be(2) }
+      it { expect(Monarchy::Member.count).to be(1) }
 
       it 'project with default role' do
-        expect(project.members.first.roles).to match_array([default_role])
+        expect(project.members).to be_empty
       end
 
       it 'memo with selected role' do
@@ -139,7 +139,7 @@ describe User, type: :model do
       it 'with doubled grant' do
         2.times do
           grant_user
-          expect(project.members.first.roles).to match_array([default_role])
+          expect(project.members).to be_empty
           expect(memo.members.first.roles).to match_array([Monarchy::Role.find_by_name(:manager), default_role])
         end
       end
