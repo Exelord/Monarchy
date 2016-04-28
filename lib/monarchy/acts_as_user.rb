@@ -17,7 +17,10 @@ module Monarchy
       end
 
       def roles_for(resource)
-        accessible_roles_in(resource)
+        roles = accessible_roles_in(resource)
+        grouped_roles = roles.group_by(&:level)
+        key = grouped_roles.keys.first
+        grouped_roles[key]
       end
 
       def grant(role_name, resource)

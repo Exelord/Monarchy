@@ -78,40 +78,40 @@ describe User, type: :model do
     context 'user has no direct access to project' do
       let!(:project_member) {}
 
-      it { is_expected.to match_array([member_role, guest_role]) }
+      it { is_expected.to match_array([member_role]) }
     end
 
     context 'parent role is inherited' do
-      it { is_expected.to match_array([manager_role, member_role, guest_role]) }
+      it { is_expected.to match_array([manager_role]) }
 
       context 'model role is inherited' do
-        let(:member_role) { create(:role, name: :member, level: 1) }
+        let(:member_role) { create(:role, name: :member, level: 2) }
 
-        it { is_expected.to match_array([manager_role, member_role, guest_role]) }
+        it { is_expected.to match_array([manager_role, member_role]) }
       end
 
       context 'model role is not inherited' do
         let(:member_role) { create(:role, name: :member, level: 1, inherited: false) }
 
-        it { is_expected.to match_array([manager_role, member_role, guest_role]) }
+        it { is_expected.to match_array([manager_role]) }
       end
     end
 
     context 'parent role in not inherited' do
       let(:manager_role) { create(:role, name: :manager, level: 2, inherited: false) }
 
-      it { is_expected.to match_array([member_role, guest_role]) }
+      it { is_expected.to match_array([member_role]) }
 
       context 'model role is not inherited' do
         let(:member_role) { create(:role, name: :member, level: 1, inherited: false) }
 
-        it { is_expected.to match_array([member_role, guest_role]) }
+        it { is_expected.to match_array([member_role]) }
       end
 
       context 'model role is inherited' do
         let(:member_role) { create(:role, name: :member, level: 1) }
 
-        it { is_expected.to match_array([member_role, guest_role]) }
+        it { is_expected.to match_array([member_role]) }
       end
     end
   end
