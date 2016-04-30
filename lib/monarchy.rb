@@ -6,7 +6,7 @@ require 'monarchy/acts_as_hierarchy'
 require 'monarchy/acts_as_resource'
 require 'monarchy/acts_as_user'
 require 'monarchy/membership'
-require 'monarchy/hierarchy'
+require 'app/models/hierarchy'
 
 module Monarchy
   include Configurations

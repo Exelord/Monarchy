@@ -6,13 +6,13 @@ require 'monarchy/version'
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
-  s.name        = 'monarchy'
+  s.name        = 'Monarchy'
   s.version     = Monarchy::VERSION
   s.authors     = ['Exelord']
   s.email       = ['']
   s.homepage    = 'https://github.com/Exelord/Monarchy'
   s.summary     = 'Hierarchical access management system with roles inheritance.'
-  s.description = 'Hierarchical access management system with roles inheritance.'
+  s.description = s.summary
   s.license     = 'MIT'
 
   s.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
@@ -25,7 +25,8 @@ Gem::Specification.new do |s|
   s.executables   = s.files.grep(%r{^exe/}) { |f| File.basename(f) }
   s.require_paths = ['lib']
 
-  s.add_runtime_dependency 'rails', '~> 4.2', '>= 4.2.4'
+  # s.add_runtime_dependency 'rails', '~> 4.2', '>= 4.2.4'
+  s.add_runtime_dependency 'activerecord', '~> 4.1', '>= 4.1.0'
   s.add_dependency 'closure_tree', '6.0.0'
   s.add_dependency 'configurations', '2.2.0'
 
