@@ -6,7 +6,7 @@ require 'monarchy/version'
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
-  s.name        = 'Monarchy'
+  s.name        = 'monarchy'
   s.version     = Monarchy::VERSION
   s.authors     = ['Exelord']
   s.email       = ['']
