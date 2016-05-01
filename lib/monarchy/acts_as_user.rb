@@ -13,14 +13,11 @@ module Monarchy
 
     module InstanceMethods
       def role_for(resource)
-        accessible_roles_in(resource).first
+        accessible_roles_for(resource).first
       end
 
       def roles_for(resource)
-        roles = accessible_roles_in(resource)
-        grouped_roles = roles.group_by(&:level)
-        key = grouped_roles.keys.first
-        grouped_roles[key]
+        accessible_roles_for(resource).group_by(&:level).values.first
       end
 
       def grant(role_name, resource)
@@ -48,7 +45,7 @@ module Monarchy
 
       private
 
-      def accessible_roles_in(resource)
+      def accessible_roles_for(resource)
         ancestors_ids = resource.hierarchy.self_and_ancestors_ids
         self_or_inherited_roles = Monarchy::Role.joins(:members)
                                                 .where("((monarchy_roles.inherited = 't' "\
