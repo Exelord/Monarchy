@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    Monarchy (0.4.0)
+    Monarchy (0.2.1)
       closure_tree (= 6.0.0)
       configurations (= 2.2.0)
       rails (~> 4.2, >= 4.2.4)
@@ -185,9 +185,6 @@ DEPENDENCIES
   shoulda-matchers
   simplecov
   sqlite3
-
-RUBY VERSION
-   ruby 2.3.0p0
 
 BUNDLED WITH
    1.12.0
