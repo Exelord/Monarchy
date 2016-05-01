@@ -233,18 +233,63 @@ describe User, type: :model do
       it { expect { subject }.to change { Monarchy::MembersRole.count }.by(-1) }
     end
 
-    context 'sholud grant default role if no role exist' do
+    context 'when revoke last role' do
       before do
         user.grant(:manager, memo3)
-        user.revoke_role(:manager, memo3)
-        user.revoke_role(:guest, memo3)
       end
 
-      it { expect(user.role_for(project)).to eq(guest_role) }
-      it { expect(user.role_for(memo)).to eq(guest_role) }
-      it { expect(user.role_for(memo2)).to eq(guest_role) }
-      it { expect(user.role_for(memo3)).to eq(guest_role) }
-      it { expect(user.role_for(memo4)).to be_nil }
+      context 'which is default role' do
+        before do
+          user.revoke_role(:guest, memo3)
+        end
+
+        it { expect(user.role_for(project)).to eq(guest_role) }
+        it { expect(user.role_for(memo)).to eq(guest_role) }
+        it { expect(user.role_for(memo2)).to eq(guest_role) }
+        it { expect(user.role_for(memo4)).to be_nil }
+
+        it { expect(user.role_for(memo3)).to eq(manager_role) }
+
+        context 'and then revoke the manager one' do
+          before do
+            user.revoke_role(:manager, memo3)
+          end
+
+          it { expect(user.role_for(project)).to eq(guest_role) }
+          it { expect(user.role_for(memo)).to eq(guest_role) }
+          it { expect(user.role_for(memo2)).to eq(guest_role) }
+          it { expect(user.role_for(memo4)).to be_nil }
+
+          it { expect(user.role_for(memo3)).to be_nil }
+          it { expect(user.member_for(memo3)).to be_present }
+        end
+      end
+
+      context 'which is not default role' do
+        before do
+          user.revoke_role(:manager, memo3)
+        end
+
+        it { expect(user.role_for(project)).to eq(guest_role) }
+        it { expect(user.role_for(memo)).to eq(guest_role) }
+        it { expect(user.role_for(memo2)).to eq(guest_role) }
+        it { expect(user.role_for(memo4)).to be_nil }
+
+        it { expect(user.role_for(memo3)).to eq(guest_role) }
+
+        context 'and then revoke the default one' do
+          before do
+            user.revoke_role(:guest, memo3)
+          end
+
+          it { expect(user.role_for(project)).to eq(guest_role) }
+          it { expect(user.role_for(memo)).to eq(guest_role) }
+          it { expect(user.role_for(memo2)).to eq(guest_role) }
+          it { expect(user.role_for(memo4)).to be_nil }
+
+          it { expect(user.role_for(memo3)).to be_nil }
+        end
+      end
     end
   end
 

@@ -20,14 +20,14 @@ module Monarchy
         accessible_roles_for(resource).group_by(&:level).values.first
       end
 
+      def member_for(resource)
+        resource.hierarchy.members.where(monarchy_members: { user_id: id }).first
+      end
+
       def grant(role_name, resource)
         ActiveRecord::Base.transaction do
           grant_or_create_member(role_name, resource)
         end
-      end
-
-      def member_for(resource)
-        resource.hierarchy.members.where(monarchy_members: { user_id: id }).first
       end
 
       def revoke_access(resource)
@@ -65,15 +65,10 @@ module Monarchy
 
       def revoking_role(role_name, resource, force = false)
         member = member_for(resource)
-        members_roles = member.members_roles
+        member_roles = member.members_roles
 
-        if only_this_role(members_roles, role_name)
-          return revoke_access(resource) if force
-          grant_default_role unless default_role?(role_name)
-          # TODO: where is here revoking?
-        else
-          members_roles.joins(:role).where(monarchy_roles: { name: role_name }).destroy_all
-        end
+        return revoke_access(resource) if only_this_role(member_roles, role_name) && force
+        member_roles.joins(:role).where(monarchy_roles: { name: role_name }).destroy_all
       end
 
       def grant_or_create_member(role_name, resource)
@@ -89,12 +84,6 @@ module Monarchy
         member
       end
 
-      # functions
-
-      def grant_default_role(member)
-        Monarchy::MembersRole.create(member: member, role: default_role)
-      end
-
       def members_for(hierarchy_ids)
         Monarchy::Member.where(hierarchy_id: hierarchy_ids, user_id: id)
       end
@@ -102,8 +91,6 @@ module Monarchy
       def default_role
         @default_role ||= Monarchy::Role.find_by(name: Monarchy.configuration.default_role.name)
       end
-
-      # helpers
 
       def only_this_role(members_roles, role_name = nil)
         role_name ||= default_role.name
