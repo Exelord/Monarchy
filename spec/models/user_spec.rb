@@ -12,58 +12,6 @@ describe User, type: :model do
   let!(:project) { create :project }
   let!(:memo) { create :memo, parent: project }
 
-  describe '#role_for' do
-    let!(:memo_member) { create(:member, user: user, hierarchy: memo.hierarchy, roles: [member_role]) }
-    let!(:project_member) { create(:member, user: user, hierarchy: project.hierarchy, roles: [manager_role]) }
-    subject { user.role_for(memo) }
-
-    context 'user has no direct access to memo' do
-      let!(:memo_member) {}
-
-      it { is_expected.to eq(manager_role) }
-    end
-
-    context 'user has no direct access to project' do
-      let!(:project_member) {}
-
-      it { is_expected.to eq(member_role) }
-    end
-
-    context 'parent role is inherited' do
-      it { is_expected.to eq(manager_role) }
-
-      context 'model role is inherited' do
-        let(:member_role) { create(:role, name: :member, level: 1) }
-
-        it { is_expected.to eq(manager_role) }
-      end
-
-      context 'model role is not inherited' do
-        let(:member_role) { create(:role, name: :member, level: 1, inherited: false) }
-
-        it { is_expected.to eq(manager_role) }
-      end
-    end
-
-    context 'parent role in not inherited' do
-      let(:manager_role) { create(:role, name: :manager, level: 2, inherited: false) }
-
-      it { is_expected.to eq(member_role) }
-
-      context 'model role is not inherited' do
-        let(:member_role) { create(:role, name: :member, level: 1, inherited: false) }
-
-        it { is_expected.to eq(member_role) }
-      end
-
-      context 'model role is inherited' do
-        let(:member_role) { create(:role, name: :member, level: 1) }
-
-        it { is_expected.to eq(member_role) }
-      end
-    end
-  end
-
   describe '#roles_for' do
     let!(:memo_member) { create(:member, user: user, hierarchy: memo.hierarchy, roles: [member_role]) }
     let!(:project_member) { create(:member, user: user, hierarchy: project.hierarchy, roles: [manager_role]) }
@@ -175,11 +123,11 @@ describe User, type: :model do
         user.revoke_access(memo2)
       end
 
-      it { expect(user.role_for(memo2)).to be_nil }
-      it { expect(user.role_for(memo3)).to be_nil }
-      it { expect(user.role_for(memo4)).to eq(member_role) }
-      it { expect(user.role_for(memo)).to eq(guest_role) }
-      it { expect(user.role_for(project)).to eq(guest_role) }
+      it { expect(user.roles_for(memo2)).to be_nil }
+      it { expect(user.roles_for(memo3)).to be_nil }
+      it { expect(user.roles_for(memo4)).to match_array([member_role]) }
+      it { expect(user.roles_for(memo)).to match_array([guest_role]) }
+      it { expect(user.roles_for(project)).to match_array([guest_role]) }
     end
 
     context 'sholud revoke bellow self and parents' do
@@ -188,11 +136,11 @@ describe User, type: :model do
         user.revoke_access(memo2)
       end
 
-      it { expect(user.role_for(project)).to be_nil }
-      it { expect(user.role_for(memo)).to be_nil }
-      it { expect(user.role_for(memo2)).to be_nil }
-      it { expect(user.role_for(memo3)).to be_nil }
-      it { expect(user.role_for(memo4)).to be_nil }
+      it { expect(user.roles_for(project)).to be_nil }
+      it { expect(user.roles_for(memo)).to be_nil }
+      it { expect(user.roles_for(memo2)).to be_nil }
+      it { expect(user.roles_for(memo3)).to be_nil }
+      it { expect(user.roles_for(memo4)).to be_nil }
     end
 
     context 'sholud revoke bellow self and parent' do
@@ -204,11 +152,11 @@ describe User, type: :model do
         user.revoke_access(memo2)
       end
 
-      it { expect(user.role_for(project)).to eq(guest_role) }
-      it { expect(user.role_for(memo)).to be_nil }
-      it { expect(user.role_for(memo2)).to be_nil }
-      it { expect(user.role_for(memo3)).to be_nil }
-      it { expect(user.role_for(memo4)).to eq(manager_role) }
+      it { expect(user.roles_for(project)).to match_array([guest_role]) }
+      it { expect(user.roles_for(memo)).to be_nil }
+      it { expect(user.roles_for(memo2)).to be_nil }
+      it { expect(user.roles_for(memo3)).to be_nil }
+      it { expect(user.roles_for(memo4)).to match_array([manager_role]) }
     end
   end
 
@@ -227,7 +175,7 @@ describe User, type: :model do
 
       it do
         subject
-        expect(user.role_for(memo4)).to eq(member_role)
+        expect(user.roles_for(memo4)).to match_array([member_role])
       end
 
       it { expect { subject }.to change { Monarchy::MembersRole.count }.by(-1) }
@@ -243,24 +191,24 @@ describe User, type: :model do
           user.revoke_role(:guest, memo3)
         end
 
-        it { expect(user.role_for(project)).to eq(guest_role) }
-        it { expect(user.role_for(memo)).to eq(guest_role) }
-        it { expect(user.role_for(memo2)).to eq(guest_role) }
-        it { expect(user.role_for(memo4)).to be_nil }
+        it { expect(user.roles_for(project)).to match_array([guest_role]) }
+        it { expect(user.roles_for(memo)).to match_array([guest_role]) }
+        it { expect(user.roles_for(memo2)).to match_array([guest_role]) }
+        it { expect(user.roles_for(memo4)).to be_nil }
 
-        it { expect(user.role_for(memo3)).to eq(manager_role) }
+        it { expect(user.roles_for(memo3)).to match_array([manager_role]) }
 
         context 'and then revoke the manager one' do
           before do
             user.revoke_role(:manager, memo3)
           end
 
-          it { expect(user.role_for(project)).to eq(guest_role) }
-          it { expect(user.role_for(memo)).to eq(guest_role) }
-          it { expect(user.role_for(memo2)).to eq(guest_role) }
-          it { expect(user.role_for(memo4)).to be_nil }
+          it { expect(user.roles_for(project)).to match_array([guest_role]) }
+          it { expect(user.roles_for(memo)).to match_array([guest_role]) }
+          it { expect(user.roles_for(memo2)).to match_array([guest_role]) }
+          it { expect(user.roles_for(memo4)).to be_nil }
 
-          it { expect(user.role_for(memo3)).to be_nil }
+          it { expect(user.roles_for(memo3)).to be_nil }
           it { expect(user.member_for(memo3)).to be_present }
         end
       end
@@ -270,24 +218,24 @@ describe User, type: :model do
           user.revoke_role(:manager, memo3)
         end
 
-        it { expect(user.role_for(project)).to eq(guest_role) }
-        it { expect(user.role_for(memo)).to eq(guest_role) }
-        it { expect(user.role_for(memo2)).to eq(guest_role) }
-        it { expect(user.role_for(memo4)).to be_nil }
+        it { expect(user.roles_for(project)).to match_array([guest_role]) }
+        it { expect(user.roles_for(memo)).to match_array([guest_role]) }
+        it { expect(user.roles_for(memo2)).to match_array([guest_role]) }
+        it { expect(user.roles_for(memo4)).to be_nil }
 
-        it { expect(user.role_for(memo3)).to eq(guest_role) }
+        it { expect(user.roles_for(memo3)).to match_array([guest_role]) }
 
         context 'and then revoke the default one' do
           before do
             user.revoke_role(:guest, memo3)
           end
 
-          it { expect(user.role_for(project)).to eq(guest_role) }
-          it { expect(user.role_for(memo)).to eq(guest_role) }
-          it { expect(user.role_for(memo2)).to eq(guest_role) }
-          it { expect(user.role_for(memo4)).to be_nil }
+          it { expect(user.roles_for(project)).to match_array([guest_role]) }
+          it { expect(user.roles_for(memo)).to match_array([guest_role]) }
+          it { expect(user.roles_for(memo2)).to match_array([guest_role]) }
+          it { expect(user.roles_for(memo4)).to be_nil }
 
-          it { expect(user.role_for(memo3)).to be_nil }
+          it { expect(user.roles_for(memo3)).to be_nil }
         end
       end
     end
@@ -308,7 +256,7 @@ describe User, type: :model do
 
       it do
         subject
-        expect(user.role_for(memo4)).to eq(member_role)
+        expect(user.roles_for(memo4)).to match_array([member_role])
       end
 
       it { expect { subject }.to change { Monarchy::MembersRole.count }.by(-1) }
@@ -321,11 +269,11 @@ describe User, type: :model do
         user.revoke_role!(:manager, memo3)
       end
 
-      it { expect(user.role_for(project)).to be_nil }
-      it { expect(user.role_for(memo)).to be_nil }
-      it { expect(user.role_for(memo2)).to be_nil }
-      it { expect(user.role_for(memo3)).to be_nil }
-      it { expect(user.role_for(memo4)).to be_nil }
+      it { expect(user.roles_for(project)).to be_nil }
+      it { expect(user.roles_for(memo)).to be_nil }
+      it { expect(user.roles_for(memo2)).to be_nil }
+      it { expect(user.roles_for(memo3)).to be_nil }
+      it { expect(user.roles_for(memo4)).to be_nil }
     end
   end
 end

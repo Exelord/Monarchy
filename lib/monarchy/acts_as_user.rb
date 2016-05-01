@@ -12,10 +12,6 @@ module Monarchy
     end
 
     module InstanceMethods
-      def role_for(resource)
-        accessible_roles_for(resource).first
-      end
-
       def roles_for(resource)
         accessible_roles_for(resource).group_by(&:level).values.first
       end
