@@ -4,7 +4,7 @@ module Monarchy
     self.table_name = 'monarchy_members'
 
     has_many :members_roles, dependent: :destroy, class_name: 'Monarchy::MembersRole'
-    has_many :roles, through: :members_roles, class_name: 'Monarchy::Roles'
+    has_many :roles, through: :members_roles, class_name: 'Monarchy::Role'
 
     belongs_to :user
     belongs_to :hierarchy, class_name: 'Monarchy::Hierarchy'
