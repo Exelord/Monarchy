@@ -63,7 +63,7 @@ module Monarchy
         member = member_for(resource)
         member_roles = member.members_roles
 
-        return revoke_access(resource) if only_this_role(member_roles, role_name) && force
+        return revoke_access(resource) if last_role?(member_roles, role_name) && force
         member_roles.joins(:role).where(monarchy_roles: { name: role_name }).destroy_all
       end
 
@@ -88,9 +88,9 @@ module Monarchy
         @default_role ||= Monarchy::Role.find_by(name: Monarchy.configuration.default_role.name)
       end
 
-      def only_this_role(members_roles, role_name = nil)
+      def last_role?(member_roles, role_name = nil)
         role_name ||= default_role.name
-        members_roles.count == 1 && members_roles.first.role.name == role_name.to_s
+        member_roles.count == 1 && member_roles.first.role.name == role_name.to_s
       end
 
       def default_role?(role_name)
