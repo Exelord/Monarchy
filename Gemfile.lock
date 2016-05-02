@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    monarchy (0.2.1)
+    monarchy (0.3.0)
       active_record_union (= 1.1.1)
       closure_tree (= 6.0.0)
       configurations (= 2.2.0)
@@ -188,5 +188,8 @@ DEPENDENCIES
   simplecov
   sqlite3
 
+RUBY VERSION
+   ruby 2.3.0p0
+
 BUNDLED WITH
-   1.12.0
+   1.12.1
