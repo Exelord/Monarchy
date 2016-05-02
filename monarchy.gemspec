@@ -6,13 +6,13 @@ require 'monarchy/version'
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
-  s.name        = 'Monarchy'
+  s.name        = 'monarchy'
   s.version     = Monarchy::VERSION
   s.authors     = ['Exelord']
   s.email       = ['']
   s.homepage    = 'https://github.com/Exelord/Monarchy'
   s.summary     = 'Hierarchical access management system with roles inheritance.'
-  s.description = 'Hierarchical access management system with roles inheritance.'
+  s.description = s.summary
   s.license     = 'MIT'
 
   s.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }

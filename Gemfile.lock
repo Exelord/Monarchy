@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    Monarchy (0.2.0)
+    monarchy (0.2.1)
       closure_tree (= 6.0.0)
       configurations (= 2.2.0)
       rails (~> 4.2, >= 4.2.4)
@@ -171,12 +171,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  Monarchy!
   bundler (~> 1.10)
   configurations (~> 2.2.0)
   database_cleaner (= 1.4.1)
   factory_girl_rails (= 4.5.0)
   ffaker (= 2.1.0)
+  monarchy!
   pry-rails (= 0.3.4)
   rake (~> 10.0)
   rspec (~> 0)
@@ -187,4 +187,4 @@ DEPENDENCIES
   sqlite3
 
 BUNDLED WITH
-   1.11.2
+   1.12.0
