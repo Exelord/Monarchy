@@ -2,7 +2,8 @@
 require 'rails_helper'
 
 describe User, type: :model do
-  it { is_expected.to have_many(:members) }
+  it { is_expected.to have_many(:members).dependent(:destroy) }
+  it { is_expected.to have_many(:hierarchies).through(:members) }
 
   let!(:guest_role) { create(:role, name: :guest, level: 0, inherited: false) }
   let!(:member_role) { create(:role, name: :member, level: 1) }
@@ -40,7 +41,11 @@ describe User, type: :model do
       it { is_expected.to match_array([manager_role, member_role]) }
 
       context 'returns non duplicated roles' do
-        let!(:project_member) { create(:member, user: user, hierarchy: project.hierarchy, roles: [manager_role, member_role]) }
+        let!(:project_member) do
+          create(:member, user: user,
+                          hierarchy: project.hierarchy,
+                          roles: [manager_role, member_role])
+        end
 
         it { expect(project_roles).to match_array([manager_role, member_role]) }
         it { is_expected.to match_array([manager_role, member_role]) }
@@ -56,7 +61,7 @@ describe User, type: :model do
   end
 
   describe '#grant' do
-    shared_examples "granted with correct members" do
+    shared_examples 'granted with correct members' do
       it { expect(Monarchy::Member.count).to be(1) }
       it { expect(parent.members).to be_empty }
       it { expect(resource.members.count).to be(1) }
@@ -66,7 +71,7 @@ describe User, type: :model do
     context 'memo resource with project as parent' do
       let!(:grant_user) { user.grant(:manager, memo) }
 
-      it_behaves_like "granted with correct members" do
+      it_behaves_like 'granted with correct members' do
         let(:resource) { memo }
         let(:parent) { project }
       end
@@ -83,7 +88,7 @@ describe User, type: :model do
     context 'parent resource' do
       let!(:grant_user) { user.grant(:manager, project) }
 
-      it_behaves_like "granted with correct members" do
+      it_behaves_like 'granted with correct members' do
         let(:resource) { project }
         let(:parent) { memo }
       end

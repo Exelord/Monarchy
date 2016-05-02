@@ -15,8 +15,6 @@ gemspec
 # To use a debugger
 # gem 'byebug', group: [:development, :test]
 
-gem 'configurations', '~> 2.2.0'
-
 group :development, :test do
   gem 'sqlite3'
   gem 'rubocop'

@@ -147,11 +147,10 @@ describe Resource, type: :model do
       end
     end
 
-
     context 'accessible_for in' do
       let!(:memo_member) { create(:member, user: user, hierarchy: memo4.hierarchy) }
 
-      it { expect(Memo.accessible_for(user).in(project)).to match_array([memo2]) }
+      it { expect(Memo.accessible_for(user).in(memo2)).to match_array([memo3, memo4]) }
     end
   end
 end

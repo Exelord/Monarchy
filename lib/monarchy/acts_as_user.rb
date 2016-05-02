@@ -5,7 +5,8 @@ module Monarchy
 
     module ClassMethods
       def acts_as_user
-        has_many :members, class_name: 'Monarchy::Member'
+        has_many :members, class_name: 'Monarchy::Member', dependent: :destroy
+        has_many :hierarchies, through: :members, class_name: 'Monarchy::Hierarchy'
 
         include Monarchy::ActsAsUser::InstanceMethods
       end

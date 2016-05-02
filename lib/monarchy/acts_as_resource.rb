@@ -10,6 +10,7 @@ module Monarchy
         after_create :ensure_hierarchy
 
         has_many :members, through: :hierarchy, dependent: :destroy, class_name: 'Monarchy::Member'
+        has_many :users, through: :members, class_name: 'User'
         has_one :hierarchy, as: :resource, dependent: :destroy, class_name: 'Monarchy::Hierarchy'
 
         include_scopes
@@ -26,23 +27,34 @@ module Monarchy
         end
       end
 
-      # rubocop:disable MethodLength
       def include_scopes
         scope :in, (lambda do |resource|
-          joins(:hierarchy).where(monarchy_hierarchies: { parent_id: resource.hierarchy.id })
+          joins(:hierarchy).where(monarchy_hierarchies: { parent_id: resource.hierarchy.self_and_descendant_ids })
         end)
 
         scope :accessible_for, (lambda do |user|
-          joins(:hierarchy)
-            .joins('INNER JOIN "monarchy_hierarchy_hierarchies" ON '\
-              '"monarchy_hierarchies"."id" = "monarchy_hierarchy_hierarchies"."ancestor_id"')
-            .joins('INNER JOIN "monarchy_members" ON '\
-              '"monarchy_members"."hierarchy_id" = "monarchy_hierarchy_hierarchies"."descendant_id"')
-            .where(monarchy_members: { user_id: user.id }).distinct
+          where(id: accessible_roots(user).select(:id)).union(where(id: accessible_leaves(user).select(:id)))
         end)
       end
+
+      def accessible_roots(user)
+        joins(:hierarchy)
+          .joins('INNER JOIN "monarchy_hierarchy_hierarchies" ON '\
+            '"monarchy_hierarchies"."id" = "monarchy_hierarchy_hierarchies"."ancestor_id"')
+          .joins('INNER JOIN "monarchy_members" ON '\
+            '"monarchy_members"."hierarchy_id" = "monarchy_hierarchy_hierarchies"."descendant_id"')
+          .where(monarchy_members: { user_id: user.id }).distinct
+      end
+
+      def accessible_leaves(user)
+        joins(:hierarchy)
+          .joins('INNER JOIN "monarchy_hierarchy_hierarchies" ON '\
+            '"monarchy_hierarchies"."id" = "monarchy_hierarchy_hierarchies"."descendant_id"')
+          .joins('INNER JOIN "monarchy_members" ON '\
+            '"monarchy_members"."hierarchy_id" = "monarchy_hierarchy_hierarchies"."ancestor_id"')
+          .where(monarchy_members: { user_id: user.id }).distinct
+      end
     end
-    # rubocop:enable MethodLength
 
     module InstanceMethods
       def parent
