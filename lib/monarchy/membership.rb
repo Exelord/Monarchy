@@ -3,11 +3,11 @@ module Monarchy
   class Member < ActiveRecord::Base
     self.table_name = 'monarchy_members'
 
-    has_many :members_roles, dependent: :destroy
-    has_many :roles, through: :members_roles
+    has_many :members_roles, dependent: :destroy, class_name: 'Monarchy::MembersRole'
+    has_many :roles, through: :members_roles, class_name: 'Monarchy::Roles'
 
     belongs_to :user
-    belongs_to :hierarchy
+    belongs_to :hierarchy, class_name: 'Monarchy::Hierarchy'
 
     delegate :resource, to: :hierarchy
     delegate :resource=, to: :hierarchy
@@ -33,15 +33,15 @@ module Monarchy
   class Role < ActiveRecord::Base
     self.table_name = 'monarchy_roles'
 
-    has_many :members_roles, dependent: :destroy
-    has_many :members, through: :members_roles
+    has_many :members_roles, dependent: :destroy, class_name: 'Monarchy::MembersRole'
+    has_many :members, through: :members_roles, class_name: 'Monarchy::Member'
   end
 
   class MembersRole < ActiveRecord::Base
     self.table_name = 'monarchy_members_roles'
 
-    belongs_to :member
-    belongs_to :role
+    belongs_to :member, class_name: 'Monarchy::Member'
+    belongs_to :role, class_name: 'Monarchy::Role'
 
     validates :role_id, uniqueness: { scope: :member_id }
   end
