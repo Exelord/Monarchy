@@ -48,7 +48,7 @@ module Monarchy
                        "AND monarchy_members.hierarchy_id IN (#{ancestors_ids.join(',')})) "\
                        "OR (monarchy_members.hierarchy_id = #{resource.hierarchy.id})) "\
                        "AND monarchy_members.user_id = #{id}")
-                                                .order(level: :desc)
+                                                .distinct.order(level: :desc)
 
         self_or_inherited_roles.present? ? self_or_inherited_roles : descendant_role(resource)
       end
