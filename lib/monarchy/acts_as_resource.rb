@@ -9,7 +9,7 @@ module Monarchy
 
         after_create :ensure_hierarchy
 
-        has_many :members, through: :hierarchy
+        has_many :members, through: :hierarchy, dependent: :destroy, class_name: 'Monarchy::Member'
         has_one :hierarchy, as: :resource, dependent: :destroy, class_name: 'Monarchy::Hierarchy'
 
         include_scopes
@@ -38,7 +38,7 @@ module Monarchy
               '"monarchy_hierarchies"."id" = "monarchy_hierarchy_hierarchies"."ancestor_id"')
             .joins('INNER JOIN "monarchy_members" ON '\
               '"monarchy_members"."hierarchy_id" = "monarchy_hierarchy_hierarchies"."descendant_id"')
-            .where(monarchy_members: { user_id: user.id }).uniq
+            .where(monarchy_members: { user_id: user.id }).distinct
         end)
       end
     end
@@ -63,7 +63,6 @@ module Monarchy
 
       def children=(array)
         hierarchy.update(children: hierarchies_for(array)) if hierarchy
-
         @children = array
       end
 
