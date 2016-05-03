@@ -9,8 +9,7 @@ module Monarchy
     belongs_to :user
     belongs_to :hierarchy, class_name: 'Monarchy::Hierarchy'
 
-    delegate :resource, to: :hierarchy
-    delegate :resource=, to: :hierarchy
+    delegate :resource, :resource=, :resource_id, :resource_id=, to: :hierarchy
 
     validates :user_id, uniqueness: { scope: :hierarchy_id }
     validates :user, presence: true
