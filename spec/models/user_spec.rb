@@ -20,6 +20,21 @@ describe User, type: :model do
     let(:project_roles) { user.roles_for(project) }
     subject { user.roles_for(memo) }
 
+    context 'roles without inheritece' do
+      let(:project_roles) { user.roles_for(project, false) }
+      subject { user.roles_for(memo, false) }
+
+      it { expect(project_roles).to match_array([manager_role]) }
+      it { is_expected.to match_array([member_role]) }
+
+      context 'where memo has no roles' do
+        let!(:memo_member) {}
+
+        it { expect(project_roles).to match_array([manager_role]) }
+        it { is_expected.to eq([]) }
+      end
+    end
+
     context 'user has no direct access to memo' do
       let!(:memo_member) {}
 

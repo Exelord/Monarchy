@@ -13,8 +13,9 @@ module Monarchy
     end
 
     module InstanceMethods
-      def roles_for(resource)
-        accessible_roles_for(resource).group_by(&:level).values.first
+      def roles_for(resource, inheritence = true)
+        return [] unless resource.hierarchy
+        accessible_roles_for(resource, inheritence).group_by(&:level).values.first || []
       end
 
       def member_for(resource)
@@ -42,16 +43,25 @@ module Monarchy
 
       private
 
-      def accessible_roles_for(resource)
-        ancestors_ids = resource.hierarchy.self_and_ancestors_ids
-        self_or_inherited_roles = Monarchy::Role.joins(:members)
-                                                .where("((monarchy_roles.inherited = 't' "\
-                       "AND monarchy_members.hierarchy_id IN (#{ancestors_ids.join(',')})) "\
-                       "OR (monarchy_members.hierarchy_id = #{resource.hierarchy.id})) "\
-                       "AND monarchy_members.user_id = #{id}")
-                                                .distinct.order(level: :desc)
+      def accessible_roles_for(resource, inheritnce)
+        accessible_roles = inheritnce ? resource_and_inheritence_roles(resource) : resource_roles(resource)
+        accessible_roles.present? ? accessible_roles : descendant_role(resource)
+      end
 
-        self_or_inherited_roles.present? ? self_or_inherited_roles : descendant_role(resource)
+      def resource_and_inheritence_roles(resource)
+        hierarchy_ids = resource.hierarchy.self_and_ancestors_ids
+        Monarchy::Role.joins(:members)
+                      .where("((monarchy_roles.inherited = 't' "\
+                             "AND monarchy_members.hierarchy_id IN (#{hierarchy_ids.join(',')})) "\
+                             "OR (monarchy_members.hierarchy_id = #{resource.hierarchy.id})) "\
+                             "AND monarchy_members.user_id = #{id}")
+                      .distinct.order(level: :desc)
+      end
+
+      def resource_roles(resource)
+        Monarchy::Role.joins(:members)
+                      .where('monarchy_members.hierarchy_id': resource.hierarchy.id, 'monarchy_members.user_id': id)
+                      .distinct.order(level: :desc)
       end
 
       def descendant_role(resource)
