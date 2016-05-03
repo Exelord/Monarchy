@@ -2,6 +2,8 @@
 ![Monarchy Logo](monarchy.png?raw=true)
 
 ## Documentation
+
+[![Join the chat at https://gitter.im/Exelord/Monarchy](https://badges.gitter.im/Exelord/Monarchy.svg)](https://gitter.im/Exelord/Monarchy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 There is existing fully documentation for that project in our Wiki. Take a look at [Monarchy Documentation] (https://github.com/Exelord/Monarchy/wiki)
 
 ## Contributing
