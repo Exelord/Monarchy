@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/Exelord/Monarchy.svg?branch=master)](https://travis-ci.org/Exelord/Monarchy)
+[![Gitter](https://badges.gitter.im/Exelord/Monarchy.svg)](https://gitter.im/Exelord/Monarchy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 ![Monarchy Logo](monarchy.png?raw=true)
 
 ## Documentation
