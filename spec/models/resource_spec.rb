@@ -2,7 +2,7 @@
 require 'rails_helper'
 
 describe Resource, type: :model do
-  it { is_expected.to have_many(:members).through(:hierarchy).dependent(:destroy) }
+  it { is_expected.to have_many(:members).through(:hierarchy) }
   it { is_expected.to have_one(:hierarchy).dependent(:destroy) }
 
   describe 'acts_as_resource' do

@@ -9,7 +9,7 @@ module Monarchy
 
         after_create :ensure_hierarchy
 
-        has_many :members, through: :hierarchy, dependent: :destroy, class_name: 'Monarchy::Member'
+        has_many :members, through: :hierarchy, class_name: 'Monarchy::Member'
         has_many :users, through: :members, class_name: 'User'
         has_one :hierarchy, as: :resource, dependent: :destroy, class_name: 'Monarchy::Hierarchy'
 

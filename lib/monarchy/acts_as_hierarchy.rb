@@ -7,7 +7,7 @@ module Monarchy
       def acts_as_hierarchy
         has_closure_tree dependent: :destroy
 
-        has_many :members, class_name: 'Monarchy::Member'
+        has_many :members, class_name: 'Monarchy::Member', dependent: :destroy
         belongs_to :resource, polymorphic: true, dependent: :destroy
 
         validates :resource, presence: true
