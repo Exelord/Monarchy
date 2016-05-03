@@ -5,6 +5,8 @@ module Monarchy
 
     module ClassMethods
       def acts_as_resource(options = {})
+        extend Monarchy::ActsAsResource::SupportMethods
+
         parent_as(options[:parent_as]) if options[:parent_as]
 
         after_create :ensure_hierarchy
@@ -17,7 +19,9 @@ module Monarchy
 
         include Monarchy::ActsAsResource::InstanceMethods
       end
+    end
 
+    module SupportMethods
       private
 
       def parent_as(name)
@@ -40,18 +44,18 @@ module Monarchy
       def accessible_roots(user)
         joins(:hierarchy)
           .joins('INNER JOIN "monarchy_hierarchy_hierarchies" ON '\
-            '"monarchy_hierarchies"."id" = "monarchy_hierarchy_hierarchies"."ancestor_id"')
+        '"monarchy_hierarchies"."id" = "monarchy_hierarchy_hierarchies"."ancestor_id"')
           .joins('INNER JOIN "monarchy_members" ON '\
-            '"monarchy_members"."hierarchy_id" = "monarchy_hierarchy_hierarchies"."descendant_id"')
+        '"monarchy_members"."hierarchy_id" = "monarchy_hierarchy_hierarchies"."descendant_id"')
           .where(monarchy_members: { user_id: user.id }).distinct
       end
 
       def accessible_leaves(user)
         joins(:hierarchy)
           .joins('INNER JOIN "monarchy_hierarchy_hierarchies" ON '\
-            '"monarchy_hierarchies"."id" = "monarchy_hierarchy_hierarchies"."descendant_id"')
+        '"monarchy_hierarchies"."id" = "monarchy_hierarchy_hierarchies"."descendant_id"')
           .joins('INNER JOIN "monarchy_members" ON '\
-            '"monarchy_members"."hierarchy_id" = "monarchy_hierarchy_hierarchies"."ancestor_id"')
+        '"monarchy_members"."hierarchy_id" = "monarchy_hierarchy_hierarchies"."ancestor_id"')
           .where(monarchy_members: { user_id: user.id }).distinct
       end
     end

@@ -112,12 +112,14 @@ describe Resource, type: :model do
     let!(:memo2) { create :memo, parent: project }
     let!(:memo3) { create :memo, parent: project }
 
-    it { expect(Memo.in(project)).to eq([memo1, memo2, memo3]) }
+    subject { Memo.in(project) }
+
+    it { is_expected.to match_array([memo1, memo2, memo3]) }
 
     context 'nested memo in memo' do
       let!(:memo3) { create :memo, parent: memo2 }
 
-      it { expect(Memo.in(project)).to eq([memo1, memo2, memo3]) }
+      it { is_expected.to match_array([memo1, memo2, memo3]) }
     end
   end
 
