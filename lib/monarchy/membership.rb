@@ -18,7 +18,7 @@ module Monarchy
     before_create :set_default_role
 
     scope :accessible_for, (lambda do |user|
-      where(hierarchy: Monarchy::Hierachy.accessible_for(user))
+      where(hierarchy: Monarchy::Hierarchy.accessible_for(user))
     end)
 
     private
