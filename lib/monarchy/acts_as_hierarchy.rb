@@ -17,10 +17,6 @@ module Monarchy
     end
 
     module InstanceMethods
-      def memberless_ancestors_for(user)
-        ancestors.joins('LEFT JOIN monarchy_members on monarchy_hierarchies.id = monarchy_members.hierarchy_id')
-                 .where("monarchy_members.user_id != #{user.id} OR monarchy_members.id IS NULL")
-      end
     end
   end
 end
