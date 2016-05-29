@@ -53,7 +53,7 @@ module Monarchy
         Monarchy::Role.joins(:members)
                       .where("((monarchy_roles.inherited = 't' "\
                              "AND monarchy_members.hierarchy_id IN (#{hierarchy_ids.join(',')})) "\
-                             "OR (monarchy_members.hierarchy_id = #{resource.hierarchy.id})) "\
+                             "OR (monarchy_members.hierarchy_id = #{resource.hierarchy_id})) "\
                              "AND monarchy_members.user_id = #{id}")
                       .distinct.order(level: :desc)
       end

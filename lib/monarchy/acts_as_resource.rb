@@ -26,8 +26,14 @@ module Monarchy
 
       def parent_as(name)
         define_method "#{name}=" do |value|
-          super(value)
           self.parent = value
+          super(value)
+        end
+
+        define_method "#{name}_id=" do |id|
+          class_name = name.to_s.camelize.safe_constantize
+          self.parent = class_name.find(id)
+          super(id)
         end
       end
 

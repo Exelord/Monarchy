@@ -18,6 +18,11 @@ describe Resource, type: :model do
           project.update(resource: resource)
           is_expected.to eq(resource)
         end
+
+        it 'assign parent if assing resource_id' do
+          project.update(resource_id: resource.id)
+          is_expected.to eq(resource)
+        end
       end
 
       context 'memo parent' do
@@ -28,6 +33,11 @@ describe Resource, type: :model do
 
         it 'assign parent if assing project' do
           memo.update(project: project)
+          is_expected.to eq(project)
+        end
+
+        it 'assign parent if assing project_id' do
+          memo.update(project_id: project.id)
           is_expected.to eq(project)
         end
       end
