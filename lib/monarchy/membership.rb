@@ -9,17 +9,22 @@ module Monarchy
     belongs_to :user
     belongs_to :hierarchy, class_name: 'Monarchy::Hierarchy'
 
-    delegate :resource, :resource=, :resource_id, :resource_id=, to: :hierarchy
+    delegate :resource, :resource=, :resource_id, :resource_type, to: :hierarchy
 
     validates :user_id, uniqueness: { scope: :hierarchy_id }
     validates :user, presence: true
-    validates :hierarchy, presence: true
+
+    validate :hierarchy_or_resource
 
     before_create :set_default_role
 
     scope :accessible_for, (lambda do |user|
       where(hierarchy: Monarchy::Hierarchy.accessible_for(user))
     end)
+
+    def resource=(resource)
+      self.hierarchy = resource.hierarchy unless self.hierarchy
+    end
 
     private
 
@@ -30,6 +35,12 @@ module Monarchy
         inherited: Monarchy.configuration.default_role.inherited,
         level: Monarchy.configuration.default_role.level)
       self.roles = roles.uniq
+    end
+
+    def hierarchy_or_resource
+      unless hierarchy
+        errors.add(:base, "Specify a resource or a hierarchy")
+      end
     end
   end
 

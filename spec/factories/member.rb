@@ -2,6 +2,6 @@
 FactoryGirl.define do
   factory :member, class: Monarchy::Member do
     user
-    hierarchy
+    association :resource, factory: [:project, :memo].sample
   end
 end
