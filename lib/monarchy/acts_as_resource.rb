@@ -43,26 +43,8 @@ module Monarchy
         end)
 
         scope :accessible_for, (lambda do |user|
-          where(id: accessible_roots(user).select(:id)).union(where(id: accessible_leaves(user).select(:id)))
+          joins(:hierarchy).where(monarchy_hierarchies: { id: Monarchy::Hierarchy.accessible_for(user) })
         end)
-      end
-
-      def accessible_roots(user)
-        joins(:hierarchy)
-          .joins('INNER JOIN "monarchy_hierarchy_hierarchies" ON '\
-        '"monarchy_hierarchies"."id" = "monarchy_hierarchy_hierarchies"."ancestor_id"')
-          .joins('INNER JOIN "monarchy_members" ON '\
-        '"monarchy_members"."hierarchy_id" = "monarchy_hierarchy_hierarchies"."descendant_id"')
-          .where(monarchy_members: { user_id: user.id }).distinct
-      end
-
-      def accessible_leaves(user)
-        joins(:hierarchy)
-          .joins('INNER JOIN "monarchy_hierarchy_hierarchies" ON '\
-        '"monarchy_hierarchies"."id" = "monarchy_hierarchy_hierarchies"."descendant_id"')
-          .joins('INNER JOIN "monarchy_members" ON '\
-        '"monarchy_members"."hierarchy_id" = "monarchy_hierarchy_hierarchies"."ancestor_id"')
-          .where(monarchy_members: { user_id: user.id }).distinct
       end
     end
 

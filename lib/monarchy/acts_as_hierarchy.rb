@@ -27,7 +27,7 @@ module Monarchy
         end)
 
         scope :accessible_for, (lambda do |user|
-          where(id: accessible_roots(user).select(:id)).union(where(id: accessible_leaves(user).select(:id)))
+          where(id: accessible_roots(user)).union(where(id: accessible_leaves(user)))
         end)
       end
 
