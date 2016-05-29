@@ -60,10 +60,10 @@ GEM
     diff-lcs (1.2.5)
     docile (1.1.5)
     erubis (2.7.0)
-    factory_girl (4.5.0)
+    factory_girl (4.7.0)
       activesupport (>= 3.0.0)
-    factory_girl_rails (4.5.0)
-      factory_girl (~> 4.5.0)
+    factory_girl_rails (4.7.0)
+      factory_girl (~> 4.7.0)
       railties (>= 3.0.0)
     ffaker (2.2.0)
     globalid (0.3.6)
@@ -179,7 +179,7 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 1.10)
   database_cleaner (= 1.5.3)
-  factory_girl_rails (= 4.5.0)
+  factory_girl_rails (= 4.7.0)
   ffaker (= 2.2.0)
   monarchy!
   pry-rails (= 0.3.4)

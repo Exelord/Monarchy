@@ -33,7 +33,8 @@ module Monarchy
       roles << Monarchy::Role.find_or_create_by(
         name: Monarchy.configuration.default_role.name,
         inherited: Monarchy.configuration.default_role.inherited,
-        level: Monarchy.configuration.default_role.level)
+        level: Monarchy.configuration.default_role.level
+      )
       self.roles = roles.uniq
     end
 
