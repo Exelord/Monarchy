@@ -23,7 +23,7 @@ module Monarchy
     end)
 
     def resource=(resource)
-      self.hierarchy = resource.hierarchy unless self.hierarchy
+      self.hierarchy = resource.hierarchy unless hierarchy
     end
 
     private
@@ -38,9 +38,7 @@ module Monarchy
     end
 
     def hierarchy_or_resource
-      unless hierarchy
-        errors.add(:base, "Specify a resource or a hierarchy")
-      end
+      errors.add(:base, 'Specify a resource or a hierarchy') unless hierarchy
     end
   end
 

@@ -13,8 +13,8 @@ module Monarchy
 
         include_scopes
 
-        validates :resource_type, :presence => true
-        validates :resource_id, uniqueness: { scope: [:resource_type] }, :presence => true
+        validates :resource_type, presence: true
+        validates :resource_id, uniqueness: { scope: [:resource_type] }, presence: true
       end
     end
 
