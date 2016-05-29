@@ -15,17 +15,15 @@ gemspec
 # To use a debugger
 # gem 'byebug', group: [:development, :test]
 
-gem 'configurations', '~> 2.2.0'
-
 group :development, :test do
-  gem 'sqlite3'
-  gem 'rubocop'
+  gem 'sqlite3', '1.3.11'
+  gem 'rubocop', '0.40.0'
   gem 'pry-rails', '0.3.4'
-  gem 'shoulda-matchers'
-  gem 'rspec-rails'
+  gem 'shoulda-matchers', '3.1.1'
+  gem 'rspec-rails', '3.4.2'
   gem 'factory_girl_rails', '4.5.0'
-  gem 'ffaker', '2.1.0'
-  gem 'database_cleaner', '1.4.1'
+  gem 'ffaker', '2.2.0'
+  gem 'database_cleaner', '1.5.3'
 end
 
-gem 'simplecov', require: false, group: :test
+gem 'simplecov', '0.11.2', require: false, group: :test
