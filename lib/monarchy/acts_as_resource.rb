@@ -10,6 +10,7 @@ module Monarchy
         parent_as(options[:parent_as]) if options[:parent_as]
 
         after_create :ensure_hierarchy
+        after_save :assign_parent
 
         has_many :members, through: :hierarchy, class_name: 'Monarchy::Member'
         has_many :users, through: :members, class_name: 'User'
@@ -22,19 +23,12 @@ module Monarchy
     end
 
     module SupportMethods
+      attr_accessor :parentize
+
       private
 
       def parent_as(name)
-        define_method "#{name}=" do |value|
-          self.parent = value
-          super(value)
-        end
-
-        define_method "#{name}_id=" do |id|
-          class_name = name.to_s.camelize.safe_constantize
-          self.parent = class_name.find(id)
-          super(id)
-        end
+        self.parentize = name
       end
 
       def include_scopes
@@ -78,6 +72,11 @@ module Monarchy
           parent: parent.try(:hierarchy),
           children: hierarchies_for(children)
         )
+      end
+
+      def assign_parent
+        parent = self.class.parentize
+        self.parent = send(parent) if parent && send("#{parent}_id_changed?")
       end
 
       def children_resources
