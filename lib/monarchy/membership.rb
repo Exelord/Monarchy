@@ -48,6 +48,16 @@ module Monarchy
 
     has_many :members_roles, dependent: :destroy, class_name: 'Monarchy::MembersRole'
     has_many :members, through: :members_roles, class_name: 'Monarchy::Member'
+
+    belongs_to :inherited_role, class_name: 'Monarchy::Role'
+
+    after_create :default_inherited_role
+
+    private
+
+    def default_inherited_role
+      self.update(inherited_role_id: id) unless inherited_role
+    end
   end
 
   class MembersRole < ActiveRecord::Base
