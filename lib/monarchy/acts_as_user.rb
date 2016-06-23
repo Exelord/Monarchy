@@ -15,7 +15,7 @@ module Monarchy
     module InstanceMethods
       def roles_for(resource, inheritence = true)
         return [] unless resource.hierarchy
-        accessible_roles_for(resource, inheritence).group_by(&:level).values.first || []
+        accessible_roles_for(resource, inheritence)
       end
 
       def member_for(resource)
@@ -49,25 +49,27 @@ module Monarchy
       end
 
       def resource_and_inheritence_roles(resource)
-        hierarchy_ids = resource.hierarchy.self_and_ancestors_ids
-        Monarchy::Role.joins(:members)
-                      .where("((monarchy_roles.inherited = 't' "\
-                             "AND monarchy_members.hierarchy_id IN (#{hierarchy_ids.join(',')})) "\
-                             "OR (monarchy_members.hierarchy_id = #{resource.hierarchy.id})) "\
-                             "AND monarchy_members.user_id = #{id}")
-                      .distinct.order(level: :desc)
+        hierarchy_ids = resource.hierarchy.self_and_ancestors.select(:id)
+        Monarchy::Role.where(id:
+                      Monarchy::Role.joins(:members).where('monarchy_members.user_id': id)
+                      .where('monarchy_roles.inherited': 't', 'monarchy_members.hierarchy_id': hierarchy_ids)
+                      .select(:inherited_role_id))
+                      .union(Monarchy::Role.joins(:members)
+                                           .where('monarchy_members.user_id': id)
+                                           .where('monarchy_members.hierarchy_id': resource.hierarchy.id))
+                      .distinct
       end
 
       def resource_roles(resource)
         Monarchy::Role.joins(:members)
                       .where('monarchy_members.hierarchy_id': resource.hierarchy.id, 'monarchy_members.user_id': id)
-                      .distinct.order(level: :desc)
+                      .distinct
       end
 
       def descendant_role(resource)
         descendant_ids = resource.hierarchy.descendant_ids
         children_access = members_for(descendant_ids).present?
-        children_access ? [default_role] : []
+        Monarchy::Role.where(id: children_access ? default_role : nil)
       end
 
       def revoking_role(role_name, resource, force = false)
