@@ -25,6 +25,13 @@ describe User, type: :model do
       let!(:manager_role) { create(:role, name: :manager, level: 2, inherited_role: owner_role) }
 
       it { is_expected.to match_array([owner_role, member_role, guest_role]) }
+
+      context "do not map self roles" do
+        let!(:memo_member) { create(:member, user: user, hierarchy: memo.hierarchy, roles: [manager_role]) }
+        let!(:project_member) { create(:member, user: user, hierarchy: project.hierarchy, roles: [member_role]) }
+
+        it { is_expected.to match_array([manager_role, member_role, guest_role]) }
+      end
     end
 
     context 'roles without inheritece' do

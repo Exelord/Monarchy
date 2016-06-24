@@ -15,7 +15,7 @@ module Monarchy
     module InstanceMethods
       def roles_for(resource, inheritence = true)
         return [] unless resource.hierarchy
-        accessible_roles_for(resource, inheritence)
+        accessible_roles_for(resource, inheritence).order('level desc')
       end
 
       def member_for(resource)
@@ -49,14 +49,12 @@ module Monarchy
       end
 
       def resource_and_inheritence_roles(resource)
-        hierarchy_ids = resource.hierarchy.self_and_ancestors.select(:id)
+        hierarchy_ids = resource.hierarchy.ancestors.select(:id)
         Monarchy::Role.where(id:
                       Monarchy::Role.joins(:members).where('monarchy_members.user_id': id)
                       .where('monarchy_roles.inherited': 't', 'monarchy_members.hierarchy_id': hierarchy_ids)
                       .select(:inherited_role_id))
-                      .union(Monarchy::Role.joins(:members)
-                                           .where('monarchy_members.user_id': id)
-                                           .where('monarchy_members.hierarchy_id': resource.hierarchy.id))
+                      .union(resource_roles(resource))
                       .distinct
       end
 
