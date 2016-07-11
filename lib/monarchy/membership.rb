@@ -56,7 +56,7 @@ module Monarchy
     private
 
     def default_inherited_role
-      self.update(inherited_role_id: id) unless inherited_role
+      update(inherited_role_id: id) unless inherited_role
     end
   end
 
