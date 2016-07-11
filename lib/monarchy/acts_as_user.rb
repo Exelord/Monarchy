@@ -5,11 +5,11 @@ module Monarchy
 
     module ClassMethods
       def acts_as_user
-        has_many :members, class_name: 'Monarchy::Member', dependent: :destroy
+        has_many :members, class_name: Monarchy.member_class.to_s, dependent: :destroy
         has_many :hierarchies, through: :members, class_name: 'Monarchy::Hierarchy'
 
         scope :accessible_for, (lambda do |user|
-          where(id: Monarchy::Member.where(hierarchy: user.hierarchies).select(:user_id))
+          where(id: Monarchy.member_class.where(hierarchy: user.hierarchies).select(:user_id))
         end)
 
         include Monarchy::ActsAsUser::InstanceMethods
@@ -18,7 +18,7 @@ module Monarchy
 
     module InstanceMethods
       def roles_for(resource, inheritence = true)
-        return Monarchy::Role.none unless resource.hierarchy
+        return Monarchy.role_class.none unless resource.hierarchy
         accessible_roles_for(resource, inheritence).order('level desc')
       end
 
@@ -54,8 +54,8 @@ module Monarchy
 
       def resource_and_inheritence_roles(resource)
         hierarchy_ids = resource.hierarchy.ancestors.select(:id)
-        Monarchy::Role.where(id:
-                      Monarchy::Role.joins(:members).where('monarchy_members.user_id': id)
+        Monarchy.role_class.where(id:
+                      Monarchy.role_class.joins(:members).where('monarchy_members.user_id': id)
                       .where('monarchy_roles.inherited': 't', 'monarchy_members.hierarchy_id': hierarchy_ids)
                       .select(:inherited_role_id))
                       .union(resource_roles(resource))
@@ -63,7 +63,7 @@ module Monarchy
       end
 
       def resource_roles(resource)
-        Monarchy::Role.joins(:members)
+        Monarchy.role_class.joins(:members)
                       .where('monarchy_members.hierarchy_id': resource.hierarchy.id, 'monarchy_members.user_id': id)
                       .distinct
       end
@@ -71,7 +71,7 @@ module Monarchy
       def descendant_role(resource)
         descendant_ids = resource.hierarchy.descendant_ids
         children_access = members_for(descendant_ids).present?
-        children_access ? Monarchy::Role.where(id: default_role) : Monarchy::Role.none
+        children_access ? Monarchy.role_class.where(id: default_role) : Monarchy.role_class.none
       end
 
       def revoking_role(role_name, resource, force = false)
@@ -83,25 +83,25 @@ module Monarchy
       end
 
       def grant_or_create_member(role_name, resource)
-        role = Monarchy::Role.find_by(name: role_name)
+        role = Monarchy.role_class.find_by(name: role_name)
         raise 'Role does not exist' unless role
 
         member = member_for(resource)
         if member
           Monarchy::MembersRole.create(member: member, role: role)
         else
-          member = Monarchy::Member.create(user: self, hierarchy: resource.hierarchy, roles: [role])
+          member = Monarchy.member_class.create(user: self, hierarchy: resource.hierarchy, roles: [role])
         end
 
         member
       end
 
       def members_for(hierarchy_ids)
-        Monarchy::Member.where(hierarchy_id: hierarchy_ids, user_id: id)
+        Monarchy.member_class.where(hierarchy_id: hierarchy_ids, user_id: id)
       end
 
       def default_role
-        @default_role ||= Monarchy::Role.find_by(name: Monarchy.configuration.default_role.name)
+        @default_role ||= Monarchy.role_class.find_by(name: Monarchy.configuration.default_role.name)
       end
 
       def last_role?(member_roles, role_name = nil)

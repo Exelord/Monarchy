@@ -8,7 +8,7 @@ module Monarchy
         extend Monarchy::ActsAsHierarchy::SupportMethods
         has_closure_tree dependent: :destroy
 
-        has_many :members, class_name: 'Monarchy::Member', dependent: :destroy
+        has_many :members, class_name: Monarchy.member_class.to_s, dependent: :destroy
         belongs_to :resource, polymorphic: true, dependent: :destroy
 
         include_scopes
