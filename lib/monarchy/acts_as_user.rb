@@ -8,6 +8,10 @@ module Monarchy
         has_many :members, class_name: 'Monarchy::Member', dependent: :destroy
         has_many :hierarchies, through: :members, class_name: 'Monarchy::Hierarchy'
 
+        scope :accessible_for, (lambda do |user|
+          where(id: Monarchy::Member.where(hierarchy: user.hierarchies).select(:user_id))
+        end)
+
         include Monarchy::ActsAsUser::InstanceMethods
       end
     end
@@ -67,7 +71,7 @@ module Monarchy
       def descendant_role(resource)
         descendant_ids = resource.hierarchy.descendant_ids
         children_access = members_for(descendant_ids).present?
-        Monarchy::Role.where(id: children_access ? default_role : nil)
+        children_access ? default_role : Monarchy::Role.none
       end
 
       def revoking_role(role_name, resource, force = false)
@@ -80,8 +84,9 @@ module Monarchy
 
       def grant_or_create_member(role_name, resource)
         role = Monarchy::Role.find_by(name: role_name)
-        member = member_for(resource)
+        raise "Role does not exist" unless role
 
+        member = member_for(resource)
         if member
           Monarchy::MembersRole.create(member: member, role: role)
         else
