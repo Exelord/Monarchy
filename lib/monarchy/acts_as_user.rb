@@ -18,7 +18,7 @@ module Monarchy
 
     module InstanceMethods
       def roles_for(resource, inheritence = true)
-        return [] unless resource.hierarchy
+        return Monarchy::Role.none unless resource.hierarchy
         accessible_roles_for(resource, inheritence).order('level desc')
       end
 
@@ -71,7 +71,7 @@ module Monarchy
       def descendant_role(resource)
         descendant_ids = resource.hierarchy.descendant_ids
         children_access = members_for(descendant_ids).present?
-        children_access ? default_role : Monarchy::Role.none
+        children_access ? Monarchy::Role.where(id: default_role) : Monarchy::Role.none
       end
 
       def revoking_role(role_name, resource, force = false)
@@ -84,7 +84,7 @@ module Monarchy
 
       def grant_or_create_member(role_name, resource)
         role = Monarchy::Role.find_by(name: role_name)
-        raise "Role does not exist" unless role
+        raise 'Role does not exist' unless role
 
         member = member_for(resource)
         if member
