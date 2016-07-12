@@ -5,7 +5,7 @@ module Monarchy
 
     module ClassMethods
       def acts_as_user
-        has_many :members, class_name: Monarchy.member_class.to_s, dependent: :destroy
+        has_many :members, class_name: "::#{Monarchy.member_class}", dependent: :destroy
         has_many :hierarchies, through: :members, class_name: 'Monarchy::Hierarchy'
 
         scope :accessible_for, (lambda do |user|

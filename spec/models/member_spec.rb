@@ -16,13 +16,13 @@ describe Monarchy::Member, type: :model do
     context 'valdiate resource' do
       context 'is present' do
         let!(:resource) { create(:project) }
-        subject { Monarchy::Member.create(user: user, resource: resource) }
+        subject { Member.create(user: user, resource: resource) }
 
         it { expect(subject.valid?).to be true }
       end
 
       context 'is not present' do
-        subject { Monarchy::Member.create(user: user) }
+        subject { Member.create(user: user) }
 
         it { expect(subject.valid?).to be false }
       end
@@ -31,13 +31,13 @@ describe Monarchy::Member, type: :model do
     context 'valdiate hierarchy' do
       context 'is present' do
         let!(:hierarchy) { create(:hierarchy) }
-        subject { Monarchy::Member.create(user: user, hierarchy: hierarchy) }
+        subject { Member.create(user: user, hierarchy: hierarchy) }
 
         it { expect(subject.valid?).to be true }
       end
 
       context 'is not present' do
-        subject { Monarchy::Member.create(user: user) }
+        subject { Member.create(user: user) }
 
         it { expect(subject.valid?).to be false }
       end
@@ -47,7 +47,7 @@ describe Monarchy::Member, type: :model do
       context 'is present' do
         let!(:resource) { create(:project) }
         let!(:hierarchy) { create(:hierarchy) }
-        subject { Monarchy::Member.create(user: user, hierarchy: hierarchy, resource: resource) }
+        subject { Member.create(user: user, hierarchy: hierarchy, resource: resource) }
 
         it { expect(subject.valid?).to be true }
         it { expect(subject.hierarchy).to eq(hierarchy) }
@@ -67,7 +67,7 @@ describe Monarchy::Member, type: :model do
   describe 'resource=' do
     let!(:project) { create :project }
     let!(:user) { create :user }
-    let!(:member) { Monarchy::Member.create(user: user, resource: project) }
+    let!(:member) { Member.create(user: user, resource: project) }
 
     subject { member.hierarchy }
     it { is_expected.to eq(member.resource.hierarchy) }
@@ -86,7 +86,7 @@ describe Monarchy::Member, type: :model do
     let!(:member3) { create :member, resource: memo5 }
     let!(:member4) { create :member, resource: memo6 }
 
-    subject { Monarchy::Member.accessible_for(member.user) }
+    subject { Member.accessible_for(member.user) }
 
     context 'user has access to root' do
       let!(:member) { create :member, resource: project }

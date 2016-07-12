@@ -4,7 +4,7 @@ module Monarchy
     self.table_name = 'monarchy_members'
 
     has_many :members_roles, dependent: :destroy, class_name: 'Monarchy::MembersRole'
-    has_many :roles, -> { order(level: :desc) }, through: :members_roles, class_name: 'Monarchy::Role'
+    has_many :roles, -> { order(level: :desc) }, through: :members_roles, class_name: '::Role'
 
     belongs_to :user
     belongs_to :hierarchy, class_name: 'Monarchy::Hierarchy'
@@ -30,7 +30,7 @@ module Monarchy
 
     def set_default_role
       roles = self.roles
-      roles << Monarchy::Role.find_or_create_by(
+      roles << Monarchy::role_class.find_or_create_by(
         name: Monarchy.configuration.default_role.name,
         inherited: Monarchy.configuration.default_role.inherited,
         level: Monarchy.configuration.default_role.level
@@ -47,7 +47,7 @@ module Monarchy
     self.table_name = 'monarchy_roles'
 
     has_many :members_roles, dependent: :destroy, class_name: 'Monarchy::MembersRole'
-    has_many :members, through: :members_roles, class_name: 'Monarchy::Member'
+    has_many :members, through: :members_roles, class_name: '::Member'
 
     belongs_to :inherited_role, class_name: 'Monarchy::Role'
 
@@ -63,8 +63,8 @@ module Monarchy
   class MembersRole < ActiveRecord::Base
     self.table_name = 'monarchy_members_roles'
 
-    belongs_to :member, class_name: 'Monarchy::Member'
-    belongs_to :role, class_name: 'Monarchy::Role'
+    belongs_to :member, class_name: '::Member'
+    belongs_to :role, class_name: '::Role'
 
     validates :role_id, uniqueness: { scope: :member_id }
   end
