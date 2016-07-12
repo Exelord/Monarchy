@@ -6,7 +6,7 @@ require 'active_record_union'
 require 'monarchy/acts_as_hierarchy'
 require 'monarchy/acts_as_resource'
 require 'monarchy/acts_as_user'
-# require 'monarchy/membership'
+require 'monarchy/membership'
 require 'monarchy/engine'
 
 module Monarchy
