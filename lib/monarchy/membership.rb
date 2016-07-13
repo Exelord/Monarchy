@@ -49,7 +49,7 @@ module Monarchy
     has_many :members_roles, dependent: :destroy, class_name: 'Monarchy::MembersRole'
     has_many :members, through: :members_roles, class_name: '::Member'
 
-    belongs_to :inherited_role, class_name: 'Monarchy::Role'
+    belongs_to :inherited_role, class_name: 'Role'
 
     after_create :default_inherited_role
 
@@ -63,8 +63,8 @@ module Monarchy
   class MembersRole < ActiveRecord::Base
     self.table_name = 'monarchy_members_roles'
 
-    belongs_to :member, class_name: '::Member'
-    belongs_to :role, class_name: '::Role'
+    belongs_to :member, class_name: 'Member'
+    belongs_to :role, class_name: 'Role'
 
     validates :role_id, uniqueness: { scope: :member_id }
   end
