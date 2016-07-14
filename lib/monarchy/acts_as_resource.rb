@@ -6,6 +6,7 @@ module Monarchy
     module ClassMethods
       def acts_as_resource(options = {})
         extend Monarchy::ActsAsResource::SupportMethods
+        setup_acting
 
         parent_as(options[:parent_as]) if options[:parent_as]
 
@@ -23,9 +24,13 @@ module Monarchy
     end
 
     module SupportMethods
-      attr_accessor :parentize
+      attr_accessor :parentize, :acting_as_resource
 
       private
+
+      def setup_acting
+        @acting_as_resource = true
+      end
 
       def parent_as(name)
         self.parentize = name

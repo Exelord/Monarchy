@@ -165,4 +165,19 @@ describe Resource, type: :model do
       it { expect(Memo.accessible_for(user).in(memo2)).to match_array([memo3, memo4]) }
     end
   end
+
+  describe '@acting_as_resource' do
+
+    context 'when class is a resource' do
+      let(:klass) { described_class }
+
+      it { expect(klass.respond_to?(:acting_as_resource)).to be true }
+      it { binding.pry; expect(klass.acting_as_resource).to be true }
+    end
+
+    context 'when class is not a resource' do
+      let(:klass) { User }
+      it { expect(klass.respond_to?(:acting_as_resource)).to be false }
+    end
+  end
 end
