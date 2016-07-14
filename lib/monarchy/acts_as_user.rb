@@ -58,14 +58,14 @@ module Monarchy
                       Monarchy.role_class.joins(:members).where('monarchy_members.user_id': id)
                       .where('monarchy_roles.inherited': 't', 'monarchy_members.hierarchy_id': hierarchy_ids)
                       .select(:inherited_role_id))
-                      .union(resource_roles(resource))
-                      .distinct
+                .union(resource_roles(resource))
+                .distinct
       end
 
       def resource_roles(resource)
         Monarchy.role_class.joins(:members)
-                      .where('monarchy_members.hierarchy_id': resource.hierarchy.id, 'monarchy_members.user_id': id)
-                      .distinct
+                .where('monarchy_members.hierarchy_id': resource.hierarchy.id, 'monarchy_members.user_id': id)
+                .distinct
       end
 
       def descendant_role(resource)

@@ -167,12 +167,11 @@ describe Resource, type: :model do
   end
 
   describe '@acting_as_resource' do
-
     context 'when class is a resource' do
       let(:klass) { described_class }
 
       it { expect(klass.respond_to?(:acting_as_resource)).to be true }
-      it { binding.pry; expect(klass.acting_as_resource).to be true }
+      it { expect(klass.acting_as_resource).to be true }
     end
 
     context 'when class is not a resource' do

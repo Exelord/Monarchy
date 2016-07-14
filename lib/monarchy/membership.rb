@@ -30,7 +30,7 @@ module Monarchy
 
     def set_default_role
       roles = self.roles
-      roles << Monarchy::role_class.find_or_create_by(
+      roles << Monarchy.role_class.find_or_create_by(
         name: Monarchy.configuration.default_role.name,
         inherited: Monarchy.configuration.default_role.inherited,
         level: Monarchy.configuration.default_role.level
