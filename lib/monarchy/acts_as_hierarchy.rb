@@ -40,10 +40,8 @@ module Monarchy
       end
 
       def accessible_leaves(user)
-        descendant_leaves
-          .where('monarchy_hierarchy_hierarchies.descendant_id': descendant_leaves
-            .where('monarchy_hierarchy_hierarchies.descendant_id': descendant_leaves_for_user(user)
-            .where("monarchy_roles.name = '#{default_role_name}'"))
+        descendant_leaves.where('monarchy_hierarchy_hierarchies.descendant_id': descendant_leaves_for_user(user)
+            .where("monarchy_roles.name = '#{default_role_name}'")
             .select('monarchy_hierarchy_hierarchies.ancestor_id')).union(
               descendant_leaves
                 .where('monarchy_hierarchy_hierarchies.ancestor_id': descendant_leaves_for_user(user)
