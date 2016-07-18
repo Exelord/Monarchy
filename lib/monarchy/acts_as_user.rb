@@ -32,9 +32,9 @@ module Monarchy
         end
       end
 
-      def revoke_access(resource)
-        self_and_descendant_ids = resource.hierarchy.self_and_descendant_ids
-        members_for(self_and_descendant_ids).destroy_all
+      def revoke_access(resource, hierarchy_ids = nil)
+        hierarchy_ids ||= resource.hierarchy.self_and_descendant_ids
+        members_for(hierarchy_ids).delete_all
       end
 
       def revoke_role(role_name, resource)
@@ -79,7 +79,7 @@ module Monarchy
         member_roles = member.members_roles
 
         return revoke_access(resource) if last_role?(member_roles, role_name) && force
-        member_roles.joins(:role).where(monarchy_roles: { name: role_name }).destroy_all
+        member_roles.joins(:role).where(monarchy_roles: { name: role_name }).delete_all
       end
 
       def grant_or_create_member(role_name, resource)

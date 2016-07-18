@@ -40,11 +40,28 @@ module Monarchy
       end
 
       def accessible_leaves(user)
-        joins('INNER JOIN "monarchy_hierarchy_hierarchies" ON '\
-          '"monarchy_hierarchies"."id" = "monarchy_hierarchy_hierarchies"."descendant_id"')
-          .joins('INNER JOIN "monarchy_members" ON '\
-          '"monarchy_members"."hierarchy_id" = "monarchy_hierarchy_hierarchies"."ancestor_id"')
-          .where(monarchy_members: { user_id: user.id }).distinct
+        descendant_leaves
+          .where('monarchy_hierarchy_hierarchies.descendant_id': descendant_leaves
+            .where('monarchy_hierarchy_hierarchies.descendant_id': descendant_leaves_for_user(user)
+            .where("monarchy_roles.name = '#{default_role_name}'"))
+            .select('monarchy_hierarchy_hierarchies.ancestor_id')).union(
+              descendant_leaves
+                .where('monarchy_hierarchy_hierarchies.ancestor_id': descendant_leaves_for_user(user)
+                .where("monarchy_roles.name != '#{default_role_name}'"))
+            )
+      end
+
+      def default_role_name
+        Monarchy.configuration.default_role.name
+      end
+
+      def descendant_leaves_for_user(user)
+        descendant_leaves.joins(members: [:roles]).where(monarchy_members: { user_id: user.id })
+      end
+
+      def descendant_leaves
+        joins('INNER JOIN "monarchy_hierarchy_hierarchies" ON "monarchy_hierarchies"."id" =' \
+          '"monarchy_hierarchy_hierarchies"."descendant_id"')
       end
     end
   end
