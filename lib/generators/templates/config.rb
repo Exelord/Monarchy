@@ -3,6 +3,7 @@ Monarchy.configure do |config|
   config.default_role.level = 0
   config.default_role.inherited = false
 
-  config.member_class = nil
-  config.role_class = nil
+  config.member_class = Monarchy::Member
+  config.role_class = Monarchy::Role
+  # config.user_class = User
 end
