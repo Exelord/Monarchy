@@ -151,11 +151,28 @@ describe Resource, type: :model do
       it { is_expected.to match_array([memo2, memo3, memo4]) }
       it { is_expected.not_to include(memo5, memo1) }
 
-      context 'user has access to resources bellow' do
-        let!(:memo_member) { create(:member, user: user, hierarchy: memo3.hierarchy) }
+      context 'user has access to resources bellow if has member role' do
+        let!(:member_role) { create(:role, name: :member, level: 1, inherited: false) }
+        let!(:memo_member) { create(:member, user: user, hierarchy: memo3.hierarchy, roles: [member_role]) }
 
         it { is_expected.to match_array([memo2, memo3, memo4, memo6]) }
         it { is_expected.not_to include(memo5, memo1) }
+      end
+
+      context 'user has access to resources bellow if has guest role' do
+        let!(:memo_member) { create(:member, user: user, hierarchy: memo3.hierarchy) }
+
+        it { is_expected.to match_array([memo2, memo3]) }
+        it { is_expected.not_to include(memo5, memo1, memo4, memo6) }
+      end
+
+      context 'user has access to resources bellow if has guest role' do
+        let!(:memo7) { create :memo, parent: memo6 }
+        let!(:memo_member) { create(:member, user: user, hierarchy: memo3.hierarchy) }
+        let!(:memo7_member) { create(:member, user: user, hierarchy: memo7.hierarchy) }
+
+        it { is_expected.to match_array([memo2, memo3, memo6, memo7]) }
+        it { is_expected.not_to include(memo5, memo1, memo4) }
       end
     end
 

@@ -17,6 +17,7 @@ module Monarchy
     validate :hierarchy_or_resource
 
     before_create :set_default_role
+    after_destroy :revoke_access
 
     scope :accessible_for, (lambda do |user|
       where(hierarchy: Monarchy::Hierarchy.accessible_for(user))
@@ -27,6 +28,10 @@ module Monarchy
     end
 
     private
+
+    def revoke_access
+      user.revoke_access(resource, resource.hierarchy.descendant_ids)
+    end
 
     def set_default_role
       roles = self.roles

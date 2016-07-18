@@ -41,15 +41,35 @@ describe Monarchy::Hierarchy, type: :model do
       let!(:memo_member) { create(:member, user: user, hierarchy: memo4.hierarchy) }
 
       it { is_expected.to match_array([project.hierarchy, memo2.hierarchy, memo3.hierarchy, memo4.hierarchy]) }
-      it { is_expected.not_to include(memo5.hierarchy, memo1.hierarchy) }
+      it { is_expected.not_to include(memo6.hierarchy, memo5.hierarchy, memo1.hierarchy) }
 
       context 'user has access to resources bellow' do
-        let!(:memo_member) { create(:member, user: user, hierarchy: memo3.hierarchy) }
+        let!(:member_role) { create(:role, name: :member, level: 1, inherited: false) }
+        let!(:memo_member) { create(:member, user: user, hierarchy: memo3.hierarchy, roles: [member_role]) }
 
         it do
           is_expected.to match_array([project.hierarchy, memo2.hierarchy,
                                       memo3.hierarchy, memo4.hierarchy, memo6.hierarchy])
         end
+        it { is_expected.not_to include(memo5.hierarchy, memo1.hierarchy) }
+      end
+
+      context 'user has not access to resources bellow as guest' do
+        let!(:memo_member) { create(:member, user: user, hierarchy: memo3.hierarchy) }
+
+        it { is_expected.to match_array([project.hierarchy, memo2.hierarchy, memo3.hierarchy]) }
+        it { is_expected.not_to include(memo5.hierarchy, memo1.hierarchy, memo4.hierarchy, memo6.hierarchy) }
+      end
+
+      context 'user has access to resources bellow as member' do
+        let!(:member_role) { create(:role, name: :member, level: 1, inherited: false) }
+        let!(:memo_member) { create(:member, user: user, hierarchy: memo3.hierarchy, roles: [member_role]) }
+
+        it do
+          is_expected.to match_array([project.hierarchy, memo2.hierarchy,
+                                      memo3.hierarchy, memo4.hierarchy, memo6.hierarchy])
+        end
+
         it { is_expected.not_to include(memo5.hierarchy, memo1.hierarchy) }
       end
     end

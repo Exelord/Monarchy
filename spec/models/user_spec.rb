@@ -144,20 +144,39 @@ describe User, type: :model do
     let(:other_user) { create :user }
 
     context 'sholud revoke bellow and self' do
-      before do
-        user.grant(:manager, project)
-        user.grant(:manager, memo3)
-        user.grant(:member, memo4)
-        other_user.grant(:manager, memo3)
+      context 'with deafult hierarchy_ids' do
+        before do
+          user.grant(:manager, project)
+          user.grant(:manager, memo3)
+          user.grant(:member, memo4)
+          other_user.grant(:manager, memo3)
 
-        user.revoke_access(memo2)
+          user.revoke_access(memo2)
+        end
+
+        it { expect(project.members.count).to eq(1) }
+        it { expect(memo.members.count).to eq(0) }
+        it { expect(memo2.members.count).to eq(0) }
+        it { expect(memo3.members.count).to eq(1) }
+        it { expect(memo4.members.count).to eq(1) }
       end
 
-      it { expect(project.members.count).to eq(1) }
-      it { expect(memo.members.count).to eq(0) }
-      it { expect(memo2.members.count).to eq(0) }
-      it { expect(memo3.members.count).to eq(1) }
-      it { expect(memo4.members.count).to eq(1) }
+      context 'with custom hierarchy_ids' do
+        before do
+          user.grant(:member, project)
+          user.grant(:member, memo)
+          user.grant(:member, memo3)
+          user.grant(:member, memo4)
+
+          user.revoke_access(memo, memo.hierarchy.descendant_ids)
+        end
+
+        it { expect(project.members.count).to eq(1) }
+        it { expect(memo.members.count).to eq(1) }
+        it { expect(memo2.members.count).to eq(0) }
+        it { expect(memo3.members.count).to eq(0) }
+        it { expect(memo4.members.count).to eq(0) }
+      end
     end
   end
 
