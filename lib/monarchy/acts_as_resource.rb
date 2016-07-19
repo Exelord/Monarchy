@@ -29,6 +29,7 @@ module Monarchy
       private
 
       def setup_acting
+        Monarchy.resource_classes << self
         @acting_as_resource = true
       end
 
