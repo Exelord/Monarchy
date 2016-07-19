@@ -82,7 +82,7 @@ module Monarchy
 
       def assign_parent(force = false)
         parent = self.class.parentize
-        self.parent = send(parent) if (parent && send("#{parent}_id_changed?")) || force
+        self.parent = send(parent) if parent && (send("#{parent}_id_changed?") || force)
       end
 
       def children_resources
