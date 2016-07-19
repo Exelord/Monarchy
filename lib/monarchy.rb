@@ -9,6 +9,12 @@ require 'monarchy/acts_as_user'
 require 'monarchy/engine'
 
 module Monarchy
+  cattr_accessor :resource_classes
+
+  def self.resource_classes
+    @resource_classes ||= []
+  end
+
   include Configurations
 
   configuration_defaults do |config|
