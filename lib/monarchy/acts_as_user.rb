@@ -9,7 +9,7 @@ module Monarchy
         has_many :hierarchies, through: :members, class_name: 'Monarchy::Hierarchy'
 
         scope :accessible_for, (lambda do |user|
-          where(id: Monarchy.member_class.where(hierarchy: user.hierarchies).select(:user_id) + [user.id])
+          where(id: Monarchy::Hierarchy.accessible_for(user).joins(members: [:user]).select(:user_id)).union(where(id: user.id))
         end)
 
         include Monarchy::ActsAsUser::InstanceMethods
