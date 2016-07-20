@@ -9,7 +9,8 @@ module Monarchy
         has_many :hierarchies, through: :members, class_name: 'Monarchy::Hierarchy'
 
         scope :accessible_for, (lambda do |user|
-          where(id: Monarchy::Hierarchy.accessible_for(user).joins(members: [:user]).select(:user_id)).union(where(id: user.id))
+          where(id: Monarchy::Hierarchy.accessible_for(user)
+                                       .joins(members: [:user]).select(:user_id)).union(where(id: user.id))
         end)
 
         include Monarchy::ActsAsUser::InstanceMethods
@@ -48,7 +49,12 @@ module Monarchy
       private
 
       def accessible_roles_for(resource, inheritnce)
-        accessible_roles = (inheritnce ? resource_and_inheritence_roles(resource) : resource_roles(resource)).order('level desc')
+        accessible_roles = if inheritnce
+                             resource_and_inheritence_roles(resource)
+                           else
+                             resource_roles(resource).order('level desc')
+                           end
+
         accessible_roles.present? ? accessible_roles : descendant_role(resource)
       end
 
