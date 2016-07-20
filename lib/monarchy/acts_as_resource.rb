@@ -14,7 +14,7 @@ module Monarchy
         after_save :assign_parent
 
         has_many :members, through: :hierarchy, class_name: "::#{Monarchy.member_class}"
-        has_many :users, through: :members, class_name: 'User'
+        has_many :users, through: :members, class_name: "::#{Monarchy.user_class}"
         has_one :hierarchy, as: :resource, dependent: :destroy, class_name: 'Monarchy::Hierarchy'
 
         include_scopes

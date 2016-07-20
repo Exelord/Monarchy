@@ -1,3 +1,4 @@
 # frozen_string_literal: true
-class Role < Monarchy::Role
+class Role < ActiveRecord::Base
+  acts_as_role
 end

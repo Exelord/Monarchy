@@ -1,3 +1,4 @@
 # frozen_string_literal: true
-class Member < Monarchy::Member
+class Member < ActiveRecord::Base
+  acts_as_member
 end

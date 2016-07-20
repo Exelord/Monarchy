@@ -4,7 +4,7 @@ Monarchy.configure do |config|
   config.default_role.level = 0
   config.default_role.inherited = false
 
-  # config.user_class = Monarchy::User
-  config.member_class = Member
-  config.role_class = Role
+  config.user_class_name = 'User'
+  config.role_class_name = 'Role'
+  config.member_class_name = 'Member'
 end
