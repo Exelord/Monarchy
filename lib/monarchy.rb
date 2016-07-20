@@ -3,6 +3,8 @@ require 'closure_tree'
 require 'configurations'
 require 'active_record_union'
 
+require 'monarchy/acts_as_role'
+require 'monarchy/acts_as_member'
 require 'monarchy/acts_as_hierarchy'
 require 'monarchy/acts_as_resource'
 require 'monarchy/acts_as_user'
@@ -18,9 +20,8 @@ module Monarchy
   include Configurations
 
   configuration_defaults do |config|
-    config.member_class = Monarchy::Member
-    config.role_class = Monarchy::Role
-    # config.user_class = Monarchy::User
+    config.member_class_name = 'Monarchy::Member'
+    config.role_class_name = 'Monarchy::Role'
   end
 
   not_configured do |prop|
@@ -28,10 +29,15 @@ module Monarchy
   end
 
   def self.member_class
-    Monarchy.configuration.member_class
+    Monarchy.configuration.member_class_name.safe_constantize
   end
 
   def self.role_class
-    Monarchy.configuration.role_class
+    Monarchy.configuration.role_class_name.safe_constantize
+  end
+
+  def self.user_class
+    klass = Monarchy.configuration.user_class_name.safe_constantize
+    klass ? klass : raise(ArgumentError, 'User class has to be initialized or exist!')
   end
 end
