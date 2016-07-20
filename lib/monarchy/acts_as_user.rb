@@ -19,7 +19,7 @@ module Monarchy
     module InstanceMethods
       def roles_for(resource, inheritence = true)
         return Monarchy.role_class.none unless resource.hierarchy
-        accessible_roles_for(resource, inheritence).order('level desc')
+        accessible_roles_for(resource, inheritence)
       end
 
       def member_for(resource)
@@ -48,7 +48,7 @@ module Monarchy
       private
 
       def accessible_roles_for(resource, inheritnce)
-        accessible_roles = inheritnce ? resource_and_inheritence_roles(resource) : resource_roles(resource)
+        accessible_roles = (inheritnce ? resource_and_inheritence_roles(resource) : resource_roles(resource)).order('level desc')
         accessible_roles.present? ? accessible_roles : descendant_role(resource)
       end
 
