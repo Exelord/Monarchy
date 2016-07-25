@@ -39,7 +39,7 @@ module Monarchy
 
       def include_scopes
         scope :in, (lambda do |resource|
-          joins(:hierarchy).where(monarchy_hierarchies: { parent_id: resource.hierarchy.self_and_descendant_ids })
+          joins(:hierarchy).where(monarchy_hierarchies: { parent_id: resource.hierarchy.self_and_descendants })
         end)
 
         scope :accessible_for, (lambda do |user|
