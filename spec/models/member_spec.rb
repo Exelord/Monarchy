@@ -110,27 +110,27 @@ describe Monarchy::Member, type: :model do
     let!(:memo5) { create :memo, parent: memo2 }
     let!(:memo6) { create :memo, parent: memo3 }
 
-    let!(:member_role) { create(:role, name: :member, level: 1, inherited: false) }
+    let!(:manager_role) { create(:role, name: :manager, level: 2, inherited: false) }
 
     let!(:member2) { create :member, resource: memo1 }
     let!(:member3) { create :member, resource: memo5 }
     let!(:member4) { create :member, resource: memo6 }
 
     subject { Member.accessible_for(member.user) }
-    context 'user has access to root if has guest role' do
-      let!(:member) { create :member, resource: project, roles: [member_role] }
+    context 'user has access to all members if has manager role on root' do
+      let!(:member) { create :member, resource: project, roles: [manager_role] }
 
       it { is_expected.to match_array([member, member2, member3, member4]) }
     end
 
-    context 'user has access to root if has member role' do
+    context 'user has access to only root members if has guest role on root' do
       let!(:member) { create :member, resource: project }
 
       it { is_expected.to match_array([member]) }
     end
 
     context 'user has access to memo3' do
-      let!(:member) { create :member, resource: memo3, roles: [member_role] }
+      let!(:member) { create :member, resource: memo3, roles: [manager_role] }
 
       it { is_expected.to match_array([member, member4]) }
     end
