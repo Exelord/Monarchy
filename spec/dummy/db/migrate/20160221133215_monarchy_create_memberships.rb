@@ -1,4 +1,3 @@
-# frozen_string_literal: true
 class MonarchyCreateMemberships < ActiveRecord::Migration
   def change
     create_table :monarchy_members do |t|

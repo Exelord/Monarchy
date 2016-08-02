@@ -1,4 +1,3 @@
-# frozen_string_literal: true
 class CreateMemoResource < ActiveRecord::Migration
   def change
     create_table :memos do |t|

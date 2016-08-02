@@ -17,10 +17,10 @@ gemspec
 
 group :development, :test do
   gem 'sqlite3', '1.3.11'
-  gem 'rubocop', '0.41.1'
+  gem 'rubocop', '0.40.0'
   gem 'pry-rails', '0.3.4'
   gem 'shoulda-matchers', '3.1.1'
-  gem 'rspec-rails', '3.5.0'
+  gem 'rspec-rails', '3.4.2'
   gem 'factory_girl_rails', '4.7.0'
   gem 'ffaker', '2.2.0'
   gem 'database_cleaner', '1.5.3'

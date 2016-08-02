@@ -1,4 +1,3 @@
-# frozen_string_literal: true
 class MonarchyCreateHierarchies < ActiveRecord::Migration
   def change
     create_table :monarchy_hierarchies do |t|

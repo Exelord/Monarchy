@@ -1,4 +1,3 @@
-# frozen_string_literal: true
 class ParentAsSetup < ActiveRecord::Migration
   def change
     remove_column :resources, :memo_id
