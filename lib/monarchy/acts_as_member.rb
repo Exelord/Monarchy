@@ -29,7 +29,7 @@ module Monarchy
 
       def include_callbacks
         before_create :set_default_role
-        after_destroy :revoke_access
+        after_destroy :revoke_access, if: :member_force_revoke?
       end
 
       def include_validators
@@ -56,6 +56,10 @@ module Monarchy
 
       def revoke_access
         user.revoke_access(resource, resource.hierarchy.descendant_ids)
+      end
+
+      def member_force_revoke?
+        Monarchy.configuration.member_force_revoke
       end
 
       def set_default_role
