@@ -41,12 +41,16 @@ module Monarchy
 
       def accessible_leaves(user)
         descendant_leaves.where('monarchy_hierarchy_hierarchies.descendant_id': descendant_leaves_for_user(user)
-            .where("monarchy_roles.name = '#{default_role_name}'")
+            .where('monarchy_roles.name': restricted_role_names)
             .select('monarchy_hierarchy_hierarchies.ancestor_id')).union(
               descendant_leaves
                 .where('monarchy_hierarchy_hierarchies.ancestor_id': descendant_leaves_for_user(user)
-                .where("monarchy_roles.name != '#{default_role_name}'"))
+                .where.not('monarchy_roles.name': restricted_role_names))
             )
+      end
+
+      def restricted_role_names
+        Array(Monarchy.configuration.restricted_role_names) + [default_role_name]
       end
 
       def default_role_name

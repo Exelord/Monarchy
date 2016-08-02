@@ -7,4 +7,6 @@ Monarchy.configure do |config|
   config.user_class_name = 'User'
   config.role_class_name = 'Role'
   config.member_class_name = 'Member'
+
+  config.restricted_role_names = ['member']
 end

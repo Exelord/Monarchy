@@ -22,10 +22,11 @@ module Monarchy
   configuration_defaults do |config|
     config.member_class_name = 'Monarchy::Member'
     config.role_class_name = 'Monarchy::Role'
+    config.restricted_role_names = []
   end
 
   not_configured do |prop|
-    raise NoMethodError, "#{prop} must be configured"
+    raise NoMethodError, "Monarchy requires a #{prop} to be configured"
   end
 
   def self.member_class
