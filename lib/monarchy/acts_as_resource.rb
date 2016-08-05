@@ -6,13 +6,15 @@ module Monarchy
     module ClassMethods
       def acts_as_resource(options = {})
         extend Monarchy::ActsAsResource::SupportMethods
+        setup_acting
 
         parent_as(options[:parent_as]) if options[:parent_as]
 
         after_create :ensure_hierarchy
+        after_save :assign_parent
 
-        has_many :members, through: :hierarchy, class_name: 'Monarchy::Member'
-        has_many :users, through: :members, class_name: 'User'
+        has_many :members, through: :hierarchy, class_name: "::#{Monarchy.member_class}"
+        has_many :users, through: :members, class_name: "::#{Monarchy.user_class}"
         has_one :hierarchy, as: :resource, dependent: :destroy, class_name: 'Monarchy::Hierarchy'
 
         include_scopes
@@ -22,24 +24,22 @@ module Monarchy
     end
 
     module SupportMethods
+      attr_accessor :parentize, :acting_as_resource
+
       private
 
-      def parent_as(name)
-        define_method "#{name}=" do |value|
-          self.parent = value
-          super(value)
-        end
+      def setup_acting
+        Monarchy.resource_classes << self
+        @acting_as_resource = true
+      end
 
-        define_method "#{name}_id=" do |id|
-          class_name = name.to_s.camelize.safe_constantize
-          self.parent = class_name.find(id)
-          super(id)
-        end
+      def parent_as(name)
+        self.parentize = name
       end
 
       def include_scopes
         scope :in, (lambda do |resource|
-          joins(:hierarchy).where(monarchy_hierarchies: { parent_id: resource.hierarchy.self_and_descendant_ids })
+          joins(:hierarchy).where(monarchy_hierarchies: { parent_id: resource.hierarchy.self_and_descendants })
         end)
 
         scope :accessible_for, (lambda do |user|
@@ -78,6 +78,11 @@ module Monarchy
           parent: parent.try(:hierarchy),
           children: hierarchies_for(children)
         )
+      end
+
+      def assign_parent(force = false)
+        parent = self.class.parentize
+        self.parent = send(parent) if parent && (send("#{parent}_id_changed?") || force)
       end
 
       def children_resources

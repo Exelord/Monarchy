@@ -3,4 +3,11 @@ Monarchy.configure do |config|
   config.default_role.name = :guest
   config.default_role.level = 0
   config.default_role.inherited = false
+
+  config.user_class_name = 'User'
+  config.role_class_name = 'Role'
+  config.member_class_name = 'Member'
+
+  config.member_force_revoke = true
+  config.restricted_role_names = ['member']
 end

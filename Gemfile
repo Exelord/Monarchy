@@ -24,6 +24,7 @@ group :development, :test do
   gem 'factory_girl_rails', '4.7.0'
   gem 'ffaker', '2.2.0'
   gem 'database_cleaner', '1.5.3'
+  gem 'tqdm', '0.3.0'
 end
 
 gem 'simplecov', '0.11.2', require: false, group: :test

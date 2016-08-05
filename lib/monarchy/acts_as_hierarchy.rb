@@ -8,7 +8,7 @@ module Monarchy
         extend Monarchy::ActsAsHierarchy::SupportMethods
         has_closure_tree dependent: :destroy
 
-        has_many :members, class_name: 'Monarchy::Member', dependent: :destroy
+        has_many :members, class_name: "::#{Monarchy.member_class}", dependent: :destroy
         belongs_to :resource, polymorphic: true, dependent: :destroy
 
         include_scopes
@@ -40,11 +40,30 @@ module Monarchy
       end
 
       def accessible_leaves(user)
-        joins('INNER JOIN "monarchy_hierarchy_hierarchies" ON '\
-          '"monarchy_hierarchies"."id" = "monarchy_hierarchy_hierarchies"."descendant_id"')
-          .joins('INNER JOIN "monarchy_members" ON '\
-          '"monarchy_members"."hierarchy_id" = "monarchy_hierarchy_hierarchies"."ancestor_id"')
-          .where(monarchy_members: { user_id: user.id }).distinct
+        descendant_leaves.where('monarchy_hierarchy_hierarchies.descendant_id': descendant_leaves_for_user(user)
+            .where('monarchy_roles.name': restricted_role_names)
+            .select('monarchy_hierarchy_hierarchies.ancestor_id')).union(
+              descendant_leaves
+                .where('monarchy_hierarchy_hierarchies.ancestor_id': descendant_leaves_for_user(user)
+                .where.not('monarchy_roles.name': restricted_role_names))
+            )
+      end
+
+      def restricted_role_names
+        Array(Monarchy.configuration.restricted_role_names) + [default_role_name]
+      end
+
+      def default_role_name
+        Monarchy.configuration.default_role.name
+      end
+
+      def descendant_leaves_for_user(user)
+        descendant_leaves.joins(members: [:roles]).where(monarchy_members: { user_id: user.id })
+      end
+
+      def descendant_leaves
+        joins('INNER JOIN "monarchy_hierarchy_hierarchies" ON "monarchy_hierarchies"."id" =' \
+          '"monarchy_hierarchy_hierarchies"."descendant_id"')
       end
     end
   end

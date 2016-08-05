@@ -20,17 +20,31 @@ describe User, type: :model do
     let(:project_roles) { user.roles_for(project) }
     subject { user.roles_for(memo) }
 
+    context 'inherited_role from higher level' do
+      let!(:owner_role) { create(:role, name: :owner, level: 3) }
+      let!(:manager_role) { create(:role, name: :manager, level: 2, inherited_role: owner_role) }
+
+      it { is_expected.to match_array([owner_role, member_role, guest_role]) }
+
+      context 'do not map self roles' do
+        let!(:memo_member) { create(:member, user: user, hierarchy: memo.hierarchy, roles: [manager_role]) }
+        let!(:project_member) { create(:member, user: user, hierarchy: project.hierarchy, roles: [member_role]) }
+
+        it { is_expected.to match_array([manager_role, member_role, guest_role]) }
+      end
+    end
+
     context 'roles without inheritece' do
       let(:project_roles) { user.roles_for(project, false) }
       subject { user.roles_for(memo, false) }
 
-      it { expect(project_roles).to match_array([manager_role]) }
-      it { is_expected.to match_array([member_role]) }
+      it { expect(project_roles).to match_array([manager_role, guest_role]) }
+      it { is_expected.to match_array([member_role, guest_role]) }
 
       context 'where memo has no roles' do
         let!(:memo_member) {}
 
-        it { expect(project_roles).to match_array([manager_role]) }
+        it { expect(project_roles).to match_array([manager_role, guest_role]) }
         it { is_expected.to eq([]) }
       end
     end
@@ -38,7 +52,7 @@ describe User, type: :model do
     context 'user has no direct access to memo' do
       let!(:memo_member) {}
 
-      it { expect(project_roles).to match_array([manager_role]) }
+      it { expect(project_roles).to match_array([manager_role, guest_role]) }
       it { is_expected.to match_array([manager_role]) }
     end
 
@@ -46,14 +60,14 @@ describe User, type: :model do
       let!(:project_member) {}
 
       it { expect(project_roles).to match_array([guest_role]) }
-      it { is_expected.to match_array([member_role]) }
+      it { is_expected.to match_array([member_role, guest_role]) }
     end
 
     context 'returns all roles with the higher level' do
       let(:member_role) { create(:role, name: :member, level: 2) }
 
-      it { expect(project_roles).to match_array([manager_role]) }
-      it { is_expected.to match_array([manager_role, member_role]) }
+      it { expect(project_roles).to match_array([manager_role, guest_role]) }
+      it { is_expected.to match_array([manager_role, member_role, guest_role]) }
 
       context 'returns non duplicated roles' do
         let!(:project_member) do
@@ -62,16 +76,16 @@ describe User, type: :model do
                           roles: [manager_role, member_role])
         end
 
-        it { expect(project_roles).to match_array([manager_role, member_role]) }
-        it { is_expected.to match_array([manager_role, member_role]) }
+        it { expect(project_roles).to match_array([manager_role, member_role, guest_role]) }
+        it { is_expected.to match_array([manager_role, member_role, guest_role]) }
       end
     end
 
     context 'parent role is not inherited' do
       let(:manager_role) { create(:role, name: :manager, level: 2, inherited: false) }
 
-      it { expect(project_roles).to match_array([manager_role]) }
-      it { is_expected.to match_array([member_role]) }
+      it { expect(project_roles).to match_array([manager_role, guest_role]) }
+      it { is_expected.to match_array([member_role, guest_role]) }
     end
   end
 
@@ -130,20 +144,39 @@ describe User, type: :model do
     let(:other_user) { create :user }
 
     context 'sholud revoke bellow and self' do
-      before do
-        user.grant(:manager, project)
-        user.grant(:manager, memo3)
-        user.grant(:member, memo4)
-        other_user.grant(:manager, memo3)
+      context 'with deafult hierarchy_ids' do
+        before do
+          user.grant(:manager, project)
+          user.grant(:manager, memo3)
+          user.grant(:member, memo4)
+          other_user.grant(:manager, memo3)
 
-        user.revoke_access(memo2)
+          user.revoke_access(memo2)
+        end
+
+        it { expect(project.members.count).to eq(1) }
+        it { expect(memo.members.count).to eq(0) }
+        it { expect(memo2.members.count).to eq(0) }
+        it { expect(memo3.members.count).to eq(1) }
+        it { expect(memo4.members.count).to eq(1) }
       end
 
-      it { expect(project.members.count).to eq(1) }
-      it { expect(memo.members.count).to eq(0) }
-      it { expect(memo2.members.count).to eq(0) }
-      it { expect(memo3.members.count).to eq(1) }
-      it { expect(memo4.members.count).to eq(1) }
+      context 'with custom hierarchy_ids' do
+        before do
+          user.grant(:member, project)
+          user.grant(:member, memo)
+          user.grant(:member, memo3)
+          user.grant(:member, memo4)
+
+          user.revoke_access(memo, memo.hierarchy.descendant_ids)
+        end
+
+        it { expect(project.members.count).to eq(1) }
+        it { expect(memo.members.count).to eq(1) }
+        it { expect(memo2.members.count).to eq(0) }
+        it { expect(memo3.members.count).to eq(0) }
+        it { expect(memo4.members.count).to eq(0) }
+      end
     end
   end
 

@@ -151,11 +151,28 @@ describe Resource, type: :model do
       it { is_expected.to match_array([memo2, memo3, memo4]) }
       it { is_expected.not_to include(memo5, memo1) }
 
-      context 'user has access to resources bellow' do
-        let!(:memo_member) { create(:member, user: user, hierarchy: memo3.hierarchy) }
+      context 'user has access to resources bellow if has manager role' do
+        let!(:manager_role) { create(:role, name: :manager, level: 2, inherited: false) }
+        let!(:memo_member) { create(:member, user: user, hierarchy: memo3.hierarchy, roles: [manager_role]) }
 
         it { is_expected.to match_array([memo2, memo3, memo4, memo6]) }
         it { is_expected.not_to include(memo5, memo1) }
+      end
+
+      context 'user has access to resources bellow if has guest role' do
+        let!(:memo_member) { create(:member, user: user, hierarchy: memo3.hierarchy) }
+
+        it { is_expected.to match_array([memo2, memo3]) }
+        it { is_expected.not_to include(memo5, memo1, memo4, memo6) }
+      end
+
+      context 'user has access to resources bellow if has guest role' do
+        let!(:memo7) { create :memo, parent: memo6 }
+        let!(:memo_member) { create(:member, user: user, hierarchy: memo3.hierarchy) }
+        let!(:memo7_member) { create(:member, user: user, hierarchy: memo7.hierarchy) }
+
+        it { is_expected.to match_array([memo2, memo3, memo6, memo7]) }
+        it { is_expected.not_to include(memo5, memo1, memo4) }
       end
     end
 
@@ -163,6 +180,20 @@ describe Resource, type: :model do
       let!(:memo_member) { create(:member, user: user, hierarchy: memo4.hierarchy) }
 
       it { expect(Memo.accessible_for(user).in(memo2)).to match_array([memo3, memo4]) }
+    end
+  end
+
+  describe '@acting_as_resource' do
+    context 'when class is a resource' do
+      let(:klass) { described_class }
+
+      it { expect(klass.respond_to?(:acting_as_resource)).to be true }
+      it { expect(klass.acting_as_resource).to be true }
+    end
+
+    context 'when class is not a resource' do
+      let(:klass) { User }
+      it { expect(klass.respond_to?(:acting_as_resource)).to be false }
     end
   end
 end

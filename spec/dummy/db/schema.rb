@@ -28,6 +28,9 @@ ActiveRecord::Schema.define(version: 20160502212213) do
     t.datetime "updated_at",    null: false
   end
 
+  add_index "monarchy_hierarchies", ["parent_id"], name: "index_monarchy_hierarchies_on_parent_id"
+  add_index "monarchy_hierarchies", ["resource_id"], name: "index_monarchy_hierarchies_on_resource_id"
+
   create_table "monarchy_hierarchy_hierarchies", id: false, force: :cascade do |t|
     t.integer "ancestor_id",   null: false
     t.integer "descendant_id", null: false
@@ -44,6 +47,9 @@ ActiveRecord::Schema.define(version: 20160502212213) do
     t.datetime "updated_at",   null: false
   end
 
+  add_index "monarchy_members", ["hierarchy_id"], name: "index_monarchy_members_on_hierarchy_id"
+  add_index "monarchy_members", ["user_id"], name: "index_monarchy_members_on_user_id"
+
   create_table "monarchy_members_roles", force: :cascade do |t|
     t.integer  "role_id"
     t.integer  "member_id"
@@ -51,16 +57,22 @@ ActiveRecord::Schema.define(version: 20160502212213) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "monarchy_members_roles", ["member_id"], name: "index_monarchy_members_roles_on_member_id"
   add_index "monarchy_members_roles", ["role_id", "member_id"], name: "index_monarchy_members_roles_on_role_id_and_member_id", unique: true
+  add_index "monarchy_members_roles", ["role_id"], name: "index_monarchy_members_roles_on_role_id"
 
   create_table "monarchy_roles", force: :cascade do |t|
-    t.string   "name",                      null: false
-    t.integer  "level",      default: 0,    null: false
-    t.boolean  "inherited",  default: true, null: false
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.string   "name",                              null: false
+    t.integer  "level",             default: 0,     null: false
+    t.integer  "inherited_role_id"
+    t.boolean  "inherited",         default: false, null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
   end
 
+  add_index "monarchy_roles", ["inherited"], name: "index_monarchy_roles_on_inherited"
+  add_index "monarchy_roles", ["inherited_role_id"], name: "index_monarchy_roles_on_inherited_role_id"
+  add_index "monarchy_roles", ["level"], name: "index_monarchy_roles_on_level"
   add_index "monarchy_roles", ["name"], name: "index_monarchy_roles_on_name", unique: true
 
   create_table "projects", force: :cascade do |t|
