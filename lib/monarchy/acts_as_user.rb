@@ -90,7 +90,7 @@ module Monarchy
 
       def grant_or_create_member(role_name, resource)
         role = Monarchy.role_class.find_by(name: role_name)
-        raise 'Role does not exist' unless role
+        raise Monarchy::Exceptions::RoleNotExist, role_name unless role
 
         member = member_for(resource)
         if member

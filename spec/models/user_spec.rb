@@ -97,6 +97,12 @@ describe User, type: :model do
       it { expect(resource.members.first.roles).to match_array([manager_role, guest_role]) }
     end
 
+    context 'role does not exist' do
+      subject { user.grant(:phantom, memo) }
+
+      it { expect { subject }.to raise_exception(Monarchy::Exceptions::RoleNotExist) }
+    end
+
     context 'memo resource with project as parent' do
       let!(:grant_user) { user.grant(:manager, memo) }
 
