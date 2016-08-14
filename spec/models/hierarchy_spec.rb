@@ -38,14 +38,17 @@ describe Monarchy::Hierarchy, type: :model do
     subject { described_class.accessible_for(user) }
 
     context 'user has access to all parents memos and self' do
+      let!(:guest_role) { create(:role, name: :guest, level: 0, inherited: false) }
+      let!(:member_role) { create(:role, name: :member, level: 1, inherited: false, inherited_role: guest_role) }
+
       let!(:memo_member) { create(:member, user: user, hierarchy: memo4.hierarchy) }
 
       it { is_expected.to match_array([project.hierarchy, memo2.hierarchy, memo3.hierarchy, memo4.hierarchy]) }
       it { is_expected.not_to include(memo6.hierarchy, memo5.hierarchy, memo1.hierarchy) }
 
       context 'user has access to resources bellow' do
-        let!(:manager_role) { create(:role, name: :manager, level: 1, inherited: false) }
-        let!(:memo_member) { create(:member, user: user, hierarchy: memo3.hierarchy, roles: [manager_role]) }
+        let!(:manager_role) { create(:role, name: :manager, level: 1) }
+        let!(:memo_member) { create(:member, user: user, hierarchy: memo3.hierarchy, roles: [manager_role, member_role]) }
 
         it do
           is_expected.to match_array([project.hierarchy, memo2.hierarchy,
@@ -62,8 +65,6 @@ describe Monarchy::Hierarchy, type: :model do
       end
 
       context 'user has not access to resources bellow as member' do
-        let!(:member_role) { create(:role, name: :member, level: 1) }
-
         context 'when user is member in memo3' do
           let!(:memo_member) { create(:member, user: user, hierarchy: memo3.hierarchy, roles: [member_role]) }
 

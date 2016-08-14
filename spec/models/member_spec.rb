@@ -110,7 +110,7 @@ describe Monarchy::Member, type: :model do
     let!(:memo5) { create :memo, parent: memo2 }
     let!(:memo6) { create :memo, parent: memo3 }
 
-    let!(:manager_role) { create(:role, name: :manager, level: 2, inherited: false) }
+    let!(:manager_role) { create(:role, name: :manager, level: 2, inherited: true) }
 
     let!(:member2) { create :member, resource: memo1 }
     let!(:member3) { create :member, resource: memo5 }

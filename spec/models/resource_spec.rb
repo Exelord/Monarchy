@@ -152,7 +152,7 @@ describe Resource, type: :model do
       it { is_expected.not_to include(memo5, memo1) }
 
       context 'user has access to resources bellow if has manager role' do
-        let!(:manager_role) { create(:role, name: :manager, level: 2, inherited: false) }
+        let!(:manager_role) { create(:role, name: :manager, level: 2, inherited: true) }
         let!(:memo_member) { create(:member, user: user, hierarchy: memo3.hierarchy, roles: [manager_role]) }
 
         it { is_expected.to match_array([memo2, memo3, memo4, memo6]) }

@@ -8,5 +8,4 @@ Monarchy.configure do |config|
   # config.user_class_name = 'User'
 
   # config.member_force_revoke = true
-  # config.restricted_role_names = ['member']
 end

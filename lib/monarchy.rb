@@ -23,7 +23,6 @@ module Monarchy
     config.member_class_name = 'Monarchy::Member'
     config.role_class_name = 'Monarchy::Role'
     config.member_force_revoke = false
-    config.restricted_role_names = []
   end
 
   not_configured do |prop|
