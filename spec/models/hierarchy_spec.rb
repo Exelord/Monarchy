@@ -38,8 +38,10 @@ describe Monarchy::Hierarchy, type: :model do
     subject { described_class.accessible_for(user) }
 
     context 'user has access to all parents memos and self' do
+      let!(:guest_role) { create(:role, name: :guest, level: 0, inherited: false) }
+      let!(:member_role) { create(:role, name: :member, level: 1, inherited: false, inherited_role: guest_role) }
+
       let!(:memo_member) { create(:member, user: user, hierarchy: memo4.hierarchy) }
-      let!(:member_role) { create(:role, name: :member, level: 1, inherited: false) }
 
       it { is_expected.to match_array([project.hierarchy, memo2.hierarchy, memo3.hierarchy, memo4.hierarchy]) }
       it { is_expected.not_to include(memo6.hierarchy, memo5.hierarchy, memo1.hierarchy) }
