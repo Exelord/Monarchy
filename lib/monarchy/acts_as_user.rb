@@ -19,11 +19,12 @@ module Monarchy
 
     module InstanceMethods
       def roles_for(resource, inheritence = true)
-        return Monarchy.role_class.none unless resource.hierarchy
+        check_resource(resource)
         accessible_roles_for(resource, inheritence)
       end
 
       def member_for(resource)
+        check_resource(resource)
         resource.hierarchy.members.where(monarchy_members: { user_id: id }).first
       end
 
@@ -34,6 +35,7 @@ module Monarchy
       end
 
       def revoke_access(resource, hierarchy_ids = nil)
+        check_resource(resource)
         hierarchy_ids ||= resource.hierarchy.self_and_descendant_ids
         members_for(hierarchy_ids).delete_all
       end
@@ -81,16 +83,19 @@ module Monarchy
       end
 
       def revoking_role(role_name, resource, force = false)
+        check_resource(resource)
+        role = check_role_name(role_name)
+
         member_roles = member_for(resource).try(:members_roles)
         return 0 if member_roles.nil?
 
-        return revoke_access(resource) if last_role?(member_roles, role_name) && force
-        member_roles.joins(:role).where(monarchy_roles: { name: role_name }).delete_all
+        return revoke_access(resource) if last_role?(member_roles, role) && force
+        member_roles.where(role_id: role).delete_all
       end
 
       def grant_or_create_member(role_name, resource)
-        role = Monarchy.role_class.find_by(name: role_name)
-        raise Monarchy::Exceptions::RoleNotExist, role_name unless role
+        check_resource(resource)
+        role = check_role_name(role_name)
 
         member = member_for(resource)
         if member
@@ -102,6 +107,18 @@ module Monarchy
         member
       end
 
+      def check_role_name(role_name)
+        role = Monarchy.role_class.find_by(name: role_name)
+        role || raise(Monarchy::Exceptions::RoleNotExist, role_name)
+      end
+
+      def check_resource(resource)
+        raise Monarchy::Exceptions::ResourceIsNil unless resource
+
+        true_resource = resource.class.try(:acting_as_resource)
+        raise Monarchy::Exceptions::ModelNotResource, resource unless true_resource
+      end
+
       def members_for(hierarchy_ids)
         Monarchy.member_class.where(hierarchy_id: hierarchy_ids, user_id: id)
       end
@@ -110,12 +127,12 @@ module Monarchy
         @default_role ||= Monarchy.role_class.find_by(name: Monarchy.configuration.default_role.name)
       end
 
-      def last_role?(member_roles, role_name = nil)
-        role_name ||= default_role.name
-        member_roles.count == 1 && member_roles.first.role.name == role_name.to_s
+      def last_role?(member_roles, role = nil)
+        role ||= default_role
+        member_roles.count == 1 && member_roles.first.role == role
       end
 
-      def default_role?(role_name)
+      def default_role?(role_name) # TODO: Probably not in use
         default_role.name.to_s == role_name.to_s
       end
     end
