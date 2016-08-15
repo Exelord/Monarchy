@@ -27,9 +27,8 @@ end
 task 'monarchy:rebuild' do
   p 'Rebuilding Monarchy...'
 
-  Monarchy::Hierarchy.all.delete_all
-  Rake::Task["monarchy:hierarchization"].invoke
-  Rake::Task["monarchy:reparentize"].invoke
+  Rake::Task['monarchy:hierarchization'].invoke
+  Rake::Task['monarchy:reparentize'].invoke
 
   p 'Rebuilding Monarchy ended!'
 end
