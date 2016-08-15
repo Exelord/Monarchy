@@ -63,6 +63,62 @@ describe Resource, type: :model do
     end
   end
 
+  describe 'after_save' do
+    describe '.assign_parent' do
+      let!(:project) { create(:project) }
+      let(:descendants) { project.hierarchy.descendants }
+
+      context 'belongs_to' do
+        let!(:memo) { create(:memo) }
+
+        it { expect { memo.parent = project }.to change { descendants.reload.to_a } }
+        it { expect { memo.parent = project }.to change { memo.parent }.to(project) }
+
+        it { expect { memo.update(project: project) }.to change { descendants.reload.to_a } }
+        it { expect { memo.update(project: project) }.to change { memo.parent }.to(project) }
+
+        it { expect { memo.update(project_id: project.id) }.to change { descendants.reload.to_a } }
+        it { expect { memo.update(project_id: project.id) }.to change { memo.parent }.to(project) }
+      end
+
+      context 'belongs_to polymorphic' do
+        let!(:task) { create(:task) }
+
+        it { expect { task.parent = project }.to change { descendants.reload.to_a } }
+        it { expect { task.parent = project }.to change { task.parent }.to(project) }
+
+        it { expect { task.update(resource: project) }.to change { descendants.reload.to_a } }
+        it { expect { task.update(resource: project) }.to change { task.parent }.to(project) }
+
+        it do
+          expect { task.update(resource_id: project.id, resource_type: 'Project') }
+            .to change { descendants.reload.to_a }
+        end
+
+        it do
+          expect { task.update(resource_id: project.id, resource_type: 'Project') }
+            .to change { task.parent }.to(project)
+        end
+
+        context 'change resource_type only' do
+          let!(:memo) { create(:memo) }
+          let!(:task) { create(:task, resource_id: project.id, resource_type: 'Project') }
+
+          it { expect { task.update(resource_type: 'Memo') }.to change { task.parent }.to(memo) }
+          it { expect { task.update(resource_type: 'Memo') }.to change { descendants.reload.to_a } }
+        end
+
+        context 'change resource_id only' do
+          let!(:project2) { create(:project) }
+          let!(:task) { create(:task, resource_id: project.id, resource_type: 'Project') }
+
+          it { expect { task.update(resource_id: project2.id) }.to change { task.parent }.to(project2) }
+          it { expect { task.update(resource_id: project2.id) }.to change { descendants.reload.to_a } }
+        end
+      end
+    end
+  end
+
   describe '#children' do
     let!(:memo) { create :memo }
     let!(:memo2) { create :memo }

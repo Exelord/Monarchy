@@ -8,7 +8,7 @@ AllCops:
 Documentation:
   Enabled: false
 Metrics/LineLength:
-  Max: 120
+  Max: 125
 Style/CaseIndentation:
   Enabled: false
 Style/StructInheritance:
