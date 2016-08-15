@@ -81,8 +81,8 @@ module Monarchy
       end
 
       def revoking_role(role_name, resource, force = false)
-        member = member_for(resource)
-        member_roles = member.members_roles
+        member_roles = member_for(resource).try(:members_roles)
+        return 0 if member_roles.nil?
 
         return revoke_access(resource) if last_role?(member_roles, role_name) && force
         member_roles.joins(:role).where(monarchy_roles: { name: role_name }).delete_all

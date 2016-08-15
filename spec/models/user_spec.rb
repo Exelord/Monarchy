@@ -194,11 +194,20 @@ describe User, type: :model do
       end
 
       it { expect { subject }.to change { Monarchy::MembersRole.count }.by(-1) }
+      it { is_expected.to be 1 }
 
       it do
         subject
         expect(memo4.members.first.roles).to match_array([member_role, guest_role])
       end
+    end
+
+    context 'when user has not member' do
+      subject { user.revoke_role(:manager, memo4) }
+
+      it { expect { subject }.not_to change { Monarchy::MembersRole.count } }
+      it { expect { subject }.not_to change { Member.count } }
+      it { is_expected.to be 0 }
     end
 
     context 'when revoke last role' do
