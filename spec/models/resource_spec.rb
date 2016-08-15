@@ -105,6 +105,7 @@ describe Resource, type: :model do
           let!(:task) { create(:task, resource_id: project.id, resource_type: 'Project') }
 
           it { expect { task.update(resource_type: 'Memo') }.to change { task.parent }.to(memo) }
+          it { expect { task.update(resource_type: 'Memo') }.to change { descendants.reload.to_a } }
         end
 
         context 'change resource_id only' do
@@ -112,6 +113,7 @@ describe Resource, type: :model do
           let!(:task) { create(:task, resource_id: project.id, resource_type: 'Project') }
 
           it { expect { task.update(resource_id: project2.id) }.to change { task.parent }.to(project2) }
+          it { expect { task.update(resource_id: project2.id) }.to change { descendants.reload.to_a } }
         end
       end
     end
