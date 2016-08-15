@@ -9,8 +9,7 @@ module Monarchy
         has_closure_tree dependent: :destroy
 
         has_many :members, class_name: "::#{Monarchy.member_class}", dependent: :destroy
-        belongs_to :resource, polymorphic: true, dependent: :destroy
-
+        belongs_to :resource, polymorphic: true
         include_scopes
 
         validates :resource_type, presence: true
