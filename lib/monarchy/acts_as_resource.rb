@@ -10,8 +10,8 @@ module Monarchy
 
         parent_as(options[:parent_as]) if options[:parent_as]
 
-        after_create :ensure_hierarchy
         after_save :assign_parent
+        after_create :ensure_hierarchy, :assign_parent
 
         has_many :members, through: :hierarchy, class_name: "::#{Monarchy.member_class}"
         has_many :users, through: :members, class_name: "::#{Monarchy.user_class}"
@@ -24,13 +24,14 @@ module Monarchy
     end
 
     module SupportMethods
-      attr_accessor :parentize, :acting_as_resource
+      attr_accessor :parentize, :acting_as_resource, :automatic_hierarchy
 
       private
 
       def setup_acting
         Monarchy.resource_classes << self
         @acting_as_resource = true
+        @automatic_hierarchy = true
       end
 
       def parent_as(name)
@@ -55,7 +56,7 @@ module Monarchy
 
       def parent=(resource)
         if hierarchy
-          hierarchy.update(parent: resource.try(:hierarchy))
+          hierarchy.update(parent: resource.try(:ensure_hierarchy))
         else
           @parent = resource
         end
@@ -70,22 +71,22 @@ module Monarchy
         @children = array
       end
 
-      private
-
-      def ensure_hierarchy
+      def ensure_hierarchy(force = false)
         self.hierarchy ||= Monarchy::Hierarchy.create(
           resource: self,
           parent: parent.try(:hierarchy),
           children: hierarchies_for(children)
-        )
+        ) if self.class.automatic_hierarchy || force
       end
 
-      def assign_parent(force = false)
-        parent = self.class.parentize
+      private
 
-        if parent
-          was_changed = changes["#{parent}_id"] || changes["#{parent}_type"]
-          self.parent = send(parent) if was_changed || force
+      def assign_parent(force = false)
+        parentize = self.class.parentize
+
+        if parentize
+          was_changed = changes["#{parentize}_id"] || changes["#{parentize}_type"]
+          self.parent = send(parentize) if was_changed || force
         end
       end
 
