@@ -10,7 +10,7 @@ module Monarchy
 
         parent_as(options[:parent_as]) if options[:parent_as]
 
-        after_save :assign_parent
+        after_update :assign_parent
         after_create :ensure_hierarchy, :assign_parent
 
         has_many :members, through: :hierarchy, class_name: "::#{Monarchy.member_class}"
