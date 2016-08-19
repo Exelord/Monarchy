@@ -16,12 +16,18 @@ describe Monarchy::Hierarchy, type: :model do
 
     subject { described_class.in(project) }
 
-    it { is_expected.to match_array([memo1.hierarchy, project2.hierarchy, memo3.hierarchy]) }
+    it do
+      is_expected.to match_array([project2.status.hierarchy, project.status.hierarchy,
+                                  memo1.hierarchy, project2.hierarchy, memo3.hierarchy])
+    end
 
     context 'nested memo in memo' do
       let!(:memo3) { create :memo, parent: project2 }
 
-      it { is_expected.to match_array([memo1.hierarchy, project2.hierarchy, memo3.hierarchy]) }
+      it do
+        is_expected.to match_array([project2.status.hierarchy, project.status.hierarchy,
+                                    memo1.hierarchy, project2.hierarchy, memo3.hierarchy])
+      end
     end
   end
 

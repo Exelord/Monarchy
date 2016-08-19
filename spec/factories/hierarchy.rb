@@ -3,9 +3,9 @@ FactoryGirl.define do
   factory :hierarchy, class: Monarchy::Hierarchy do
     before(:create) do |hierarchy|
       unless hierarchy.resource
-        Project.skip_callback(:create, :after, :ensure_hierarchy)
+        Project.automatic_hierarchy = false
         hierarchy.resource = Project.create
-        Project.set_callback(:create, :after, :ensure_hierarchy)
+        Project.automatic_hierarchy = true
       end
     end
   end

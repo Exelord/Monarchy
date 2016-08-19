@@ -129,7 +129,7 @@ describe Resource, type: :model do
     context 'getter' do
       let(:project) { create(:project, children: [memo, memo2, project2]) }
 
-      it { is_expected.to eq([memo, memo2, project2]) }
+      it { is_expected.to eq([memo, memo2, project2, project.status]) }
     end
 
     context 'setter' do
@@ -137,12 +137,12 @@ describe Resource, type: :model do
 
       it do
         project.children = [memo, memo2, project2]
-        is_expected.to eq([memo, memo2, project2])
+        is_expected.to eq([memo, memo2, project2, project.status])
       end
 
       it 'can assign empty array' do
         project.children = []
-        is_expected.to be_empty
+        is_expected.to eq([project.status])
       end
     end
   end
@@ -251,5 +251,30 @@ describe Resource, type: :model do
       let(:klass) { User }
       it { expect(klass.respond_to?(:acting_as_resource)).to be false }
     end
+  end
+
+  require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+
+  describe 'has_one parentize' do
+    let!(:guest_role) { create(:role, name: :guest, level: 0, inherited: false) }
+    let!(:owner_role) { create(:role, name: :owner, level: 3) }
+
+    let!(:user) { create(:user) }
+    let!(:project) { Project.create(name: 'My Project') }
+    let!(:status) { project.status }
+
+    before { user.grant(:owner, project) }
+
+    it { expect(status.hierarchy.parent).to be(project.hierarchy) }
+    it { expect(status.hierarchy.parent_id).to be(project.hierarchy.id) }
+
+    it { expect(status.hierarchy.root).to eq(project.hierarchy) }
+    it { expect(status.reload.parent).to eq(project) }
+
+    it { expect(status.hierarchy.ancestors).to match_array([project.hierarchy]) }
+    it { expect(project.hierarchy.descendants).to match_array([status.hierarchy]) }
+
+    it { expect(user.roles_for(project)).to match_array([owner_role, guest_role]) }
+    it { expect(user.roles_for(status)).to match_array([owner_role]) }
   end
 end

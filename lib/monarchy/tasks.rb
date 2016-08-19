@@ -16,7 +16,7 @@ module Monarchy
       p 'Monarchy hierarchization...'
       Monarchy.resource_classes.with_progress.each do |klass|
         klass.all.each do |model|
-          model.send(:ensure_hierarchy)
+          model.send(:ensure_hierarchy, true)
         end
       end
       p 'Monarchy hierarchization ended!'
