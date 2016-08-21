@@ -4,6 +4,7 @@ require 'configurations'
 require 'active_record_union'
 
 require 'monarchy/exceptions'
+require 'monarchy/validators'
 require 'monarchy/tasks'
 require 'monarchy/engine'
 

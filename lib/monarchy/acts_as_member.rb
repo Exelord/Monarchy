@@ -49,6 +49,7 @@ module Monarchy
 
     module InstanceMethods
       def resource=(resource)
+        Monarchy::Validators.resource(resource)
         self.hierarchy = resource.hierarchy unless hierarchy
       end
 

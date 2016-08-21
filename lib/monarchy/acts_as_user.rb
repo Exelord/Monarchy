@@ -19,12 +19,12 @@ module Monarchy
 
     module InstanceMethods
       def roles_for(resource, inheritence = true)
-        check_resource(resource)
+        Monarchy::Validators.resource(resource)
         accessible_roles_for(resource, inheritence)
       end
 
       def member_for(resource)
-        check_resource(resource)
+        Monarchy::Validators.resource(resource)
         resource.hierarchy.members.where(monarchy_members: { user_id: id }).first
       end
 
@@ -35,7 +35,7 @@ module Monarchy
       end
 
       def revoke_access(resource, hierarchy_ids = nil)
-        check_resource(resource)
+        Monarchy::Validators.resource(resource)
         hierarchy_ids ||= resource.hierarchy.self_and_descendant_ids
         members_for(hierarchy_ids).delete_all
       end
@@ -83,8 +83,8 @@ module Monarchy
       end
 
       def revoking_role(role_name, resource, force = false)
-        check_resource(resource)
-        role = check_role_name(role_name)
+        Monarchy::Validators.resource(resource)
+        role = Monarchy::Validators.role_name(role_name)
 
         member_roles = member_for(resource).try(:members_roles)
         return 0 if member_roles.nil?
@@ -94,8 +94,8 @@ module Monarchy
       end
 
       def grant_or_create_member(role_name, resource)
-        check_resource(resource)
-        role = check_role_name(role_name)
+        Monarchy::Validators.resource(resource)
+        role = Monarchy::Validators.role_name(role_name)
 
         member = member_for(resource)
         if member
@@ -105,18 +105,6 @@ module Monarchy
         end
 
         member
-      end
-
-      def check_role_name(role_name)
-        role = Monarchy.role_class.find_by(name: role_name)
-        role || raise(Monarchy::Exceptions::RoleNotExist, role_name)
-      end
-
-      def check_resource(resource)
-        raise Monarchy::Exceptions::ResourceIsNil unless resource
-
-        true_resource = resource.class.try(:acting_as_resource)
-        raise Monarchy::Exceptions::ModelNotResource, resource unless true_resource
       end
 
       def members_for(hierarchy_ids)
