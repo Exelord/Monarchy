@@ -23,9 +23,25 @@ module Monarchy
       end
     end
 
+    class ModelNotUser < Error
+      def initialize(user)
+        @user = user
+      end
+
+      def message
+        "Model '#{@user.class}' is not acting as user!"
+      end
+    end
+
     class ResourceIsNil < Error
       def message
-        "Resource can NOT be nil!"
+        'Resource can NOT be nil!'
+      end
+    end
+
+    class UserIsNil < Error
+      def message
+        'User can NOT be nil!'
       end
     end
   end
