@@ -22,10 +22,12 @@ module Monarchy
 
       def include_scopes
         scope :in, (lambda do |resource|
+          Monarchy::Validators.resource(resource)
           where(monarchy_hierarchies: { parent_id: resource.hierarchy.self_and_descendant_ids })
         end)
 
         scope :accessible_for, (lambda do |user|
+          Monarchy::Validators.user(user)
           where(id: accessible_roots(user)).union(where(id: accessible_leaves(user)))
         end)
       end

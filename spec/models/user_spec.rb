@@ -88,19 +88,19 @@ describe User, type: :model do
       it { is_expected.to match_array([member_role, guest_role]) }
     end
 
-    context "when model is not acting_as_resource" do
+    context 'when model is not acting_as_resource' do
       subject { user.roles_for(user) }
-      it { expect {subject}.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
+      it { expect { subject }.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
 
-    context "when model is nil" do
+    context 'when model is nil' do
       subject { user.roles_for(nil) }
-      it { expect {subject}.to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
+      it { expect { subject }.to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
     end
 
-    context "when model is not model" do
+    context 'when model is not model' do
       subject { user.roles_for('oko') }
-      it { expect {subject}.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
+      it { expect { subject }.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
   end
 
@@ -144,19 +144,19 @@ describe User, type: :model do
       end
     end
 
-    context "when model is not acting_as_resource" do
+    context 'when model is not acting_as_resource' do
       subject { user.grant(:manager, user) }
-      it { expect {subject}.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
+      it { expect { subject }.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
 
-    context "when model is nil" do
+    context 'when model is nil' do
       subject { user.grant(:manager, nil) }
-      it { expect {subject}.to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
+      it { expect { subject }.to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
     end
 
-    context "when model is not model" do
+    context 'when model is not model' do
       subject { user.grant(:manager, 'oko') }
-      it { expect {subject}.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
+      it { expect { subject }.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
   end
 
@@ -171,19 +171,19 @@ describe User, type: :model do
       it { expect(user.member_for(project)).to be_nil }
     end
 
-    context "when model is not acting_as_resource" do
+    context 'when model is not acting_as_resource' do
       subject { user.member_for(user) }
-      it { expect {subject}.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
+      it { expect { subject }.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
 
-    context "when model is nil" do
+    context 'when model is nil' do
       subject { user.member_for(nil) }
-      it { expect {subject}.to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
+      it { expect { subject }.to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
     end
 
-    context "when model is not model" do
+    context 'when model is not model' do
       subject { user.member_for('oko') }
-      it { expect {subject}.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
+      it { expect { subject }.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
   end
 
@@ -230,19 +230,19 @@ describe User, type: :model do
       end
     end
 
-    context "when model is not acting_as_resource" do
+    context 'when model is not acting_as_resource' do
       subject { user.revoke_access(user) }
-      it { expect {subject}.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
+      it { expect { subject }.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
 
-    context "when model is nil" do
+    context 'when model is nil' do
       subject { user.revoke_access(nil) }
-      it { expect {subject}.to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
+      it { expect { subject }.to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
     end
 
-    context "when model is not model" do
+    context 'when model is not model' do
       subject { user.revoke_access('oko') }
-      it { expect {subject}.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
+      it { expect { subject }.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
   end
 
@@ -314,19 +314,19 @@ describe User, type: :model do
       end
     end
 
-    context "when model is not acting_as_resource" do
+    context 'when model is not acting_as_resource' do
       subject { user.revoke_role(:guest, user) }
-      it { expect {subject}.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
+      it { expect { subject }.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
 
-    context "when model is nil" do
+    context 'when model is nil' do
       subject { user.revoke_role(:guest, nil) }
-      it { expect {subject}.to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
+      it { expect { subject }.to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
     end
 
-    context "when model is not model" do
+    context 'when model is not model' do
       subject { user.revoke_role(:guest, 'oko') }
-      it { expect {subject}.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
+      it { expect { subject }.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
   end
 
@@ -395,19 +395,19 @@ describe User, type: :model do
       end
     end
 
-    context "when model is not acting_as_resource" do
+    context 'when model is not acting_as_resource' do
       subject { user.revoke_role!(:guest, user) }
-      it { expect {subject}.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
+      it { expect { subject }.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
 
-    context "when model is nil" do
+    context 'when model is nil' do
       subject { user.revoke_role!(:guest, nil) }
-      it { expect {subject}.to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
+      it { expect { subject }.to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
     end
 
-    context "when model is not model" do
+    context 'when model is not model' do
       subject { user.revoke_role!(:guest, 'oko') }
-      it { expect {subject}.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
+      it { expect { subject }.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
   end
 end
