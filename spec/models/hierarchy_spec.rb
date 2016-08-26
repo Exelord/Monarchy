@@ -16,6 +16,13 @@ describe Monarchy::Hierarchy, type: :model do
 
     subject { described_class.in(project) }
 
+    context 'when model is not monarchy resource' do
+      let!(:user) { create(:user) }
+
+      it { expect { described_class.in(user) }.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
+      it { expect { described_class.in(nil) }.to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
+    end
+
     it do
       is_expected.to match_array([project2.status.hierarchy, project.status.hierarchy,
                                   memo1.hierarchy, project2.hierarchy, memo3.hierarchy])
@@ -42,6 +49,11 @@ describe Monarchy::Hierarchy, type: :model do
 
     let!(:user) { create :user }
     subject { described_class.accessible_for(user) }
+
+    context 'when user is not monarchy user' do
+      it { expect { described_class.accessible_for(project) }.to raise_exception(Monarchy::Exceptions::ModelNotUser) }
+      it { expect { described_class.accessible_for(nil) }.to raise_exception(Monarchy::Exceptions::UserIsNil) }
+    end
 
     context 'user has access to all parents memos and self' do
       let!(:guest_role) { create(:role, name: :guest, level: 0, inherited: false) }

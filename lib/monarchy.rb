@@ -3,12 +3,14 @@ require 'closure_tree'
 require 'configurations'
 require 'active_record_union'
 
+require 'monarchy/exceptions'
+require 'monarchy/validators'
 require 'monarchy/tasks'
 require 'monarchy/engine'
 
-require 'monarchy/acts_as_user'
 require 'monarchy/acts_as_role'
 require 'monarchy/acts_as_member'
+require 'monarchy/acts_as_user'
 require 'monarchy/acts_as_resource'
 require 'monarchy/acts_as_hierarchy'
 

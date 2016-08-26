@@ -23,6 +23,7 @@ module Monarchy
     module SupportMethods
       def include_scopes
         scope :accessible_for, (lambda do |user|
+          Monarchy::Validators.user(user)
           where(hierarchy: Monarchy::Hierarchy.accessible_for(user))
         end)
       end
@@ -49,6 +50,7 @@ module Monarchy
 
     module InstanceMethods
       def resource=(resource)
+        Monarchy::Validators.resource(resource)
         self.hierarchy = resource.hierarchy unless hierarchy
       end
 

@@ -117,6 +117,19 @@ describe Monarchy::Member, type: :model do
     let!(:member4) { create :member, resource: memo6 }
 
     subject { Member.accessible_for(member.user) }
+
+    context 'when user is not monarchy user' do
+      subject { Member.accessible_for(member2) }
+
+      it { expect { subject }.to raise_exception(Monarchy::Exceptions::ModelNotUser) }
+    end
+
+    context 'when user is nil' do
+      subject { Member.accessible_for(nil) }
+
+      it { expect { subject }.to raise_exception(Monarchy::Exceptions::UserIsNil) }
+    end
+
     context 'user has access to all members if has manager role on root' do
       let!(:member) { create :member, resource: project, roles: [manager_role] }
 

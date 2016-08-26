@@ -68,6 +68,13 @@ describe Resource, type: :model do
       let!(:project) { create(:project) }
       let(:descendants) { project.hierarchy.descendants }
 
+      context 'when model is nil' do
+        let!(:memo) { create(:memo) }
+        before { memo.update(project: project) }
+
+        it { expect { memo.update(project: nil) }.to change { memo.parent }.to(nil) }
+      end
+
       context 'belongs_to' do
         let!(:memo) { create(:memo) }
 
@@ -144,6 +151,18 @@ describe Resource, type: :model do
         project.children = []
         is_expected.to eq([project.status])
       end
+
+      it 'can assign array with nil' do
+        project.children = [memo, memo2, nil]
+        is_expected.to match_array([project.status, memo, memo2])
+      end
+
+      context 'with non resource model' do
+        let!(:user) { create :user }
+        subject { project.children = [memo, memo2, user] }
+
+        it { expect { subject }.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
+      end
     end
   end
 
@@ -168,6 +187,18 @@ describe Resource, type: :model do
       it 'can assign nil' do
         memo.parent = nil
         is_expected.to be_nil
+      end
+
+      context 'allow to set parent as nil' do
+        let!(:memo) { create(:memo) }
+        before { memo.parent = project }
+
+        it { expect { memo.parent = nil }.to change { memo.parent }.to(nil) }
+      end
+
+      context 'when model is not acting as resource' do
+        let!(:user) { create(:user) }
+        it { expect { project.parent = user }.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
       end
     end
   end

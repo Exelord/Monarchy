@@ -40,6 +40,7 @@ module Monarchy
 
       def include_scopes
         scope :in, (lambda do |resource|
+          Monarchy::Validators.resource(resource)
           joins(:hierarchy).where(monarchy_hierarchies: { parent_id: resource.hierarchy.self_and_descendants })
         end)
 
@@ -55,11 +56,9 @@ module Monarchy
       end
 
       def parent=(resource)
-        if hierarchy
-          hierarchy.update(parent: resource.try(:ensure_hierarchy))
-        else
-          @parent = resource
-        end
+        Monarchy::Validators.resource(resource, true)
+        hierarchy.update(parent: resource.try(:ensure_hierarchy)) if hierarchy
+        @parent = resource
       end
 
       def children
@@ -86,6 +85,7 @@ module Monarchy
 
         if parentize
           was_changed = changes["#{parentize}_id"] || changes["#{parentize}_type"]
+          Monarchy::Validators.resource(send(parentize), true)
           self.parent = send(parentize) if was_changed || force
         end
       end
@@ -97,7 +97,8 @@ module Monarchy
       end
 
       def hierarchies_for(array)
-        Array(array).map(&:hierarchy)
+        array.compact! if array
+        Array(array).map { |resource| Monarchy::Validators.resource(resource) || resource.hierarchy }
       end
     end
   end
