@@ -24,13 +24,13 @@ describe User, type: :model do
       let!(:owner_role) { create(:role, name: :owner, level: 3) }
       let!(:manager_role) { create(:role, name: :manager, level: 2, inherited_role: owner_role) }
 
-      it { is_expected.to match_array([owner_role, member_role, guest_role]) }
+      it { is_expected.to match_array([owner_role, member_role]) }
 
       context 'do not map self roles' do
         let!(:memo_member) { create(:member, user: user, hierarchy: memo.hierarchy, roles: [manager_role]) }
         let!(:project_member) { create(:member, user: user, hierarchy: project.hierarchy, roles: [member_role]) }
 
-        it { is_expected.to match_array([manager_role, member_role, guest_role]) }
+        it { is_expected.to match_array([manager_role, member_role]) }
       end
     end
 
@@ -38,13 +38,13 @@ describe User, type: :model do
       let(:project_roles) { user.roles_for(project, false) }
       subject { user.roles_for(memo, false) }
 
-      it { expect(project_roles).to match_array([manager_role, guest_role]) }
-      it { is_expected.to match_array([member_role, guest_role]) }
+      it { expect(project_roles).to match_array([manager_role]) }
+      it { is_expected.to match_array([member_role]) }
 
       context 'where memo has no roles' do
         let!(:memo_member) {}
 
-        it { expect(project_roles).to match_array([manager_role, guest_role]) }
+        it { expect(project_roles).to match_array([manager_role]) }
         it { is_expected.to eq([]) }
       end
     end
@@ -52,7 +52,7 @@ describe User, type: :model do
     context 'user has no direct access to memo' do
       let!(:memo_member) {}
 
-      it { expect(project_roles).to match_array([manager_role, guest_role]) }
+      it { expect(project_roles).to match_array([manager_role]) }
       it { is_expected.to match_array([manager_role]) }
     end
 
@@ -60,14 +60,14 @@ describe User, type: :model do
       let!(:project_member) {}
 
       it { expect(project_roles).to match_array([guest_role]) }
-      it { is_expected.to match_array([member_role, guest_role]) }
+      it { is_expected.to match_array([member_role]) }
     end
 
     context 'returns all roles with the higher level' do
       let(:member_role) { create(:role, name: :member, level: 2) }
 
-      it { expect(project_roles).to match_array([manager_role, guest_role]) }
-      it { is_expected.to match_array([manager_role, member_role, guest_role]) }
+      it { expect(project_roles).to match_array([manager_role]) }
+      it { is_expected.to match_array([manager_role, member_role]) }
 
       context 'returns non duplicated roles' do
         let!(:project_member) do
@@ -76,16 +76,16 @@ describe User, type: :model do
                           roles: [manager_role, member_role])
         end
 
-        it { expect(project_roles).to match_array([manager_role, member_role, guest_role]) }
-        it { is_expected.to match_array([manager_role, member_role, guest_role]) }
+        it { expect(project_roles).to match_array([manager_role, member_role]) }
+        it { is_expected.to match_array([manager_role, member_role]) }
       end
     end
 
     context 'parent role is not inherited' do
       let(:manager_role) { create(:role, name: :manager, level: 2, inherited: false) }
 
-      it { expect(project_roles).to match_array([manager_role, guest_role]) }
-      it { is_expected.to match_array([member_role, guest_role]) }
+      it { expect(project_roles).to match_array([manager_role]) }
+      it { is_expected.to match_array([member_role]) }
     end
 
     context 'when model is not acting_as_resource' do
@@ -109,7 +109,7 @@ describe User, type: :model do
       it { expect(Monarchy::Member.count).to be(1) }
       it { expect(parent.members).to be_empty }
       it { expect(resource.members.count).to be(1) }
-      it { expect(resource.members.first.roles).to match_array([manager_role, guest_role]) }
+      it { expect(resource.members.first.roles).to match_array([manager_role]) }
     end
 
     context 'role does not exist' do
@@ -130,7 +130,7 @@ describe User, type: :model do
         2.times do
           grant_user
           expect(project.members).to be_empty
-          expect(memo.members.first.roles).to match_array([manager_role, guest_role])
+          expect(memo.members.first.roles).to match_array([manager_role])
         end
       end
     end
@@ -264,7 +264,7 @@ describe User, type: :model do
 
       it do
         subject
-        expect(memo4.members.first.roles).to match_array([member_role, guest_role])
+        expect(memo4.members.first.roles).to match_array([member_role])
       end
     end
 
@@ -302,7 +302,7 @@ describe User, type: :model do
           user.revoke_role(:manager, memo3)
         end
 
-        it { expect(memo3.members.first.roles).to match_array([guest_role]) }
+        it { expect(memo3.members.first.roles).to be_empty }
 
         context 'and then revoke the default one' do
           before do
@@ -345,7 +345,7 @@ describe User, type: :model do
 
       it do
         subject
-        expect(memo2.members.first.roles).to match_array([member_role, guest_role])
+        expect(memo2.members.first.roles).to match_array([member_role])
       end
     end
 
@@ -375,23 +375,14 @@ describe User, type: :model do
       end
 
       context 'which is not default role' do
+        let!(:memo3) { create :memo, parent: memo2 }
+
         before do
           user.revoke_role!(:manager, memo2)
         end
 
-        it { expect(memo2.members.first.roles).to match_array([guest_role]) }
-
-        context 'and then revoke the default one' do
-          let!(:memo3) { create :memo, parent: memo2 }
-
-          before do
-            user.grant(:manager, memo3)
-            user.revoke_role!(:guest, memo2)
-          end
-
-          it { expect(memo2.members).to be_empty }
-          it { expect(memo3.members).to be_empty }
-        end
+        it { expect(memo2.members).to be_empty }
+        it { expect(memo3.members).to be_empty }
       end
     end
 

@@ -29,7 +29,6 @@ module Monarchy
       end
 
       def include_callbacks
-        before_create :set_default_role
         after_destroy :revoke_access, if: :member_force_revoke?
       end
 
@@ -62,16 +61,6 @@ module Monarchy
 
       def member_force_revoke?
         Monarchy.configuration.member_force_revoke
-      end
-
-      def set_default_role
-        roles = self.roles
-        roles << Monarchy.role_class.find_or_create_by(
-          name: Monarchy.configuration.default_role.name,
-          inherited: Monarchy.configuration.default_role.inherited,
-          level: Monarchy.configuration.default_role.level
-        )
-        self.roles = roles.uniq
       end
 
       def hierarchy_or_resource

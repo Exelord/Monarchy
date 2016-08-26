@@ -55,15 +55,6 @@ describe Monarchy::Member, type: :model do
     end
   end
 
-  describe 'after create' do
-    context 'set default role' do
-      let!(:default_role) { create(:role, name: :guest, level: 0, inherited: false) }
-      let(:member) { create(:member) }
-
-      it { expect(member.roles).to match_array([default_role]) }
-    end
-  end
-
   describe 'after destroy' do
     context 'revoke access' do
       let!(:guest_role) { create(:role, name: :guest, level: 0, inherited: false) }

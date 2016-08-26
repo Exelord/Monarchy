@@ -76,7 +76,14 @@ describe Monarchy::Hierarchy, type: :model do
       end
 
       context 'user has not access to resources bellow as guest' do
-        let!(:memo_member) { create(:member, user: user, hierarchy: memo3.hierarchy) }
+        let!(:memo_member) { create(:member, user: user, hierarchy: memo3.hierarchy, roles: [guest_role]) }
+
+        it { is_expected.to match_array([project.hierarchy, memo2.hierarchy, memo3.hierarchy]) }
+        it { is_expected.not_to include(memo5.hierarchy, memo1.hierarchy, memo4.hierarchy, memo6.hierarchy) }
+      end
+
+      context 'user has not access to resources bellow as member without roles' do
+        let!(:memo_member) { create(:member, user: user, hierarchy: memo3.hierarchy, roles: []) }
 
         it { is_expected.to match_array([project.hierarchy, memo2.hierarchy, memo3.hierarchy]) }
         it { is_expected.not_to include(memo5.hierarchy, memo1.hierarchy, memo4.hierarchy, memo6.hierarchy) }

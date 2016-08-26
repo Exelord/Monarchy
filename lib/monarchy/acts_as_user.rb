@@ -73,7 +73,6 @@ module Monarchy
       def resource_roles(resource)
         Monarchy.role_class.joins(:members)
                 .where('monarchy_members.hierarchy_id': resource.hierarchy.id, 'monarchy_members.user_id': id)
-                .distinct
       end
 
       def descendant_role(resource)
