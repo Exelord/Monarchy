@@ -35,20 +35,20 @@ module Monarchy
   end
 
   def self.member_class
-    Monarchy.configuration.member_class_name.safe_constantize || classNotDefined('Member')
+    Monarchy.configuration.member_class_name.safe_constantize || class_not_defined('Member')
   end
 
   def self.role_class
-    Monarchy.configuration.role_class_name.safe_constantize || classNotDefined('Role')
+    Monarchy.configuration.role_class_name.safe_constantize || class_not_defined('Role')
   end
 
   def self.user_class
-    Monarchy.configuration.user_class_name.safe_constantize || classNotDefined('User')
+    Monarchy.configuration.user_class_name.safe_constantize || class_not_defined('User')
   end
 
   private
 
-  def classNotDefined(class_name)
+  def class_not_defined(class_name)
     raise Monarchy::Exceptions::ClassNotDefined, class_name
   end
 end

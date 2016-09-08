@@ -28,3 +28,4 @@ group :development, :test do
 end
 
 gem 'simplecov', '0.12.0', require: false, group: :test
+gem 'codeclimate-test-reporter', group: :test, require: nil
