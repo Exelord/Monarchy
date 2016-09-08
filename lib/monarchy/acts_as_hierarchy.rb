@@ -50,10 +50,6 @@ module Monarchy
             )
       end
 
-      def default_role_name
-        Monarchy.configuration.default_role.name
-      end
-
       def descendant_leaves_for_user(user)
         descendant_leaves.joins(members: [:roles]).where(monarchy_members: { user_id: user.id })
       end
