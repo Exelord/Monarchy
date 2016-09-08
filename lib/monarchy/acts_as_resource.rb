@@ -26,6 +26,14 @@ module Monarchy
     module SupportMethods
       attr_accessor :parentize, :acting_as_resource, :automatic_hierarchy
 
+      def default_role_name
+        Monarchy.configuration.inherited_default_role
+      end
+
+      def default_role
+        @default_role ||= Monarchy.role_class.find_by(name: default_role_name)
+      end
+
       private
 
       def setup_acting
