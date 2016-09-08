@@ -3,6 +3,25 @@ module Monarchy
   module Exceptions
     class Error < StandardError; end
 
+    class ClassNotDefined < Error
+      def initialize(class_name)
+        @class_name = class_name
+      end
+
+      def message
+        "#{@class_name} class has to be initialized or exist!"
+      end
+    end
+    class ConfigNotDefined < Error
+      def initialize(property)
+        @property = property
+      end
+
+      def message
+        "Monarchy requires a #{@property} to be configured!"
+      end
+    end
+
     class RoleNotExist < Error
       def initialize(role_name)
         @role_name = role_name
@@ -30,6 +49,13 @@ module Monarchy
 
       def message
         "Model '#{@user.class}' is not acting as user!"
+      end
+    end
+
+    class RoleNotRevokable < Error
+      def message
+        "Can not revoke default role when no more roles exists! \
+          (Use 'revoke_role!' if you know what you are doing )"
       end
     end
 
