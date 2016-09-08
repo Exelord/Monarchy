@@ -112,6 +112,13 @@ describe User, type: :model do
       it { expect(resource.members.first.roles).to match_array([manager_role]) }
     end
 
+    context 'grant multiple roles' do
+      let!(:member) { user.grant(:manager, :member, memo) }
+
+      it { expect(member.roles).to match_array([manager_role, member_role]) }
+      it { expect(memo.members.first.roles).to match_array([manager_role, member_role]) }
+    end
+
     context 'role does not exist' do
       subject { user.grant(:phantom, memo) }
 
@@ -212,14 +219,14 @@ describe User, type: :model do
         it { expect(memo4.members.count).to eq(1) }
       end
 
-      context 'with custom hierarchy_ids' do
+      context 'with custom hierarchies' do
         before do
           user.grant(:member, project)
           user.grant(:member, memo)
           user.grant(:member, memo3)
           user.grant(:member, memo4)
 
-          user.revoke_access(memo, memo.hierarchy.descendant_ids)
+          user.revoke_access(memo, memo.hierarchy.descendants)
         end
 
         it { expect(project.members.count).to eq(1) }
@@ -281,35 +288,19 @@ describe User, type: :model do
         user.grant(:manager, memo3)
       end
 
-      context 'which is default role' do
-        before do
-          user.revoke_role(:guest, memo3)
-        end
+      it { expect(memo3.members.first.roles).to match_array([manager_role]) }
 
-        it { expect(memo3.members.first.roles).to match_array([manager_role]) }
-
-        context 'and then revoke the manager one' do
-          before do
-            user.revoke_role(:manager, memo3)
-          end
-
-          it { expect(memo3.members.first.roles).to be_empty }
-        end
-      end
-
-      context 'which is not default role' do
+      context 'which is manager role' do
         before do
           user.revoke_role(:manager, memo3)
         end
 
-        it { expect(memo3.members.first.roles).to be_empty }
+        it { expect(memo3.members.first.roles).to match_array([guest_role]) }
 
         context 'and then revoke the default one' do
-          before do
-            user.revoke_role(:guest, memo3)
-          end
+          subject { user.revoke_role(:guest, memo3) }
 
-          it { expect(memo3.members.first.roles).to be_empty }
+          it { expect { subject }.to raise_exception(Monarchy::Exceptions::RoleNotRevokable) }
         end
       end
     end
@@ -352,6 +343,34 @@ describe User, type: :model do
     context 'when revoke last role' do
       before do
         user.grant(:manager, memo2)
+      end
+
+      context 'with revoke_member strategy' do
+        subject { user.revoke_role!(:manager, memo2) }
+
+        it { expect { subject }.to change { Member.count }.by(-1) }
+      end
+
+      context 'with revoke_access strategy' do
+        before do
+          Monarchy.configure do |config|
+            config.inherited_default_role = :guest
+            config.user_class_name = 'User'
+
+            config.role_class_name = 'Role'
+            config.member_class_name = 'Member'
+
+            config.members_access_revoke = true
+            config.revoke_strategy = :revoke_access
+          end
+
+          memo3 = create(:memo, parent: memo2)
+          user.grant(:member, memo3)
+        end
+
+        subject { user.revoke_role!(:manager, memo2) }
+
+        it { expect { subject }.to change { Member.count }.by(-2) }
       end
 
       context 'which is default role' do

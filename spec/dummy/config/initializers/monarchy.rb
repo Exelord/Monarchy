@@ -21,7 +21,6 @@ Monarchy.configure do |config|
   # end
   config.user_class_name = 'User' # string
 
-
   # OPTIONAL SETTINGS
 
   # If you want to override Member or Role class you have add correct actors to class definition
@@ -32,7 +31,6 @@ Monarchy.configure do |config|
   # end
   config.member_class_name = 'Member' # string
   config.role_class_name = 'Role' # string
-
 
   # If this option is setup to true all members bellow the destroying one, will be deleted.
   config.members_access_revoke = true # boolean
