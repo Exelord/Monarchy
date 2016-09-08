@@ -28,16 +28,16 @@ module Monarchy
         resource.hierarchy.members.where(monarchy_members: { user_id: id }).first
       end
 
-      def grant(role_name, resource)
+      def grant(*role_names, resource)
         ActiveRecord::Base.transaction do
-          grant_or_create_member(role_name, resource)
+          grant_or_create_member(role_names, resource)
         end
       end
 
-      def revoke_access(resource, hierarchy_ids = nil)
+      def revoke_access(resource, hierarchies = nil)
         Monarchy::Validators.resource(resource)
-        hierarchy_ids ||= resource.hierarchy.self_and_descendant_ids
-        members_for(hierarchy_ids).delete_all
+        hierarchies ||= resource.hierarchy.self_and_descendants
+        members_for(hierarchies).delete_all
       end
 
       def revoke_role(role_name, resource)
@@ -45,7 +45,7 @@ module Monarchy
       end
 
       def revoke_role!(role_name, resource)
-        revoking_role(role_name, resource, true)
+        revoking_role(role_name, resource, Monarchy.configuration.revoke_strategy)
       end
 
       private
@@ -76,51 +76,58 @@ module Monarchy
       end
 
       def descendant_role(resource)
-        descendant_ids = resource.hierarchy.descendant_ids
-        children_access = members_for(descendant_ids).present?
-        children_access ? Monarchy.role_class.where(id: default_role) : Monarchy.role_class.none
+        descendants = resource.hierarchy.descendants
+        children_access = members_for(descendants).present?
+        children_access ? Monarchy.role_class.where(id: inherited_default_role) : Monarchy.role_class.none
       end
 
-      def revoking_role(role_name, resource, force = false)
-        Monarchy::Validators.resource(resource)
-        role = Monarchy::Validators.role_name(role_name)
-
-        member_roles = member_for(resource).try(:members_roles)
-        return 0 if member_roles.nil?
-
-        return revoke_access(resource) if last_role?(member_roles, role) && force
-        member_roles.where(role_id: role).delete_all
-      end
-
-      def grant_or_create_member(role_name, resource)
+      def revoking_role(role_name, resource, strategy = nil)
         Monarchy::Validators.resource(resource)
         role = Monarchy::Validators.role_name(role_name)
 
         member = member_for(resource)
-        if member
-          Monarchy::MembersRole.create(member: member, role: role)
+        member_roles = member.try(:members_roles)
+        return 0 if member_roles.nil?
+
+        revoking_last_role(role, resource, strategy) if Monarchy::Validators.last_role?(member, role)
+        member_roles.where(role: role).delete_all
+      end
+
+      def revoking_last_role(role, resource, strategy)
+        case strategy
+        when :revoke_access
+          return revoke_access(resource)
+        when :revoke_member
+          return member_for(resource).delete
         else
-          member = Monarchy.member_class.create(user: self, hierarchy: resource.hierarchy, roles: [role])
+          default_role = Monarchy::Validators.default_role?(resource, role)
+          raise Monarchy::Exceptions::RoleNotRevokable if default_role
+
+          grant(resource.class.default_role_name, resource)
+        end
+      end
+
+      def grant_or_create_member(role_names, resource)
+        Monarchy::Validators.resource(resource)
+        roles = Monarchy::Validators.role_names(role_names)
+        member = member_for(resource)
+
+        if member
+          member_roles = roles.map { |role| { member: member, role: role } }
+          Monarchy::MembersRole.create(member_roles)
+        else
+          member = Monarchy.member_class.create(user: self, hierarchy: resource.hierarchy, roles: roles)
         end
 
         member
       end
 
-      def members_for(hierarchy_ids)
-        Monarchy.member_class.where(hierarchy_id: hierarchy_ids, user_id: id)
+      def members_for(hierarchies)
+        Monarchy.member_class.where(hierarchy: hierarchies, user_id: id)
       end
 
-      def default_role
-        @default_role ||= Monarchy.role_class.find_by(name: Monarchy.configuration.default_role.name)
-      end
-
-      def last_role?(member_roles, role = nil)
-        role ||= default_role
-        member_roles.count == 1 && member_roles.first.role == role
-      end
-
-      def default_role?(role_name) # TODO: Probably not in use
-        default_role.name.to_s == role_name.to_s
+      def inherited_default_role
+        @inherited_default_role ||= Monarchy.role_class.find_by(name: Monarchy.configuration.inherited_default_role)
       end
     end
   end
