@@ -29,7 +29,7 @@ module Monarchy
       end
 
       def include_callbacks
-        after_destroy :revoke_access, if: :member_force_revoke?
+        after_destroy :revoke_access, if: :members_access_revoke?
       end
 
       def include_validators
@@ -56,11 +56,11 @@ module Monarchy
       private
 
       def revoke_access
-        user.revoke_access(resource, resource.hierarchy.descendant_ids)
+        user.revoke_access(resource, resource.hierarchy.descendants)
       end
 
-      def member_force_revoke?
-        Monarchy.configuration.member_force_revoke
+      def members_access_revoke?
+        Monarchy.configuration.members_access_revoke
       end
 
       def hierarchy_or_resource
