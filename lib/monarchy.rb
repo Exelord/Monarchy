@@ -26,23 +26,29 @@ module Monarchy
   configuration_defaults do |config|
     config.member_class_name = 'Monarchy::Member'
     config.role_class_name = 'Monarchy::Role'
-    config.member_force_revoke = false
+    config.members_access_revoke = false
+    config.revoke_strategy = :revoke_member
   end
 
-  not_configured do |prop|
-    raise NoMethodError, "Monarchy requires a #{prop} to be configured"
+  not_configured do |property|
+    raise Monarchy::Exceptions::ConfigNotDefined, property
   end
 
   def self.member_class
-    Monarchy.configuration.member_class_name.safe_constantize
+    Monarchy.configuration.member_class_name.safe_constantize || classNotDefined('Member')
   end
 
   def self.role_class
-    Monarchy.configuration.role_class_name.safe_constantize
+    Monarchy.configuration.role_class_name.safe_constantize || classNotDefined('Role')
   end
 
   def self.user_class
-    klass = Monarchy.configuration.user_class_name.safe_constantize
-    klass ? klass : raise(ArgumentError, 'User class has to be initialized or exist!')
+    Monarchy.configuration.user_class_name.safe_constantize || classNotDefined('User')
+  end
+
+  private
+
+  def classNotDefined(class_name)
+    raise Monarchy::Exceptions::ClassNotDefined, class_name
   end
 end
