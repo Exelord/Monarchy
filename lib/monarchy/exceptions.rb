@@ -12,6 +12,7 @@ module Monarchy
         "#{@class_name} class has to be initialized or exist!"
       end
     end
+
     class ConfigNotDefined < Error
       def initialize(property)
         @property = property
@@ -42,6 +43,26 @@ module Monarchy
       end
     end
 
+    class ModelNotMember < Error
+      def initialize(member)
+        @member = member
+      end
+
+      def message
+        "Model '#{@member.class}' is not acting as member!"
+      end
+    end
+
+    class ModelNotRole < Error
+      def initialize(role)
+        @role = role
+      end
+
+      def message
+        "Model '#{@role.class}' is not acting as role!"
+      end
+    end
+
     class ModelNotUser < Error
       def initialize(user)
         @user = user
@@ -68,6 +89,18 @@ module Monarchy
     class UserIsNil < Error
       def message
         'User can NOT be nil!'
+      end
+    end
+
+    class MemberIsNil < Error
+      def message
+        'Member can NOT be nil!'
+      end
+    end
+
+    class RoleIsNil < Error
+      def message
+        'Role can NOT be nil!'
       end
     end
   end

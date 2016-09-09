@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require 'simplecov'
 require "codeclimate-test-reporter"
+require "support/helpers/is_expected_block"
 
 SimpleCov.start do
   add_group 'lib', '/lib'

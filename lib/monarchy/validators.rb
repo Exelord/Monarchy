@@ -20,7 +20,8 @@ module Monarchy
         role || raise(Monarchy::Exceptions::RoleNotExist, role_name)
       end
 
-      def role_names(role_names)
+      def role_names(*role_names)
+        role_names.flatten!
         roles = Monarchy.role_class.where(name: role_names)
         wrong_names = role_names.map(&:to_s) - roles.map(&:name)
         wrong_names.each { |name| raise(Monarchy::Exceptions::RoleNotExist, name) }
@@ -53,7 +54,7 @@ module Monarchy
       private
 
       def check_model_class(model, exception_class)
-        raise "Monarchy::Exceptions::#{exception_class}".constantize, model if model && !yield
+        yield ? model : (raise "Monarchy::Exceptions::#{exception_class}".constantize, model if model)
       end
 
       def model_is_class(model, klass, exception_class)
