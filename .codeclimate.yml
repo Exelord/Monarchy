@@ -9,6 +9,9 @@ engines:
     config:
       languages:
       - ruby
+    checks:
+      Similar code:
+        enabled: false
   fixme:
     enabled: true
   rubocop:
