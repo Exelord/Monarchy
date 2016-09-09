@@ -20,7 +20,7 @@ group :development, :test do
   gem 'rubocop', '0.42.0'
   gem 'pry-rails', '0.3.4'
   gem 'shoulda-matchers', '3.1.1'
-  gem 'rspec-rails', '3.5.1'
+  gem 'rspec-rails', '3.5.2'
   gem 'factory_girl_rails', '4.7.0'
   gem 'ffaker', '2.2.0'
   gem 'database_cleaner', '1.5.3'
@@ -28,3 +28,4 @@ group :development, :test do
 end
 
 gem 'simplecov', '0.12.0', require: false, group: :test
+gem 'codeclimate-test-reporter', group: :test, require: nil

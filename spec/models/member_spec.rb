@@ -55,15 +55,6 @@ describe Monarchy::Member, type: :model do
     end
   end
 
-  describe 'after create' do
-    context 'set default role' do
-      let!(:default_role) { create(:role, name: :guest, level: 0, inherited: false) }
-      let(:member) { create(:member) }
-
-      it { expect(member.roles).to match_array([default_role]) }
-    end
-  end
-
   describe 'after destroy' do
     context 'revoke access' do
       let!(:guest_role) { create(:role, name: :guest, level: 0, inherited: false) }
@@ -86,9 +77,9 @@ describe Monarchy::Member, type: :model do
 
       subject { memo_member.destroy }
 
-      it { expect { subject }.to change { Member.count }.to(1) }
-      it { expect { subject }.to change { memo2.members.count }.to(0) }
-      it { expect { subject }.to change { memo3.members.count }.to(0) }
+      it { is_expected_block.to change { Member.count }.to(1) }
+      it { is_expected_block.to change { memo2.members.count }.to(0) }
+      it { is_expected_block.to change { memo3.members.count }.to(0) }
     end
   end
 
@@ -121,13 +112,13 @@ describe Monarchy::Member, type: :model do
     context 'when user is not monarchy user' do
       subject { Member.accessible_for(member2) }
 
-      it { expect { subject }.to raise_exception(Monarchy::Exceptions::ModelNotUser) }
+      it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotUser) }
     end
 
     context 'when user is nil' do
       subject { Member.accessible_for(nil) }
 
-      it { expect { subject }.to raise_exception(Monarchy::Exceptions::UserIsNil) }
+      it { is_expected_block.to raise_exception(Monarchy::Exceptions::UserIsNil) }
     end
 
     context 'user has access to all members if has manager role on root' do

@@ -54,6 +54,8 @@ GEM
     closure_tree (6.1.0)
       activerecord (>= 4.1.0)
       with_advisory_lock (>= 3.0.0)
+    codeclimate-test-reporter (0.6.0)
+      simplecov (>= 0.7.1, < 1.0.0)
     coderay (1.1.1)
     concurrent-ruby (1.0.2)
     configurations (2.2.0)
@@ -135,7 +137,7 @@ GEM
     rspec-mocks (3.5.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.5.0)
-    rspec-rails (3.5.1)
+    rspec-rails (3.5.2)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       railties (>= 3.0)
@@ -182,6 +184,7 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 1.12)
+  codeclimate-test-reporter
   database_cleaner (= 1.5.3)
   factory_girl_rails (= 4.7.0)
   ffaker (= 2.2.0)
@@ -189,7 +192,7 @@ DEPENDENCIES
   pry-rails (= 0.3.4)
   rake (~> 11.1)
   rspec (= 3.5.0)
-  rspec-rails (= 3.5.1)
+  rspec-rails (= 3.5.2)
   rubocop (= 0.42.0)
   shoulda-matchers (= 3.1.1)
   simplecov (= 0.12.0)

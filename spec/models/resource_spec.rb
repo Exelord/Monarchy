@@ -161,7 +161,7 @@ describe Resource, type: :model do
         let!(:user) { create :user }
         subject { project.children = [memo, memo2, user] }
 
-        it { expect { subject }.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
+        it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
       end
     end
   end
@@ -305,7 +305,7 @@ describe Resource, type: :model do
     it { expect(status.hierarchy.ancestors).to match_array([project.hierarchy]) }
     it { expect(project.hierarchy.descendants).to match_array([status.hierarchy]) }
 
-    it { expect(user.roles_for(project)).to match_array([owner_role, guest_role]) }
+    it { expect(user.roles_for(project)).to match_array([owner_role]) }
     it { expect(user.roles_for(status)).to match_array([owner_role]) }
   end
 end

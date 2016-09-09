@@ -2,26 +2,64 @@
 module Monarchy
   module Validators
     class << self
+      def last_role?(member, role)
+        member(member)
+        role(role)
+        (member.roles - [role]).empty?
+      end
+
+      def default_role?(resource, role)
+        resource(resource)
+        role(role)
+
+        role == resource.class.default_role
+      end
+
       def role_name(role_name)
         role = Monarchy.role_class.find_by(name: role_name)
         role || raise(Monarchy::Exceptions::RoleNotExist, role_name)
       end
 
+      def role_names(*role_names)
+        role_names.flatten!
+        roles = Monarchy.role_class.where(name: role_names)
+        wrong_names = role_names.map(&:to_s) - roles.map(&:name)
+        wrong_names.each { |name| raise(Monarchy::Exceptions::RoleNotExist, name) }
+        roles
+      end
+
       def resource(resource, allow_nil = false)
         raise Monarchy::Exceptions::ResourceIsNil if !resource && !allow_nil
 
-        if resource
-          true_resource = resource.class.try(:acting_as_resource)
-          raise Monarchy::Exceptions::ModelNotResource, resource unless true_resource
+        check_model_class(resource, 'ModelNotResource') do
+          resource.class.try(:acting_as_resource)
         end
       end
 
       def user(user, allow_nil = false)
         raise Monarchy::Exceptions::UserIsNil if !user && !allow_nil
+        model_is_class(user, Monarchy.user_class, 'ModelNotUser')
+      end
 
-        if user
-          true_user = user.is_a?(Monarchy.user_class)
-          raise Monarchy::Exceptions::ModelNotUser, user unless true_user
+      def member(member, allow_nil = false)
+        raise Monarchy::Exceptions::MemberIsNil if !member && !allow_nil
+        model_is_class(member, Monarchy.member_class, 'ModelNotMember')
+      end
+
+      def role(role, allow_nil = false)
+        raise Monarchy::Exceptions::RoleIsNil if !role && !allow_nil
+        model_is_class(role, Monarchy.role_class, 'ModelNotRole')
+      end
+
+      private
+
+      def check_model_class(model, exception_class)
+        yield ? model : (raise "Monarchy::Exceptions::#{exception_class}".constantize, model if model)
+      end
+
+      def model_is_class(model, klass, exception_class)
+        check_model_class(model, exception_class) do
+          model.is_a?(klass)
         end
       end
     end

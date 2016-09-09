@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/Exelord/Monarchy.svg?branch=master)](https://travis-ci.org/Exelord/Monarchy)
 [![Dependency Status](https://gemnasium.com/badges/github.com/Exelord/Monarchy.svg)](https://gemnasium.com/github.com/Exelord/Monarchy)
 [![Gitter](https://badges.gitter.im/Exelord/Monarchy.svg)](https://gitter.im/Exelord/Monarchy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Code Climate](https://codeclimate.com/github/Exelord/Monarchy/badges/gpa.svg)](https://codeclimate.com/github/Exelord/Monarchy)
 
 <p align="center">
   <img align="center" src="monarchy.png?raw=true" alt="Sublime's custom image"/>
