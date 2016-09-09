@@ -161,7 +161,7 @@ describe Resource, type: :model do
         let!(:user) { create :user }
         subject { project.children = [memo, memo2, user] }
 
-        it { expect { subject }.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
+        it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
       end
     end
   end
