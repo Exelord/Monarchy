@@ -106,7 +106,7 @@ module Monarchy
 
       def hierarchies_for(array)
         array.compact! if array
-        Array(array).map { |resource| Monarchy::Validators.resource(resource) || resource.hierarchy }
+        Array(array).map { |resource| Monarchy::Validators.resource(resource).hierarchy }
       end
     end
   end

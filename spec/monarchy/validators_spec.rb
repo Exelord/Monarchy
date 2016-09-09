@@ -27,17 +27,16 @@ describe Monarchy::Validators do
   end
 
   describe '.default_role?' do
-    before { allow(resource.class).to receive(:default_role_name).and_return(member_role.name) }
     subject { described_class.default_role?(resource, role) }
 
     context 'is default_role' do
-      let(:role) { member_role }
+      let(:role) { guest_role }
 
       it { is_expected.to be_truthy }
     end
 
     context 'is not default_role' do
-      let(:role) { guest_role }
+      let(:role) { member_role }
 
       it { is_expected.to be_falsy }
     end

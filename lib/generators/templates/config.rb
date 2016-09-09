@@ -41,7 +41,7 @@ Monarchy.configure do |config|
   # Default: :revoke_member
   # Info:
   # :revoke_member - after revoking the last role from user's member remove the member
-  # :revoke_member - after revoking the last role from user's member
+  # :revoke_access - after revoking the last role from user's member
   #                  remove the member, and all members bellow which belongs to the user
   config.revoke_strategy = :revoke_member # symbol
 end

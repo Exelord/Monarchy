@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'simplecov'
-require "codeclimate-test-reporter"
-require "support/helpers/is_expected_block"
+require 'codeclimate-test-reporter'
+require 'support/helpers/is_expected_block'
 
 SimpleCov.start do
   add_group 'lib', '/lib'
@@ -40,6 +40,7 @@ RSpec.configure do |config|
     #     # => "be bigger than 2 and smaller than 4"
     # ...rather than:
     #     # => "be bigger than 2"
+    expectations.on_potential_false_positives = :nothing
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
 
