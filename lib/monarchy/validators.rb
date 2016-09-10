@@ -28,12 +28,14 @@ module Monarchy
         roles
       end
 
-      def resource(resource, allow_nil = false)
+      def resource(resource, allow_nil = false, persistance = true)
         raise Monarchy::Exceptions::ResourceIsNil if !resource && !allow_nil
 
-        check_model_class(resource, 'ModelNotResource') do
+        model = check_model_class(resource, 'ModelNotResource') do
           resource.class.try(:acting_as_resource)
         end
+
+        (persistance && resource && !resource.persisted?) ? raise(Monarchy::Exceptions::ResourceNotPersist) : model
       end
 
       def user(user, allow_nil = false)
@@ -54,7 +56,11 @@ module Monarchy
       private
 
       def check_model_class(model, exception_class)
-        yield ? model : (raise "Monarchy::Exceptions::#{exception_class}".constantize, model if model)
+        if yield
+          model
+        else
+          raise "Monarchy::Exceptions::#{exception_class}".constantize, model if model
+        end
       end
 
       def model_is_class(model, klass, exception_class)

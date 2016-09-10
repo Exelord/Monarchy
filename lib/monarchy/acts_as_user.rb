@@ -19,7 +19,7 @@ module Monarchy
 
     module InstanceMethods
       def roles_for(resource, inheritence = true)
-        Monarchy::Validators.resource(resource)
+        Monarchy::Validators.resource(resource, false, false)
         accessible_roles_for(resource, inheritence)
       end
 
@@ -51,6 +51,7 @@ module Monarchy
       private
 
       def accessible_roles_for(resource, inheritnce)
+        return Monarchy.role_class.none unless resource.hierarchy
         accessible_roles = if inheritnce
                              resource_and_inheritence_roles(resource)
                            else
