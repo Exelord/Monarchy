@@ -93,7 +93,7 @@ module Monarchy
 
         if parentize
           was_changed = changes["#{parentize}_id"] || changes["#{parentize}_type"]
-          Monarchy::Validators.resource(send(parentize), true)
+          Monarchy::Validators.resource(send(parentize), true, false)
           self.parent = send(parentize) if was_changed || force
         end
       end

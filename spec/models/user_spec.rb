@@ -102,6 +102,11 @@ describe User, type: :model do
       subject { user.roles_for('oko') }
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
+
+    context 'when model is not persist' do
+      subject { user.roles_for(build(:memo)) }
+      it { is_expected.to match_array([]) }
+    end
   end
 
   describe '#grant' do

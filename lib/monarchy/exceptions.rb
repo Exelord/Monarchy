@@ -103,5 +103,11 @@ module Monarchy
         'Role can NOT be nil!'
       end
     end
+
+    class ResourceNotPersist < Error
+      def message
+        'Resource has to persisted!'
+      end
+    end
   end
 end

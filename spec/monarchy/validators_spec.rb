@@ -82,6 +82,18 @@ describe Monarchy::Validators do
 
   describe '.resource' do
     context 'allow nil' do
+      context 'persistance' do
+        context 'turn on by default' do
+          subject { described_class.resource(nil, true) }
+          it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::ResourceNotPersist) }
+        end
+
+        context 'turn off by default' do
+          subject { described_class.resource(nil, true, false) }
+          it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::ResourceNotPersist) }
+        end
+      end
+
       context 'model is nil' do
         subject { described_class.resource(nil, true) }
         it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
@@ -101,6 +113,18 @@ describe Monarchy::Validators do
     end
 
     context 'not allow nil' do
+      context 'persistance' do
+        context 'turn on by default' do
+          subject { described_class.resource(build(:memo)) }
+          it { is_expected_block.to raise_exception(Monarchy::Exceptions::ResourceNotPersist) }
+        end
+
+        context 'turn off by default' do
+          subject { described_class.resource(build(:memo), false, false) }
+          it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::ResourceNotPersist) }
+        end
+      end
+
       context 'model is nil' do
         subject { described_class.resource(nil) }
         it { is_expected_block.to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
