@@ -35,7 +35,7 @@ module Monarchy
           resource.class.try(:acting_as_resource)
         end
 
-        (persistance && resource && !resource.persisted?) ? raise(Monarchy::Exceptions::ResourceNotPersist) : model
+        persistance && resource && !resource.persisted? ? raise(Monarchy::Exceptions::ResourceNotPersist) : model
       end
 
       def user(user, allow_nil = false)

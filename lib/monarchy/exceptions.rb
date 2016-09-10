@@ -106,7 +106,7 @@ module Monarchy
 
     class ResourceNotPersist < Error
       def message
-        "Resource has to persisted!"
+        'Resource has to persisted!'
       end
     end
   end
