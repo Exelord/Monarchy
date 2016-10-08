@@ -24,7 +24,8 @@ module Monarchy
     end
 
     module SupportMethods
-      attr_accessor :parentize, :acting_as_resource, :automatic_hierarchy
+      attr_accessor :automatic_hierarchy
+      attr_reader :acting_as_resource, :parentize_name
 
       def default_role_name
         Monarchy.configuration.inherited_default_role
@@ -43,7 +44,7 @@ module Monarchy
       end
 
       def parent_as(name)
-        self.parentize = name
+        @parentize_name = name
       end
 
       def include_scopes
@@ -89,7 +90,7 @@ module Monarchy
       private
 
       def assign_parent(force = false)
-        parentize = self.class.parentize
+        parentize = self.class.parentize_name
 
         if parentize
           was_changed = changes["#{parentize}_id"] || changes["#{parentize}_type"]

@@ -11,6 +11,11 @@ describe Resource, type: :model do
       let!(:project) { create :project }
       let!(:memo) { create :memo }
 
+      context "has correct parentize_name" do
+        subject { Project.parentize_name }
+        it { is_expected.to eq(:resource) }
+      end
+
       context 'project parent' do
         subject { project.parent }
 
