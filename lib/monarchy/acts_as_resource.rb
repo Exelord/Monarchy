@@ -66,7 +66,7 @@ module Monarchy
 
       def parent=(resource)
         Monarchy::Validators.resource(resource, true)
-        hierarchy.update(parent: resource.try(:ensure_hierarchy)) if hierarchy
+        hierarchy&.update(parent: resource.try(:ensure_hierarchy))
         @parent = resource
       end
 
@@ -75,7 +75,7 @@ module Monarchy
       end
 
       def children=(array)
-        hierarchy.update(children: hierarchies_for(array)) if hierarchy
+        hierarchy&.update(children: hierarchies_for(array))
         @children = array
       end
 
@@ -91,12 +91,11 @@ module Monarchy
 
       def assign_parent(force = false)
         parentize = self.class.parentize_name
+        return unless parentize
 
-        if parentize
-          was_changed = changes["#{parentize}_id"] || changes["#{parentize}_type"]
-          Monarchy::Validators.resource(send(parentize), true, false)
-          self.parent = send(parentize) if was_changed || force
-        end
+        was_changed = changes["#{parentize}_id"] || changes["#{parentize}_type"]
+        Monarchy::Validators.resource(send(parentize), true, false)
+        self.parent = send(parentize) if was_changed || force
       end
 
       def children_resources
@@ -106,7 +105,7 @@ module Monarchy
       end
 
       def hierarchies_for(array)
-        array.compact! if array
+        array&.compact!
         Array(array).map { |resource| Monarchy::Validators.resource(resource).hierarchy }
       end
     end
