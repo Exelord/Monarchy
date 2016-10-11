@@ -1,7 +1,7 @@
 Monarchy.configure do |config|
   # REQUIRED SETTINGS
 
-  # You have to define which role will be the default one (read only) during inheritence.
+  # You have to define which role will be the default one (read only) during inheritance.
   # Example role: :guest
   # Real case on resources:
   # project: (you have no roles)

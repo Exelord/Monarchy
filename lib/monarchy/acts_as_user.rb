@@ -18,9 +18,9 @@ module Monarchy
     end
 
     module InstanceMethods
-      def roles_for(resource, inheritence = true)
+      def roles_for(resource, inheritance = true)
         Monarchy::Validators.resource(resource, false, false)
-        accessible_roles_for(resource, inheritence)
+        accessible_roles_for(resource, inheritance)
       end
 
       def member_for(resource)
@@ -53,7 +53,7 @@ module Monarchy
       def accessible_roles_for(resource, inheritnce)
         return Monarchy.role_class.none unless resource.hierarchy
         accessible_roles = if inheritnce
-                             resource_and_inheritence_roles(resource)
+                             resource_and_inheritance_roles(resource)
                            else
                              resource_roles(resource).order('level desc')
                            end
@@ -61,7 +61,7 @@ module Monarchy
         accessible_roles.present? ? accessible_roles : descendant_role(resource)
       end
 
-      def resource_and_inheritence_roles(resource)
+      def resource_and_inheritance_roles(resource)
         hierarchy_ids = resource.hierarchy.ancestors.select(:id)
         Monarchy.role_class.where(id:
                       Monarchy.role_class.joins(:members).where('monarchy_members.user_id': id)
