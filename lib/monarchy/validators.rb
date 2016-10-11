@@ -58,8 +58,8 @@ module Monarchy
       def check_model_class(model, exception_class)
         if yield
           model
-        else
-          raise "Monarchy::Exceptions::#{exception_class}".constantize, model if model
+        elsif model
+          raise "Monarchy::Exceptions::#{exception_class}".constantize, model
         end
       end
 

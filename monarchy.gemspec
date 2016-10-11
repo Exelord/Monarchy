@@ -26,12 +26,12 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
 
   s.add_runtime_dependency 'rails', '~> 4.2', '>= 4.2.7.1'
-  s.add_dependency 'closure_tree', '6.1.0'
-  s.add_dependency 'configurations', '2.2.0'
+  s.add_dependency 'closure_tree', '6.2.0'
+  s.add_dependency 'configurations', '2.2.1'
   s.add_dependency 'active_record_union', '1.2.0'
   s.add_dependency 'tqdm', '0.3.0'
 
   s.add_development_dependency 'bundler', '~> 1.12'
-  s.add_development_dependency 'rake', '~> 11.1'
+  s.add_development_dependency 'rake', '~> 11.3'
   s.add_development_dependency 'rspec', '3.5.0'
 end
