@@ -25,7 +25,7 @@ group :development, :test do
   gem 'ffaker', '2.2.0'
   gem 'database_cleaner', '1.5.3'
   gem 'tqdm', '0.3.0'
-  gem 'rails', '4.2.7.1'
+  gem 'rails', '5.0.0.1'
 end
 
 gem 'simplecov', '0.12.0', require: false, group: :test
