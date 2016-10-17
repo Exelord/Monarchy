@@ -22,3 +22,5 @@ ratings:
   - "**.rb"
 exclude_paths:
 - spec/
+- dummy/
+- docs/
