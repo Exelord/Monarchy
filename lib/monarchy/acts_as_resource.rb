@@ -48,9 +48,10 @@ module Monarchy
       end
 
       def include_scopes
-        scope :in, (lambda do |resource|
+        scope :in, (lambda do |resource, descendants = true|
           Monarchy::Validators.resource(resource)
-          joins(:hierarchy).where(monarchy_hierarchies: { parent_id: resource.hierarchy.self_and_descendants })
+          parent_id = descendants ? resource.hierarchy.self_and_descendants : resource.hierarchy.id
+          joins(:hierarchy).where(monarchy_hierarchies: { parent_id: parent_id })
         end)
 
         scope :accessible_for, (lambda do |user|
