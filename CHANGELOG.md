@@ -1,4 +1,10 @@
 ### 2.0.x LTS
 - Docs in files
 - Improve `.in` scope in AAR
+- Change `.in` scope in AAH
+  - Now it takes `hierarchy` and returns array of `hierarchies`
 - Update gems
+- Add dynamic `hierarchy` class
+- Add `users` relationship to AAH
+- Add a validator for `hierarchy`
+- Add new exceptions for `hierarchy`

@@ -6,10 +6,10 @@ module Monarchy
     module ClassMethods
       def acts_as_user
         has_many :members, class_name: "::#{Monarchy.member_class}", dependent: :destroy
-        has_many :hierarchies, through: :members, class_name: 'Monarchy::Hierarchy'
+        has_many :hierarchies, through: :members, class_name: "::#{Monarchy.hierarchy_class}"
 
         scope :accessible_for, (lambda do |user|
-          where(id: Monarchy::Hierarchy.accessible_for(user)
+          where(id: Monarchy.hierarchy_class.accessible_for(user)
                                        .joins(members: [:user]).select(:user_id)).union(where(id: user.id))
         end)
 

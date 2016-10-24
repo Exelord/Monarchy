@@ -6,10 +6,13 @@ module Monarchy
     module ClassMethods
       def acts_as_hierarchy
         extend Monarchy::ActsAsHierarchy::SupportMethods
+        self.table_name = 'monarchy_hierarchies'
         has_closure_tree dependent: :destroy
 
         has_many :members, class_name: "::#{Monarchy.member_class}", dependent: :destroy
+        has_many :users, through: :members, class_name: "::#{Monarchy.user_class}"
         belongs_to :resource, polymorphic: true
+
         include_scopes
 
         validates :resource_type, presence: true
@@ -21,9 +24,9 @@ module Monarchy
       private
 
       def include_scopes
-        scope :in, (lambda do |resource|
-          Monarchy::Validators.resource(resource)
-          where(monarchy_hierarchies: { parent_id: resource.hierarchy.self_and_descendant_ids })
+        scope :in, (lambda do |hierarchy, descendants = true|
+          Monarchy::Validators.hierarchy(hierarchy)
+          descendants ? hierarchy.descendants : hierarchy.children
         end)
 
         scope :accessible_for, (lambda do |user|

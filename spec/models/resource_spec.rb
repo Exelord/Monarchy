@@ -220,7 +220,7 @@ describe Resource, type: :model do
       it { is_expected.to match_array([memo1, memo2, memo3]) }
     end
 
-    context "without descendants" do
+    context 'without descendants' do
       let!(:memo4) { create :memo, parent: project }
 
       subject { Memo.in(project, false) }

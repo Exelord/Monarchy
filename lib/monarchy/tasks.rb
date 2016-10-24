@@ -31,7 +31,7 @@ module Monarchy
         end
       end
 
-      Monarchy::Hierarchy.rebuild!
+      Monarchy.hierarchy_class.rebuild!
       p 'Monarchy reparentize ended!'
     end
   end

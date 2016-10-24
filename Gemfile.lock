@@ -198,7 +198,7 @@ DEPENDENCIES
   tqdm (= 0.3.0)
 
 RUBY VERSION
-   ruby 2.3.0p0
+   ruby 2.3.1p112
 
 BUNDLED WITH
-   1.12.5
+   1.13.6

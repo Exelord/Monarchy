@@ -13,10 +13,7 @@ module Monarchy
         after_update :assign_parent
         after_create :ensure_hierarchy, :assign_parent
 
-        has_many :members, through: :hierarchy, class_name: "::#{Monarchy.member_class}"
-        has_many :users, through: :members, class_name: "::#{Monarchy.user_class}"
-        has_one :hierarchy, as: :resource, dependent: :destroy, class_name: 'Monarchy::Hierarchy'
-
+        include_relationships
         include_scopes
 
         include Monarchy::ActsAsResource::InstanceMethods
@@ -50,13 +47,19 @@ module Monarchy
       def include_scopes
         scope :in, (lambda do |resource, descendants = true|
           Monarchy::Validators.resource(resource)
-          parent_id = descendants ? resource.hierarchy.self_and_descendants : resource.hierarchy.id
-          joins(:hierarchy).where(monarchy_hierarchies: { parent_id: parent_id })
+          hierarchies = Monarchy.hierarchy_class.in(resource.hierarchy, descendants)
+          joins(:hierarchy).where(monarchy_hierarchies: { id: hierarchies })
         end)
 
         scope :accessible_for, (lambda do |user|
-          joins(:hierarchy).where(monarchy_hierarchies: { id: Monarchy::Hierarchy.accessible_for(user) })
+          joins(:hierarchy).where(monarchy_hierarchies: { id: Monarchy.hierarchy_class.accessible_for(user) })
         end)
+      end
+
+      def include_relationships
+        has_many :members, through: :hierarchy, class_name: "::#{Monarchy.member_class}"
+        has_many :users, through: :members, class_name: "::#{Monarchy.user_class}"
+        has_one :hierarchy, as: :resource, dependent: :destroy, class_name: "::#{Monarchy.hierarchy_class}"
       end
     end
 
@@ -81,7 +84,7 @@ module Monarchy
       end
 
       def ensure_hierarchy(force = false)
-        self.hierarchy ||= Monarchy::Hierarchy.create(
+        self.hierarchy ||= Monarchy.hierarchy_class.create(
           resource: self,
           parent: parent.try(:hierarchy),
           children: hierarchies_for(children)
