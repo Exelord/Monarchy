@@ -75,13 +75,13 @@ You can select all resources scoped into another by using scope: `in`:
 ``` ruby
 Resource.in(Project.first) # returns [resource1, resource5, resource6]
 ```
-It will returns for you all `resources` which parent is `Project.first` or one of his children.
+It will return for you all `resources` which parent is `Project.first` or one of his children.
 
 - If the second argument is `false`:
 ``` ruby
 Resource.in(Project.first, false) # returns [resource1, resource5]
 ```
-It will returns for you all `resources` which parent is `Project.first`
+It will return for you all `resources` which parent is `Project.first`
 
 
 ## Relations

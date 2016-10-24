@@ -6,7 +6,7 @@ You can configure Monarchy in `config/initializers/monarchy.rb` file. All availa
 Monarchy.configure do |config|
   # REQUIRED SETTINGS
 
-  # You have to define which role will be the default one (read only) during inheritence.
+  # You have to define which role will be the default one (read only) during inheritance.
   # Example role: :guest
   # Real case on resources:
   # project: (you have no roles)
@@ -29,13 +29,14 @@ Monarchy.configure do |config|
   # OPTIONAL SETTINGS
 
   # If you want to override Member or Role class you have add correct actors to class definition
-  # Available: acts_as_member, acts_as_role
+  # Available: acts_as_member, acts_as_role, acts_as_hierarchy
   # Example:
   # class Member < ActiveRecord::Base
   #   acts_as_member
   # end
-  config.member_class_name = 'Monarchy::Member' # string
   config.role_class_name = 'Monarchy::Role' # string
+  config.member_class_name = 'Monarchy::Member' # string
+  config.hierarchy_class_name = 'Monarchy::Hierarchy' # string
 
 
   # If this option is setup to true all members bellow the destroying one, will be deleted.

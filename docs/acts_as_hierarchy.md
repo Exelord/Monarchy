@@ -1,11 +1,11 @@
 ## Hierarchy
-`Hierarchy` is an internal model of `Monarchy` and should not be use unless it is really necessary.
+`Hierarchy` is an internal model of `Monarchy` and should not be used unless it is really necessary.
 
 > hmm... sounds like `private`
 
 ### Methods
 ** We do not recommend to use it but if yo have to: **
-We are using [Closure Tree][e5c808aa] behind `Hierarchy` class. There is bunch of methods and functions available behind the hood. Check their documentation.
+We are using [Closure Tree][e5c808aa] behind `Hierarchy` class. There is a bunch of methods and functions available behind the hood. Check their documentation.
 
   [e5c808aa]: https://github.com/mceachen/closure_tree "Closure Tree"
 
