@@ -26,7 +26,7 @@ module Monarchy
       def include_scopes
         scope :in, (lambda do |hierarchy, descendants = true|
           Monarchy::Validators.hierarchy(hierarchy)
-          descendants ? hierarchy.descendants : hierarchy.children
+          where(id: descendants ? hierarchy.descendants : hierarchy.children)
         end)
 
         scope :accessible_for, (lambda do |user|

@@ -138,11 +138,12 @@ describe Monarchy::Hierarchy, type: :model do
       end
     end
 
-    context 'accessible_for in' do
+    context '.accessible_for and .in' do
       let!(:memo_member) { create(:member, user: user, hierarchy: memo4.hierarchy) }
       let(:hierarchy) { memo2.hierarchy }
 
       it { expect(described_class.accessible_for(user).in(hierarchy)).to match_array([memo3.hierarchy, memo4.hierarchy]) }
+      it { expect(described_class.in(hierarchy).accessible_for(user)).to match_array([memo3.hierarchy, memo4.hierarchy]) }
     end
   end
 end
