@@ -31,7 +31,7 @@ module Monarchy
 
         scope :accessible_for, (lambda do |user|
           Monarchy::Validators.user(user)
-          where(id: accessible_roots(user)).union(where(id: accessible_leaves(user)))
+          where(id: accessible_roots(user).union(accessible_leaves(user)))
         end)
       end
 
