@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    monarchy (2.0.3)
+    monarchy (2.0.0.pre.beta.1)
       active_record_union (= 1.2.0)
       closure_tree (= 6.2.0)
       configurations (= 2.2.1)
