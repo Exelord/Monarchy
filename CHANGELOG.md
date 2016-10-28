@@ -8,3 +8,4 @@
 - Add `users` relationship to AAH
 - Add a validator for `hierarchy`
 - Add new exceptions for `hierarchy`
+- Fix scopes in `hierarchy`

@@ -139,11 +139,22 @@ describe Monarchy::Hierarchy, type: :model do
     end
 
     context '.accessible_for and .in' do
-      let!(:memo_member) { create(:member, user: user, hierarchy: memo4.hierarchy) }
-      let(:hierarchy) { memo2.hierarchy }
+      context 'when have access to leaves' do
+        let!(:owner_role) { create(:role, name: :owner, level: 3) }
+        let!(:memo_member) { create(:member, user: user, hierarchy: project.hierarchy, roles: [owner_role]) }
+        let(:hierarchy) { memo3.hierarchy }
 
-      it { expect(described_class.accessible_for(user).in(hierarchy)).to match_array([memo3.hierarchy, memo4.hierarchy]) }
-      it { expect(described_class.in(hierarchy).accessible_for(user)).to match_array([memo3.hierarchy, memo4.hierarchy]) }
+        it { expect(described_class.accessible_for(user).in(hierarchy)).to match_array([memo6.hierarchy, memo4.hierarchy]) }
+        it { expect(described_class.in(hierarchy).accessible_for(user)).to match_array([memo6.hierarchy, memo4.hierarchy]) }
+      end
+
+      context 'when have access to roots' do
+        let!(:memo_member) { create(:member, user: user, hierarchy: memo4.hierarchy) }
+        let(:hierarchy) { memo2.hierarchy }
+
+        it { expect(described_class.accessible_for(user).in(hierarchy)).to match_array([memo3.hierarchy, memo4.hierarchy]) }
+        it { expect(described_class.in(hierarchy).accessible_for(user)).to match_array([memo3.hierarchy, memo4.hierarchy]) }
+      end
     end
   end
 end

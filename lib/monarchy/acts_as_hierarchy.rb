@@ -36,11 +36,11 @@ module Monarchy
       end
 
       def accessible_roots(user)
-        joins('INNER JOIN "monarchy_hierarchy_hierarchies" ON '\
+        unscoped.joins('INNER JOIN "monarchy_hierarchy_hierarchies" ON '\
           '"monarchy_hierarchies"."id" = "monarchy_hierarchy_hierarchies"."ancestor_id"')
-          .joins('INNER JOIN "monarchy_members" ON '\
+                .joins('INNER JOIN "monarchy_members" ON '\
           '"monarchy_members"."hierarchy_id" = "monarchy_hierarchy_hierarchies"."descendant_id"')
-          .where(monarchy_members: { user_id: user.id }).distinct
+                .where(monarchy_members: { user_id: user.id }).distinct
       end
 
       def accessible_leaves(user)
@@ -58,7 +58,7 @@ module Monarchy
       end
 
       def descendant_leaves
-        joins('INNER JOIN "monarchy_hierarchy_hierarchies" ON "monarchy_hierarchies"."id" =' \
+        unscoped.joins('INNER JOIN "monarchy_hierarchy_hierarchies" ON "monarchy_hierarchies"."id" =' \
           '"monarchy_hierarchy_hierarchies"."descendant_id"')
       end
     end
