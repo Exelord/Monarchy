@@ -1,3 +1,5 @@
+# Resource
+
 To generate a new resource you can use:
 ```
 rails g monarchy:resource [resource_name]
@@ -9,7 +11,7 @@ class Resource < ActiveRecord::Base
 end
 ```
 
-##### - Options
+#### - Options
 You can pass an options to `acts_as_resource`:
 - `parent_as: :association_name`
 
@@ -27,7 +29,7 @@ You can pass an options to `acts_as_resource`:
 
 ## Methods
 
-#### #parent
+### #parent
 You can easily assign parent by using `parent=` method, eg:
 ``` ruby
 resource.parent = Project.last
@@ -39,7 +41,7 @@ resource.parent   # returns Project.last
 
 Parents can be only models which have `acts_as_resource`
 
-#### #children
+### #children
 You can easily assign children by using `children=` method, eg:
 ``` ruby
 resource.children = [child1, child2, child3]
@@ -50,25 +52,25 @@ resource.children   # returns [child1, child2, child3]
 ```
 Children can be only models which have `acts_as_resource`
 
-#### #ensure_hierarchy
+### #ensure_hierarchy
 It creates a hierarchy for resource model if it not exist and `automatic_hierarchy` flag is set to true.
 If you want to bypass `automatic_hierarchy` flag you can pass `true` to the method params.
 
-#### .default_role_name
+### .default_role_name
 Returns default role name for the class
 
-#### .default_role
+### .default_role
 Returns default role object `Monarchy::Role` for the class
 
 ### Scopes:
 
-#### .accessible_for
+### .accessible_for
 You can select all resources accessible for specyfic user by using scope: `accessible_for`, eg:
 ``` ruby
 Resource.accessible_for(current_user)   # returns [resource1, resource2, resource5]
 ```
 
-#### .in(resource, true)
+### .in(resource, true)
 You can select all resources scoped into another by using scope: `in`:
 
 - If the second argument is `true` (`true` is by default):
@@ -86,13 +88,13 @@ It will return for you all `resources` which parent is `Project.first`
 
 ## Relations
 
-#### #members
+### #members
 Return all members explicitly granted to the resource.
 
-#### #users
+### #users
 Returns all users which have been granted explicitly to the resource.
 
-#### #hierarchy
+### #hierarchy
 Returns a hierarchy model of the resource. (DO NOT USE UNLESS IS NECESSARY)
 
 ## Flags
