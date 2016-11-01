@@ -14,8 +14,21 @@
   </a>
 </p>
 
+Monarchy is a ruby gem offering a complete solution to manage an access in your web application.
+Hierarchical structure and built-in roles inheritance options make it the most powerful tool to control an access to your resources.
+
+Thanks to [closure_tree](https://github.com/mceachen/closure_tree), Monarchy can deliver the best in class algorithmic performance and allows you to forget about hierarchies and complicated structures.
+
+It is like a [rolify](https://github.com/RolifyCommunity/rolify) but with advanced possibilities to inherit roles and collect all accessible resources with just one method.
+
+## Requirements
+Monarchy requires:
+  - Ruby 2.3
+  - Rails 4.2 or higher
+
 ## Documentation
-There is fully documentation for that project on our website. Take a look at [Monarchy Website][5c7e0096]
+We are preparing an official [website][5c7e0096] with documentation.
+Meanwhile you can look to the `docs` directory for actual [documentation](https://github.com/Exelord/Monarchy/tree/master/docs).
 
 ## Contributing
 
