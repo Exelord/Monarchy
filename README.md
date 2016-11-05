@@ -24,7 +24,6 @@ It is like a [rolify](https://github.com/RolifyCommunity/rolify) but with advanc
 ## Requirements
 Monarchy requires:
   - Ruby 2.3
-  - Rails 4.2 or higher
 
 ## Documentation
 We are preparing an official [website][5c7e0096] with documentation.
