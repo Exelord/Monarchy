@@ -81,8 +81,8 @@ end
 
 > Check documentation of [Acts as user] (https://github.com/Exelord/Monarchy/wiki/Acts-as-user)
 
-### Mark resources ac actors
-For all models that you want to be accessible for users and contoled by `Monarchy` add `acts_as_resource`.
+### Mark resources as actors
+For all models that you want to be accessible for users and controlled by `Monarchy` add `acts_as_resource`.
 
 > Check documentation of [Acts as resource] (https://github.com/Exelord/Monarchy/wiki/Acts-as-resource)
 
