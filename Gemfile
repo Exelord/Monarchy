@@ -28,5 +28,5 @@ group :development, :test do
   gem 'rails', '5.0.0.1'
 end
 
-gem 'simplecov', '0.12.0', require: false, group: :test
-gem 'codeclimate-test-reporter', group: :test, require: nil
+gem 'simplecov', '0.12.0', group: :test
+gem 'codeclimate-test-reporter', '1.0.0', group: :test

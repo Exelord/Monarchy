@@ -186,7 +186,7 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 1.12)
-  codeclimate-test-reporter
+  codeclimate-test-reporter (= 1.0.0)
   database_cleaner (= 1.5.3)
   factory_girl_rails (= 4.7.0)
   ffaker (= 2.2.0)
