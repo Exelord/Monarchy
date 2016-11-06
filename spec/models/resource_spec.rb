@@ -11,6 +11,11 @@ describe Resource, type: :model do
       let!(:project) { create :project }
       let!(:memo) { create :memo }
 
+      context 'has correct parentize_name' do
+        subject { Project.parentize_name }
+        it { is_expected.to eq(:resource) }
+      end
+
       context 'project parent' do
         subject { project.parent }
 
@@ -206,17 +211,21 @@ describe Resource, type: :model do
   describe '.in' do
     let(:project) { create :project }
     let!(:memo1) { create :memo, parent: project }
-    let!(:memo2) { create :memo, parent: project }
-    let!(:memo3) { create :memo, parent: project }
+    let!(:memo2) { create :memo, parent: memo1 }
+    let!(:memo3) { create :memo, parent: memo2 }
 
-    subject { Memo.in(project) }
-
-    it { is_expected.to match_array([memo1, memo2, memo3]) }
-
-    context 'nested memo in memo' do
-      let!(:memo3) { create :memo, parent: memo2 }
+    context 'with descendants by default' do
+      subject { Memo.in(project) }
 
       it { is_expected.to match_array([memo1, memo2, memo3]) }
+    end
+
+    context 'without descendants' do
+      let!(:memo4) { create :memo, parent: project }
+
+      subject { Memo.in(project, false) }
+
+      it { is_expected.to match_array([memo1, memo4]) }
     end
   end
 

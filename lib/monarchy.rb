@@ -26,6 +26,7 @@ module Monarchy
   configuration_defaults do |config|
     config.member_class_name = 'Monarchy::Member'
     config.role_class_name = 'Monarchy::Role'
+    config.hierarchy_class_name = 'Monarchy::Hierarchy'
     config.members_access_revoke = false
     config.revoke_strategy = :revoke_member
   end
@@ -44,6 +45,10 @@ module Monarchy
 
   def self.user_class
     Monarchy.configuration.user_class_name.safe_constantize || class_not_defined('User')
+  end
+
+  def self.hierarchy_class
+    Monarchy.configuration.hierarchy_class_name.safe_constantize || class_not_defined('Hierarchy')
   end
 
   private

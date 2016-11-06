@@ -14,13 +14,13 @@ describe Monarchy::Hierarchy, type: :model do
     let!(:memo1) { create :memo, parent: project }
     let!(:memo3) { create :memo, parent: project }
 
-    subject { described_class.in(project) }
+    subject { described_class.in(project.hierarchy) }
 
     context 'when model is not monarchy resource' do
       let!(:user) { create(:user) }
 
-      it { expect { described_class.in(user) }.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
-      it { expect { described_class.in(nil) }.to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
+      it { expect { described_class.in(user) }.to raise_exception(Monarchy::Exceptions::ModelNotHierarchy) }
+      it { expect { described_class.in(nil) }.to raise_exception(Monarchy::Exceptions::HierarchyIsNil) }
     end
 
     it do
@@ -138,10 +138,23 @@ describe Monarchy::Hierarchy, type: :model do
       end
     end
 
-    context 'accessible_for in' do
-      let!(:memo_member) { create(:member, user: user, hierarchy: memo4.hierarchy) }
+    context '.accessible_for and .in' do
+      context 'when have access to leaves' do
+        let!(:owner_role) { create(:role, name: :owner, level: 3) }
+        let!(:memo_member) { create(:member, user: user, hierarchy: project.hierarchy, roles: [owner_role]) }
+        let(:hierarchy) { memo3.hierarchy }
 
-      it { expect(described_class.accessible_for(user).in(memo2)).to match_array([memo3.hierarchy, memo4.hierarchy]) }
+        it { expect(described_class.accessible_for(user).in(hierarchy)).to match_array([memo6.hierarchy, memo4.hierarchy]) }
+        it { expect(described_class.in(hierarchy).accessible_for(user)).to match_array([memo6.hierarchy, memo4.hierarchy]) }
+      end
+
+      context 'when have access to roots' do
+        let!(:memo_member) { create(:member, user: user, hierarchy: memo4.hierarchy) }
+        let(:hierarchy) { memo2.hierarchy }
+
+        it { expect(described_class.accessible_for(user).in(hierarchy)).to match_array([memo3.hierarchy, memo4.hierarchy]) }
+        it { expect(described_class.in(hierarchy).accessible_for(user)).to match_array([memo3.hierarchy, memo4.hierarchy]) }
+      end
     end
   end
 end

@@ -6,10 +6,10 @@ module Monarchy
     module ClassMethods
       def acts_as_user
         has_many :members, class_name: "::#{Monarchy.member_class}", dependent: :destroy
-        has_many :hierarchies, through: :members, class_name: 'Monarchy::Hierarchy'
+        has_many :hierarchies, through: :members, class_name: "::#{Monarchy.hierarchy_class}"
 
         scope :accessible_for, (lambda do |user|
-          where(id: Monarchy::Hierarchy.accessible_for(user)
+          where(id: Monarchy.hierarchy_class.accessible_for(user)
                                        .joins(members: [:user]).select(:user_id)).union(where(id: user.id))
         end)
 
@@ -18,9 +18,9 @@ module Monarchy
     end
 
     module InstanceMethods
-      def roles_for(resource, inheritence = true)
+      def roles_for(resource, inheritance = true)
         Monarchy::Validators.resource(resource, false, false)
-        accessible_roles_for(resource, inheritence)
+        accessible_roles_for(resource, inheritance)
       end
 
       def member_for(resource)
@@ -53,7 +53,7 @@ module Monarchy
       def accessible_roles_for(resource, inheritnce)
         return Monarchy.role_class.none unless resource.hierarchy
         accessible_roles = if inheritnce
-                             resource_and_inheritence_roles(resource)
+                             resource_and_inheritance_roles(resource)
                            else
                              resource_roles(resource).order('level desc')
                            end
@@ -61,19 +61,26 @@ module Monarchy
         accessible_roles.present? ? accessible_roles : descendant_role(resource)
       end
 
-      def resource_and_inheritence_roles(resource)
+      def resource_and_inheritance_roles(resource)
         hierarchy_ids = resource.hierarchy.ancestors.select(:id)
+
         Monarchy.role_class.where(id:
-                      Monarchy.role_class.joins(:members).where('monarchy_members.user_id': id)
-                      .where('monarchy_roles.inherited': 't', 'monarchy_members.hierarchy_id': hierarchy_ids)
-                      .select(:inherited_role_id))
+          Monarchy.role_class
+            .joins('INNER JOIN monarchy_members_roles ON monarchy_roles.id = monarchy_members_roles.role_id')
+            .joins("INNER JOIN (SELECT id, hierarchy_id FROM monarchy_members WHERE user_id = #{id}) as " \
+              'monarchy_members ON monarchy_members.id = monarchy_members_roles.member_id')
+            .where('monarchy_roles.inherited': 't')
+            .where('monarchy_members.hierarchy_id': hierarchy_ids)
+            .select('monarchy_roles.inherited_role_id'))
                 .union(resource_roles(resource))
-                .distinct
       end
 
       def resource_roles(resource)
-        Monarchy.role_class.joins(:members)
-                .where('monarchy_members.hierarchy_id': resource.hierarchy.id, 'monarchy_members.user_id': id)
+        Monarchy.role_class
+                .joins('INNER JOIN monarchy_members_roles ON monarchy_roles.id = monarchy_members_roles.role_id')
+                .joins('INNER JOIN (SELECT id, hierarchy_id FROM monarchy_members WHERE ' \
+                  "hierarchy_id = #{resource.hierarchy.id} AND user_id = #{id}) as monarchy_members ON " \
+                  'monarchy_members.id = monarchy_members_roles.member_id')
       end
 
       def descendant_role(resource)

@@ -13,10 +13,7 @@ module Monarchy
         after_update :assign_parent
         after_create :ensure_hierarchy, :assign_parent
 
-        has_many :members, through: :hierarchy, class_name: "::#{Monarchy.member_class}"
-        has_many :users, through: :members, class_name: "::#{Monarchy.user_class}"
-        has_one :hierarchy, as: :resource, dependent: :destroy, class_name: 'Monarchy::Hierarchy'
-
+        include_relationships
         include_scopes
 
         include Monarchy::ActsAsResource::InstanceMethods
@@ -24,7 +21,8 @@ module Monarchy
     end
 
     module SupportMethods
-      attr_accessor :parentize, :acting_as_resource, :automatic_hierarchy
+      attr_accessor :automatic_hierarchy
+      attr_reader :acting_as_resource, :parentize_name
 
       def default_role_name
         Monarchy.configuration.inherited_default_role
@@ -43,18 +41,25 @@ module Monarchy
       end
 
       def parent_as(name)
-        self.parentize = name
+        @parentize_name = name
       end
 
       def include_scopes
-        scope :in, (lambda do |resource|
+        scope :in, (lambda do |resource, descendants = true|
           Monarchy::Validators.resource(resource)
-          joins(:hierarchy).where(monarchy_hierarchies: { parent_id: resource.hierarchy.self_and_descendants })
+          hierarchies = Monarchy.hierarchy_class.in(resource.hierarchy, descendants)
+          joins(:hierarchy).where(monarchy_hierarchies: { id: hierarchies })
         end)
 
         scope :accessible_for, (lambda do |user|
-          joins(:hierarchy).where(monarchy_hierarchies: { id: Monarchy::Hierarchy.accessible_for(user) })
+          joins(:hierarchy).where(monarchy_hierarchies: { id: Monarchy.hierarchy_class.accessible_for(user) })
         end)
+      end
+
+      def include_relationships
+        has_many :members, through: :hierarchy, class_name: "::#{Monarchy.member_class}"
+        has_many :users, through: :members, class_name: "::#{Monarchy.user_class}"
+        has_one :hierarchy, as: :resource, dependent: :destroy, class_name: "::#{Monarchy.hierarchy_class}"
       end
     end
 
@@ -65,7 +70,7 @@ module Monarchy
 
       def parent=(resource)
         Monarchy::Validators.resource(resource, true)
-        hierarchy.update(parent: resource.try(:ensure_hierarchy)) if hierarchy
+        hierarchy&.update(parent: resource.try(:ensure_hierarchy))
         @parent = resource
       end
 
@@ -74,12 +79,12 @@ module Monarchy
       end
 
       def children=(array)
-        hierarchy.update(children: hierarchies_for(array)) if hierarchy
+        hierarchy&.update(children: hierarchies_for(array))
         @children = array
       end
 
       def ensure_hierarchy(force = false)
-        self.hierarchy ||= Monarchy::Hierarchy.create(
+        self.hierarchy ||= Monarchy.hierarchy_class.create(
           resource: self,
           parent: parent.try(:hierarchy),
           children: hierarchies_for(children)
@@ -89,13 +94,12 @@ module Monarchy
       private
 
       def assign_parent(force = false)
-        parentize = self.class.parentize
+        parentize = self.class.parentize_name
+        return unless parentize
 
-        if parentize
-          was_changed = changes["#{parentize}_id"] || changes["#{parentize}_type"]
-          Monarchy::Validators.resource(send(parentize), true, false)
-          self.parent = send(parentize) if was_changed || force
-        end
+        was_changed = changes["#{parentize}_id"] || changes["#{parentize}_type"]
+        Monarchy::Validators.resource(send(parentize), true, false)
+        self.parent = send(parentize) if was_changed || force
       end
 
       def children_resources
@@ -105,7 +109,7 @@ module Monarchy
       end
 
       def hierarchies_for(array)
-        array.compact! if array
+        array&.compact!
         Array(array).map { |resource| Monarchy::Validators.resource(resource).hierarchy }
       end
     end

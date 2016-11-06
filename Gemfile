@@ -16,8 +16,8 @@ gemspec
 # gem 'byebug', group: [:development, :test]
 
 group :development, :test do
-  gem 'sqlite3', '1.3.11'
-  gem 'rubocop', '0.42.0'
+  gem 'sqlite3', '1.3.12'
+  gem 'rubocop', '0.43.0'
   gem 'pry-rails', '0.3.4'
   gem 'shoulda-matchers', '3.1.1'
   gem 'rspec-rails', '3.5.2'
@@ -25,7 +25,8 @@ group :development, :test do
   gem 'ffaker', '2.2.0'
   gem 'database_cleaner', '1.5.3'
   gem 'tqdm', '0.3.0'
+  gem 'rails', '5.0.0.1'
 end
 
-gem 'simplecov', '0.12.0', require: false, group: :test
-gem 'codeclimate-test-reporter', group: :test, require: nil
+gem 'simplecov', '0.12.0', group: :test
+gem 'codeclimate-test-reporter', '1.0.0', group: :test

@@ -24,7 +24,7 @@ module Monarchy
       def include_scopes
         scope :accessible_for, (lambda do |user|
           Monarchy::Validators.user(user)
-          where(hierarchy: Monarchy::Hierarchy.accessible_for(user))
+          where(hierarchy: Monarchy.hierarchy_class.accessible_for(user))
         end)
       end
 
@@ -43,7 +43,7 @@ module Monarchy
         has_many :roles, -> { order(level: :desc) }, through: :members_roles, class_name: "::#{Monarchy.role_class}"
 
         belongs_to :user, class_name: "::#{Monarchy.user_class}"
-        belongs_to :hierarchy, class_name: 'Monarchy::Hierarchy'
+        belongs_to :hierarchy, class_name: "::#{Monarchy.hierarchy_class}"
       end
     end
 

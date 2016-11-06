@@ -38,6 +38,16 @@ module Monarchy
         persistance && resource && !resource.persisted? ? raise(Monarchy::Exceptions::ResourceNotPersist) : model
       end
 
+      def hierarchy(hierarchy, allow_nil = false, persistance = true)
+        raise Monarchy::Exceptions::HierarchyIsNil if !hierarchy && !allow_nil
+
+        model = check_model_class(hierarchy, 'ModelNotHierarchy') do
+          hierarchy.is_a?(Monarchy.hierarchy_class)
+        end
+
+        persistance && hierarchy && !hierarchy.persisted? ? raise(Monarchy::Exceptions::HierarchyNotPersist) : model
+      end
+
       def user(user, allow_nil = false)
         raise Monarchy::Exceptions::UserIsNil if !user && !allow_nil
         model_is_class(user, Monarchy.user_class, 'ModelNotUser')
@@ -58,8 +68,8 @@ module Monarchy
       def check_model_class(model, exception_class)
         if yield
           model
-        else
-          raise "Monarchy::Exceptions::#{exception_class}".constantize, model if model
+        elsif model
+          raise "Monarchy::Exceptions::#{exception_class}".constantize, model
         end
       end
 

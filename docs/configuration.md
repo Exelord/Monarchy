@@ -1,3 +1,8 @@
+# Configuration file
+
+You can configure Monarchy in `config/initializers/monarchy.rb` file. All available configuration options are already there and waiting for your orders.
+
+``` ruby
 Monarchy.configure do |config|
   # REQUIRED SETTINGS
 
@@ -46,3 +51,4 @@ Monarchy.configure do |config|
   #                  remove the member, and all members bellow which belongs to the user
   config.revoke_strategy = :revoke_member # symbol
 end
+```
