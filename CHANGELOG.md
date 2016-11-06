@@ -1,7 +1,7 @@
 # Change Log
 
-## [2.0.0](https://github.com/Exelord/Monarchy/tree/2.0.0) (2016-11-06)
-[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.0.0-beta.1...2.0.0)
+## [2.0.4](https://github.com/Exelord/Monarchy/tree/2.0.4) (2016-11-06)
+[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.0.0-beta.1...2.0.4)
 
 **Closed issues:**
 
