@@ -32,7 +32,7 @@ module Monarchy
         scope :accessible_for, (lambda do |user|
           Monarchy::Validators.user(user)
           user_id = user.id
-          where(id: accessible_roots_ids(user_id).union(accessible_leaves_ids(user_id)))
+          where(id: accessible_roots_ids(user_id).union_all(accessible_leaves_ids(user_id)))
         end)
       end
 
@@ -47,7 +47,7 @@ module Monarchy
       def accessible_leaves_ids(user_id)
         ancestor_leaves_for_user(user_id)
           .select('monarchy_hierarchy_hierarchies.ancestor_id AS id')
-          .union(descendant_leaves_for_user(user_id)).select(:id)
+          .union_all(descendant_leaves_for_user(user_id)).select(:id)
       end
 
       def ancestor_leaves_for_user(user_id, inherited = false)
