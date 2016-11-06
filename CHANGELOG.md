@@ -1,15 +1,20 @@
 # Change Log
 
-## [2.0.0](https://github.com/Exelord/Monarchy/tree/2.0.0) (2016-10-30)
+## [2.0.0](https://github.com/Exelord/Monarchy/tree/2.0.0) (2016-11-06)
 [Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.0.0-beta.1...2.0.0)
 
 **Closed issues:**
 
+- Improve performance [\#59](https://github.com/Exelord/Monarchy/issues/59)
 - Default role - is it still needed? [\#48](https://github.com/Exelord/Monarchy/issues/48)
+- Complete Readme and WIKI [\#5](https://github.com/Exelord/Monarchy/issues/5)
 
 **Merged pull requests:**
 
+- Improve AAH performance [\#60](https://github.com/Exelord/Monarchy/pull/60) ([Exelord](https://github.com/Exelord))
+- Upgrade to Rails 5 [\#55](https://github.com/Exelord/Monarchy/pull/55) ([Exelord](https://github.com/Exelord))
 - Update packages [\#54](https://github.com/Exelord/Monarchy/pull/54) ([Exelord](https://github.com/Exelord))
+- Documentation, improvments and fixes [\#52](https://github.com/Exelord/Monarchy/pull/52) ([Exelord](https://github.com/Exelord))
 
 ## [v2.0.0-beta.1](https://github.com/Exelord/Monarchy/tree/v2.0.0-beta.1) (2016-09-10)
 [Full Changelog](https://github.com/Exelord/Monarchy/compare/v1.2.0...v2.0.0-beta.1)
