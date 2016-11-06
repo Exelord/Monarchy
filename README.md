@@ -21,6 +21,33 @@ Thanks to [closure_tree](https://github.com/mceachen/closure_tree), Monarchy can
 
 It is like a [rolify](https://github.com/RolifyCommunity/rolify) but with advanced possibilities to inherit roles and collect all accessible resources with just one method.
 
+## Usage Example
+After Monarchy setup you can enjoy with roles inheritance and accessible resources.
+
+```ruby
+# Create roles
+admin_role = Monarchy.role_class.create(name: :admin, level: 5, inherited: true)
+manager_role = Monarchy.role_class.create(name: :manager, level: 4, inherited_role: admin_role, inherited: true)
+
+# Create resources
+project1 = Project.create()
+project2 = Project.create(parent: project1)
+project3 = Project.create(parent: project2)
+project4 = Project.create()
+
+# Grant user
+user.grant(:manager, project2)
+
+# Accessible projects
+Project.accessible_for(user)  # returns [Project1, Project2, Project3]
+
+# User inherited roles
+user.roles_for(project1) # returns a default role eg. [guest_role]
+user.roles_for(project2) # returns [manager_role]
+user.roles_for(project3) # returns [admin_role]
+user.roles_for(project4) # returns empty array []
+```
+
 ## Requirements
 Monarchy requires:
   - Ruby 2.3
