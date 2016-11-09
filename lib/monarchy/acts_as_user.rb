@@ -58,7 +58,8 @@ module Monarchy
                              resource_roles(resource).order('level desc')
                            end
 
-        accessible_roles.present? ? accessible_roles : descendant_role(resource)
+        return accessible_roles if accessible_roles.present?
+        inheritnce ? descendant_role(resource) : Monarchy.role_class.none
       end
 
       def resource_and_inheritance_roles(resource)

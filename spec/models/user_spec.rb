@@ -47,6 +47,13 @@ describe User, type: :model do
         it { expect(project_roles).to match_array([manager_role]) }
         it { is_expected.to eq([]) }
       end
+
+      context 'when user has access to child of the memo' do
+        let!(:child_memo) { create(:memo, parent: memo) }
+        let!(:memo_member) { create(:member, user: user, hierarchy: child_memo.hierarchy, roles: [member_role]) }
+
+        it { is_expected.to eq([]) }
+      end
     end
 
     context 'user has no direct access to memo' do
