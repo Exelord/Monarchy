@@ -1,7 +1,15 @@
 # Change Log
 
-## [2.0.4](https://github.com/Exelord/Monarchy/tree/2.0.4) (2016-11-06)
-[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.0.0-beta.1...2.0.4)
+## [2.0.5](https://github.com/Exelord/Monarchy/tree/2.0.5) (2016-11-10)
+[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.0.4...2.0.5)
+
+**Merged pull requests:**
+
+- Accesible roles fix [\#62](https://github.com/Exelord/Monarchy/pull/62) ([PoslinskiNet](https://github.com/PoslinskiNet))
+- Fix codeclimate [\#61](https://github.com/Exelord/Monarchy/pull/61) ([Exelord](https://github.com/Exelord))
+
+## [v2.0.4](https://github.com/Exelord/Monarchy/tree/v2.0.4) (2016-11-06)
+[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.0.0-beta.1...v2.0.4)
 
 **Closed issues:**
 
