@@ -33,19 +33,29 @@ manager_role = Monarchy.role_class.create(name: :manager, level: 4, inherited_ro
 project1 = Project.create()
 project2 = Project.create(parent: project1)
 project3 = Project.create(parent: project2)
-project4 = Project.create()
+project4 = Project.create(parent: project1)
 
 # Grant user
 user.grant(:manager, project2)
 
 # Accessible projects
-Project.accessible_for(user)  # returns [Project1, Project2, Project3]
+Project.accessible_for(user)  # returns [project1, project2, project3]
 
 # User inherited roles
 user.roles_for(project1) # returns a default role eg. [guest_role]
 user.roles_for(project2) # returns [manager_role]
 user.roles_for(project3) # returns [admin_role]
 user.roles_for(project4) # returns empty array []
+
+# Graphical visualization
+
+#                              project1 (default role, eg. guest)
+#                                 |
+#                                 |
+#   (granted as manager) project2   project4 (no access)
+#                           |
+#                           |
+#                        project3 (admin | inherited role from manager_role)
 ```
 
 ## Requirements
