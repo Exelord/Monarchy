@@ -16,4 +16,4 @@ SimpleCov.start('rails') do
   groups.clear
   add_group 'Models', 'app/models'
   add_group 'Libs', 'lib/'
-end if ENV['COVERAGE']
+end
