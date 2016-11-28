@@ -55,10 +55,10 @@ module Monarchy
         accessible_roles = if inheritnce
                              resource_and_inheritance_roles(resource)
                            else
-                             resource_roles(resource).order('level desc')
+                             resource_roles(resource)
                            end
 
-        return accessible_roles if accessible_roles.present?
+        return accessible_roles.order(level: :desc, name: :asc) if accessible_roles.present?
         inheritnce ? descendant_role(resource) : Monarchy.role_class.none
       end
 
@@ -87,7 +87,12 @@ module Monarchy
       def descendant_role(resource)
         descendants = resource.hierarchy.descendants
         children_access = members_for(descendants).present?
-        children_access ? Monarchy.role_class.where(id: inherited_default_role) : Monarchy.role_class.none
+
+        if children_access
+          Monarchy.role_class.where(id: inherited_default_role).order(level: :desc, name: :asc)
+        else
+          Monarchy.role_class.none
+        end
       end
 
       def revoking_role(role_name, resource, strategy = nil)
