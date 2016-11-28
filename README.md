@@ -12,6 +12,9 @@
   <a href="https://codeclimate.com/github/Exelord/Monarchy">
     <img src="https://codeclimate.com/github/Exelord/Monarchy/badges/gpa.svg">
   </a>
+  <a href="https://codeclimate.com/github/Exelord/Monarchy/coverage">
+    <img src="https://codeclimate.com/github/Exelord/Monarchy/badges/coverage.svg" />
+  </a>
 </p>
 
 Monarchy is a ruby gem offering a complete solution to manage an access in your web application.
