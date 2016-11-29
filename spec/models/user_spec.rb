@@ -30,7 +30,15 @@ describe User, type: :model do
         let!(:memo_member) { create(:member, user: user, hierarchy: memo.hierarchy, roles: [manager_role]) }
         let!(:project_member) { create(:member, user: user, hierarchy: project.hierarchy, roles: [member_role]) }
 
-        it { is_expected.to match_array([manager_role, member_role]) }
+        it { is_expected.to eq([manager_role, member_role]) }
+      end
+
+      context "sort roles by name" do
+        let!(:manager_role) { create(:role, name: :zzz, level: 2, inherited_role: owner_role) }
+        let!(:memo_member) { create(:member, user: user, hierarchy: memo.hierarchy, roles: [manager_role]) }
+        let!(:project_member) { create(:member, user: user, hierarchy: project.hierarchy, roles: [member_role]) }
+
+        it { is_expected.to eq([manager_role, member_role]) }
       end
     end
 
@@ -74,7 +82,7 @@ describe User, type: :model do
       let(:member_role) { create(:role, name: :member, level: 2) }
 
       it { expect(project_roles).to match_array([manager_role]) }
-      it { is_expected.to match_array([manager_role, member_role]) }
+      it { is_expected.to eq([manager_role, member_role]) }
 
       context 'returns non duplicated roles' do
         let!(:project_member) do
@@ -83,8 +91,8 @@ describe User, type: :model do
                           roles: [manager_role, member_role])
         end
 
-        it { expect(project_roles).to match_array([manager_role, member_role]) }
-        it { is_expected.to match_array([manager_role, member_role]) }
+        it { expect(project_roles).to eq([manager_role, member_role]) }
+        it { is_expected.to eq([manager_role, member_role]) }
       end
     end
 
