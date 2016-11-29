@@ -1,7 +1,14 @@
 # Change Log
 
-## [2.0.5](https://github.com/Exelord/Monarchy/tree/2.0.5) (2016-11-10)
-[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.0.4...2.0.5)
+## [2.0.6](https://github.com/Exelord/Monarchy/tree/2.0.6) (2016-11-29)
+[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.0.5...2.0.6)
+
+**Fixed bugs:**
+
+- Fix roles order [\#63](https://github.com/Exelord/Monarchy/pull/63) ([Exelord](https://github.com/Exelord))
+
+## [v2.0.5](https://github.com/Exelord/Monarchy/tree/v2.0.5) (2016-11-10)
+[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.0.4...v2.0.5)
 
 **Merged pull requests:**
 
