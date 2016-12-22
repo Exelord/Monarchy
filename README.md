@@ -17,12 +17,11 @@
   </a>
 </p>
 
-Monarchy is a ruby gem offering a complete solution to manage an access in your web application.
-Hierarchical structure and built-in roles inheritance options make it the most powerful tool to control an access to your resources.
+Monarchy is a ruby gem offering a complete solution to manage an authorization access in Ruby on Rails applications. A hierarchical structure as well as built-in roles inheritance options make it the most powerful tool to control access to application data resources.
 
-Thanks to [closure_tree](https://github.com/mceachen/closure_tree), Monarchy can deliver the best in class algorithmic performance and allows you to forget about hierarchies and complicated structures.
+Thanks to [closure_tree](https://github.com/mceachen/closure_tree) - a gem used to manage binary trees - Monarchy can deliver the best-in-class algorithmic performance and enables developers to forget about hierarchies and complicated structures.
 
-It is like a [rolify](https://github.com/RolifyCommunity/rolify) but with advanced possibilities to inherit roles and collect all accessible resources with just one method.
+If you feel limited while using rolify, feel free to use Monarchy with its advanced capacity to inherit roles and collect all accessible resources with just one method.
 
 ## Usage Example
 After Monarchy setup you can enjoy with roles inheritance and accessible resources.
