@@ -33,7 +33,7 @@ describe User, type: :model do
         it { is_expected.to eq([manager_role, member_role]) }
       end
 
-      context "sort roles by name" do
+      context 'sort roles by name' do
         let!(:manager_role) { create(:role, name: :zzz, level: 2, inherited_role: owner_role) }
         let!(:memo_member) { create(:member, user: user, hierarchy: memo.hierarchy, roles: [manager_role]) }
         let!(:project_member) { create(:member, user: user, hierarchy: project.hierarchy, roles: [member_role]) }
