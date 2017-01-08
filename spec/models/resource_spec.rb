@@ -277,6 +277,36 @@ describe Resource, type: :model do
 
       it { expect(Memo.accessible_for(user).in(memo2)).to match_array([memo3, memo4]) }
     end
+
+    context 'with specified allowed roles' do
+      context 'when only member role is allowed' do
+        let!(:owner_role) { create(:role, name: :owner, level: 3) }
+        let!(:member_role) { create(:role, name: :member, level: 1, inherited: false) }
+        let!(:no_access_role) { create(:role, name: :blocked, level: 1, inherited: false) }
+        let!(:memo7) { create :memo, parent: memo6 }
+
+        subject { Memo.accessible_for(user, [:member]) }
+
+        context 'user has a member role in project' do
+          before { user.grant(:member, memo3) }
+          it do
+            is_expected.to match_array([memo2, memo3, memo4, memo6, memo7])
+          end
+        end
+
+        context 'user has a inherited role' do
+          before { user.grant(:owner, memo3) }
+          it do
+            is_expected.to match_array([memo2, memo3, memo4, memo6, memo7])
+          end
+        end
+
+        context 'user has other role without inheritance' do
+          before { user.grant(:blocked, memo3) }
+          it { is_expected.to match_array([memo3, memo2]) }
+        end
+      end
+    end
   end
 
   describe '@acting_as_resource' do
