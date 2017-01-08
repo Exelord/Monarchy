@@ -76,6 +76,12 @@ describe User, type: :model do
 
       it { expect(project_roles).to match_array([guest_role]) }
       it { is_expected.to match_array([member_role]) }
+
+      context 'when there is no memo member ' do
+        let!(:memo_member) {}
+
+        it { is_expected.to be_empty }
+      end
     end
 
     context 'returns all roles with the higher level' do
@@ -438,6 +444,54 @@ describe User, type: :model do
     context 'when model is not model' do
       subject { user.revoke_role!(:guest, 'oko') }
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
+    end
+  end
+
+  describe '.accessible_for' do
+    let!(:project) { create :project }
+    let!(:memo1) { create :memo, parent: project }
+    let!(:memo2) { create :memo, parent: project }
+    let!(:memo3) { create :memo, parent: memo2 }
+    let!(:memo4) { create :memo, parent: memo3 }
+    let!(:memo5) { create :memo, parent: memo2 }
+    let!(:memo6) { create :memo, parent: memo3 }
+
+    let!(:manager_role) { create(:role, name: :manager, level: 2, inherited: true) }
+
+    let!(:member2) { create :member, resource: memo1 }
+    let!(:member3) { create :member, resource: memo5 }
+    let!(:member4) { create :member, resource: memo6 }
+
+    subject { User.accessible_for(member.user) }
+
+    context 'when user is not monarchy user' do
+      subject { User.accessible_for(member2) }
+
+      it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotUser) }
+    end
+
+    context 'when user is nil' do
+      subject { User.accessible_for(nil) }
+
+      it { is_expected_block.to raise_exception(Monarchy::Exceptions::UserIsNil) }
+    end
+
+    context 'user has access to all members if has manager role on root' do
+      let!(:member) { create :member, resource: project, roles: [manager_role] }
+
+      it { is_expected.to match_array([member.user, member2.user, member3.user, member4.user]) }
+    end
+
+    context 'user has access to only root members if has guest role on root' do
+      let!(:member) { create :member, resource: project }
+
+      it { is_expected.to match_array([member.user]) }
+    end
+
+    context 'user has access to memo3' do
+      let!(:member) { create :member, resource: memo3, roles: [manager_role] }
+
+      it { is_expected.to match_array([member.user, member4.user]) }
     end
   end
 end
