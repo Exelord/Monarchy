@@ -84,11 +84,13 @@ module Monarchy
       end
 
       def ensure_hierarchy(force = false)
+        return nil unless self.class.automatic_hierarchy || force
+
         self.hierarchy ||= Monarchy.hierarchy_class.create(
           resource: self,
           parent: parent.try(:hierarchy),
           children: hierarchies_for(children)
-        ) if self.class.automatic_hierarchy || force
+        )
       end
 
       private

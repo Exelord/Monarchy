@@ -110,9 +110,9 @@ module Monarchy
       def revoking_last_role(role, resource, strategy)
         case strategy
         when :revoke_access
-          return revoke_access(resource)
+          revoke_access(resource)
         when :revoke_member
-          return member_for(resource).delete
+          member_for(resource).delete
         else
           default_role = Monarchy::Validators.default_role?(resource, role)
           raise Monarchy::Exceptions::RoleNotRevokable if default_role
