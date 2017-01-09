@@ -69,6 +69,10 @@ You can select all resources accessible for specyfic user by using scope: `acces
 ``` ruby
 Resource.accessible_for(current_user)   # returns [resource1, resource2, resource5]
 ```
+Optionally you can pass extra allowed roles which should be inherited for this request
+``` ruby
+Resource.accessible_for(current_user, [:blocked, :visitors])   # returns [resource1, resource2, resource5, resource6]
+```
 
 ### .in(resource, true)
 You can select all resources scoped into another by using scope: `in`:

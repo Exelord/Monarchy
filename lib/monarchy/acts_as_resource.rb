@@ -51,8 +51,9 @@ module Monarchy
           joins(:hierarchy).where(monarchy_hierarchies: { id: hierarchies })
         end)
 
-        scope :accessible_for, (lambda do |user|
-          joins(:hierarchy).where(monarchy_hierarchies: { id: Monarchy.hierarchy_class.accessible_for(user) })
+        scope :accessible_for, (lambda do |user, inherited_roles = []|
+          joins(:hierarchy).where(monarchy_hierarchies: { id: Monarchy.hierarchy_class
+                                                                      .accessible_for(user, inherited_roles) })
         end)
       end
 

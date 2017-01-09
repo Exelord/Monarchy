@@ -16,6 +16,10 @@ You can select all hierarchies accessible for specific user by using a scope: `a
 ``` ruby
 Monarchy.hierarchy_class.accessible_for(current_user)   # returns [hierarchy1, hierarchy2, hierarchy5]
 ```
+Optionally you can pass extra allowed roles which should be inherited for this request
+``` ruby
+Monarchy.hierarchy_class.accessible_for(current_user, [:blocked, :visitors])   # returns [hierarchy1, hierarchy2, hierarchy5, hierarchy6]
+```
 
 ### .in(resource, true)
 You can select all hierarchies scoped into another by using scope: `in`:

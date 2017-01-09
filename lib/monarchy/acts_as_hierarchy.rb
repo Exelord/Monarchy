@@ -29,10 +29,10 @@ module Monarchy
           where(id: descendants ? hierarchy.descendants : hierarchy.children)
         end)
 
-        scope :accessible_for, (lambda do |user|
+        scope :accessible_for, (lambda do |user, inherited_roles = []|
           Monarchy::Validators.user(user)
           user_id = user.id
-          where(id: accessible_roots_ids(user_id).union_all(accessible_leaves_ids(user_id)))
+          where(id: accessible_roots_ids(user_id).union_all(accessible_leaves_ids(user_id, inherited_roles)))
         end)
       end
 
@@ -44,30 +44,37 @@ module Monarchy
                 'members.hierarchy_id = monarchy_hierarchy_hierarchies.descendant_id').select(:id)
       end
 
-      def accessible_leaves_ids(user_id)
-        ancestor_leaves_for_user(user_id)
+      def accessible_leaves_ids(user_id, inherited_roles = [])
+        ancestor_leaves_for_user(user_id, false)
           .select('monarchy_hierarchy_hierarchies.ancestor_id AS id')
-          .union_all(descendant_leaves_for_user(user_id)).select(:id)
+          .union_all(descendant_leaves_for_user(user_id, inherited_roles)).select(:id)
       end
 
-      def ancestor_leaves_for_user(user_id, inherited = false)
-        inherited = inherited ? 't' : 'f'
+      def descendant_leaves_for_user(user_id, inherited_roles = [])
+        ancestor_leaves_for_user(user_id, true, inherited_roles)
+          .joins('INNER JOIN monarchy_hierarchy_hierarchies AS monarchy_descendants ON ' \
+            'monarchy_descendants.ancestor_id = monarchy_hierarchies.id')
+          .select('monarchy_descendants.descendant_id AS id')
+      end
 
+      def ancestor_leaves_for_user(user_id, inherited, inherited_roles = [])
         unscoped
           .joins('INNER JOIN monarchy_hierarchy_hierarchies ON ' \
             'monarchy_hierarchies.id = monarchy_hierarchy_hierarchies.descendant_id')
           .joins('INNER JOIN (SELECT id, hierarchy_id FROM monarchy_members WHERE ' \
             "user_id = #{user_id}) as monarchy_members ON monarchy_members.hierarchy_id = monarchy_hierarchies.id")
           .joins('INNER JOIN monarchy_members_roles ON monarchy_members_roles.member_id = monarchy_members.id')
-          .joins("INNER JOIN (SELECT id, inherited FROM monarchy_roles WHERE inherited = '#{inherited}') as " \
+          .joins("INNER JOIN (#{inheritance_query(inherited_roles, inherited)}) as " \
             'monarchy_roles ON monarchy_members_roles.role_id = monarchy_roles.id')
       end
 
-      def descendant_leaves_for_user(user_id)
-        ancestor_leaves_for_user(user_id, true)
-          .joins('INNER JOIN monarchy_hierarchy_hierarchies AS monarchy_descendants ON ' \
-            'monarchy_descendants.ancestor_id = monarchy_hierarchies.id')
-          .select('monarchy_descendants.descendant_id AS id')
+      def inheritance_query(inherited_roles, inherited)
+        if inherited_roles.present?
+          Monarchy.role_class.select(:id, :inherited, :name)
+                  .where('inherited = ? OR name IN (?)', inherited, inherited_roles).to_sql
+        else
+          Monarchy.role_class.select(:id, :inherited).where(inherited: inherited).to_sql
+        end
       end
     end
   end
