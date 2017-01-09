@@ -1,7 +1,16 @@
 # Change Log
 
-## [2.0.6](https://github.com/Exelord/Monarchy/tree/2.0.6) (2016-11-29)
-[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.0.5...2.0.6)
+## [2.0.7](https://github.com/Exelord/Monarchy/tree/2.0.7) (2017-01-09)
+[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.0.6...2.0.7)
+
+**Merged pull requests:**
+
+- Improve coverage [\#66](https://github.com/Exelord/Monarchy/pull/66) ([Exelord](https://github.com/Exelord))
+- Update gems [\#65](https://github.com/Exelord/Monarchy/pull/65) ([Exelord](https://github.com/Exelord))
+- Feature custom inherited roles [\#64](https://github.com/Exelord/Monarchy/pull/64) ([Exelord](https://github.com/Exelord))
+
+## [v2.0.6](https://github.com/Exelord/Monarchy/tree/v2.0.6) (2016-11-29)
+[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.0.5...v2.0.6)
 
 **Fixed bugs:**
 
