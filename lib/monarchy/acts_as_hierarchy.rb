@@ -48,8 +48,12 @@ module Monarchy
               "WHERE monarchy_members.user_id = #{user_id}) as members ON " \
                 'members.hierarchy_id = monarchy_hierarchy_hierarchies.descendant_id').select(:id)
 
-        return accessible_roots unless parent_access
-        accessible_roots.union_all(unscoped.where(parent_id: accessible_roots).select(:id))
+        parent_access ? roots_with_children(accessible_roots) : accessible_roots
+      end
+
+      def roots_with_children(accessible_roots)
+        accessible_children = unscoped.where(parent_id: accessible_roots).select(:id)
+        accessible_roots.union_all(accessible_children)
       end
 
       def accessible_leaves_ids(user_id, inherited_roles = [])
