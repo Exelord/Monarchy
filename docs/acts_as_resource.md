@@ -69,9 +69,27 @@ You can select all resources accessible for specyfic user by using scope: `acces
 ``` ruby
 Resource.accessible_for(current_user)   # returns [resource1, resource2, resource5]
 ```
+
+#### Options
 Optionally you can pass extra allowed roles which should be inherited for this request
 ``` ruby
 Resource.accessible_for(current_user, [:blocked, :visitors])   # returns [resource1, resource2, resource5, resource6]
+```
+
+You can also determine if read (default role) access in resource should allow to access theirs children
+
+```ruby
+Resource.accessible_for(current_user, { parent_access: true })
+#                     (GRANTED) project1
+#                                  |
+#                                  |
+#              (GRANTED) project2   project4 (GRANTED cuz it's a parent of granted resource)
+#                           |          |
+#                           |          |
+#                           |       project5 (NOT granted - it's not a child of granted resource)
+#                           |
+#                           |
+#                        project3 (member role - GRANTED)
 ```
 
 ### .in(resource, true)

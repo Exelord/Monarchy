@@ -16,9 +16,27 @@ You can select all hierarchies accessible for specific user by using a scope: `a
 ``` ruby
 Monarchy.hierarchy_class.accessible_for(current_user)   # returns [hierarchy1, hierarchy2, hierarchy5]
 ```
+
+#### Options
 Optionally you can pass extra allowed roles which should be inherited for this request
 ``` ruby
-Monarchy.hierarchy_class.accessible_for(current_user, [:blocked, :visitors])   # returns [hierarchy1, hierarchy2, hierarchy5, hierarchy6]
+Monarchy.hierarchy_class.accessible_for(current_user, { inherited_roles: [:blocked, :visitors] })   # returns [hierarchy1, hierarchy2, hierarchy5, hierarchy6]
+```
+
+You can also determine if read (default role) access in resource should allow to access theirs children
+
+```ruby
+Monarchy.hierarchy_class.accessible_for(current_user, { parent_access: true })
+#                     (GRANTED) hierarchy1
+#                                   |
+#                                   |
+#              (GRANTED) hierarchy2   hierarchy4 (GRANTED cuz it's a parent of granted resource)
+#                            |            |
+#                            |            |
+#                            |       hierarchy5 (NOT granted - it's not a child of granted resource)
+#                            |
+#                            |
+#                        hierarchy3 (member role - GRANTED)
 ```
 
 ### .in(resource, true)
