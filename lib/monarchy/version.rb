@@ -1,4 +1,4 @@
 # frozen_string_literal: true
 module Monarchy
-  VERSION = '2.0.7'
+  VERSION = '2.1.8'
 end

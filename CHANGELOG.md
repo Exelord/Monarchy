@@ -1,7 +1,14 @@
 # Change Log
 
-## [2.0.7](https://github.com/Exelord/Monarchy/tree/2.0.7) (2017-01-09)
-[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.0.6...2.0.7)
+## [2.0.8](https://github.com/Exelord/Monarchy/tree/2.0.8) (2017-01-12)
+[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.0.7...2.0.8)
+
+**Merged pull requests:**
+
+- Feature parent access [\#67](https://github.com/Exelord/Monarchy/pull/67) ([Exelord](https://github.com/Exelord))
+
+## [v2.0.7](https://github.com/Exelord/Monarchy/tree/v2.0.7) (2017-01-09)
+[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.0.6...v2.0.7)
 
 **Merged pull requests:**
 
