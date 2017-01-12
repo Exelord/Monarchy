@@ -29,6 +29,8 @@ module Monarchy
     config.hierarchy_class_name = 'Monarchy::Hierarchy'
     config.members_access_revoke = false
     config.revoke_strategy = :revoke_member
+    config.accessible_for_options.parent_access = false
+    config.accessible_for_options.inherited_roles = []
   end
 
   not_configured do |property|

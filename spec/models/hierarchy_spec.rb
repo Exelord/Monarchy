@@ -164,7 +164,7 @@ describe Monarchy::Hierarchy, type: :model do
         let!(:no_access_role) { create(:role, name: :blocked, level: 1, inherited: false) }
         let!(:memo7) { create :memo, parent: memo6 }
 
-        subject { described_class.accessible_for(user, [:member]) }
+        subject { described_class.accessible_for(user, inherited_roles: [:member]) }
 
         context 'user has a member role in project' do
           before { user.grant(:member, memo3) }
@@ -188,6 +188,18 @@ describe Monarchy::Hierarchy, type: :model do
           before { user.grant(:blocked, memo3) }
           it { is_expected.to match_array([memo3.hierarchy, memo2.hierarchy, project.hierarchy]) }
         end
+      end
+    end
+
+    context 'with parent role access' do
+      let!(:member_role) { create(:role, name: :member, level: 1, inherited: false) }
+
+      before { user.grant(:member, memo5) }
+      subject { described_class.accessible_for(user, parent_access: true) }
+
+      it do
+        is_expected.to match_array([project.hierarchy, project.status.hierarchy, memo2.hierarchy,
+                                    memo1.hierarchy, memo5.hierarchy, memo3.hierarchy])
       end
     end
   end

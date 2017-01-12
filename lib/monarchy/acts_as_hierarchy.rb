@@ -23,25 +23,37 @@ module Monarchy
     module SupportMethods
       private
 
+      # rubocop:disable all
       def include_scopes
         scope :in, (lambda do |hierarchy, descendants = true|
           Monarchy::Validators.hierarchy(hierarchy)
           where(id: descendants ? hierarchy.descendants : hierarchy.children)
         end)
 
-        scope :accessible_for, (lambda do |user, inherited_roles = []|
+        scope :accessible_for, (lambda do |user, options = {}|
           Monarchy::Validators.user(user)
           user_id = user.id
-          where(id: accessible_roots_ids(user_id).union_all(accessible_leaves_ids(user_id, inherited_roles)))
+
+          custom_options = accessible_for_options(options)
+          where(id: accessible_roots_ids(user_id, custom_options[:parent_access])
+                      .union_all(accessible_leaves_ids(user_id, custom_options[:inherited_roles])))
         end)
       end
+      # rubocop:enable all
 
-      def accessible_roots_ids(user_id)
-        unscoped.joins('INNER JOIN monarchy_hierarchy_hierarchies ON ' \
+      def accessible_roots_ids(user_id, parent_access)
+        accessible_roots = unscoped.joins('INNER JOIN monarchy_hierarchy_hierarchies ON ' \
           'monarchy_hierarchies.id = monarchy_hierarchy_hierarchies.ancestor_id')
-                .joins('INNER JOIN (SELECT hierarchy_id FROM monarchy_members ' \
+                                   .joins('INNER JOIN (SELECT hierarchy_id FROM monarchy_members ' \
               "WHERE monarchy_members.user_id = #{user_id}) as members ON " \
                 'members.hierarchy_id = monarchy_hierarchy_hierarchies.descendant_id').select(:id)
+
+        parent_access ? roots_with_children(accessible_roots) : accessible_roots
+      end
+
+      def roots_with_children(accessible_roots)
+        accessible_children = unscoped.where(parent_id: accessible_roots).select(:id)
+        accessible_roots.union_all(accessible_children)
       end
 
       def accessible_leaves_ids(user_id, inherited_roles = [])
@@ -75,6 +87,10 @@ module Monarchy
         else
           Monarchy.role_class.select(:id, :inherited).where(inherited: inherited).to_sql
         end
+      end
+
+      def accessible_for_options(options = {})
+        Monarchy.configuration.accessible_for_options.to_h.merge(options)
       end
     end
   end
