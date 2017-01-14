@@ -1,6 +1,6 @@
 /* jshint node: true */
 
-module.exports = function (environment) {
+module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'monarchy',
     environment: environment,
@@ -11,12 +11,16 @@ module.exports = function (environment) {
         // Here you can enable experimental features on an ember canary build
         // e.g. 'with-controller': true
       },
+      EXTEND_PROTOTYPES: {
+        // Prevent Ember Data from overriding Date.parse.
+        Date: false
+      }
     },
 
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
-    },
+    }
   };
 
   if (environment === 'development') {
@@ -39,8 +43,6 @@ module.exports = function (environment) {
   }
 
   if (environment === 'production') {
-    ENV.locationType = 'hash';
-    ENV.rootURL = '/Monarchy/';
 
   }
 
