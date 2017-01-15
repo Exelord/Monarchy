@@ -1,0 +1,34 @@
+<header id="top-bar" class="navbar-fixed-top animated-header">
+  <div class="container">
+    <div class="navbar-header">
+      <!-- responsive nav button -->
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <!-- /responsive nav button -->
+
+      <!-- logo -->
+      <div class="navbar-brand">
+        {{#scroll-to href="#hero-area"}}
+          <img src="images/logo.png" alt="">
+        {{/scroll-to}}
+      </div>
+      <!-- /logo -->
+    </div>
+    <!-- main menu -->
+    <nav class="collapse navbar-collapse navbar-right" role="navigation">
+      <div class="main-menu">
+        <ul class="nav navbar-nav navbar-right">
+          <li>{{scroll-to href="#about" label="About"}}</li>
+          <li>{{scroll-to href="#concept" label="Concept"}}</li>
+          <li>{{scroll-to href="#examples" label="Examples"}}</li>
+          <li>{{scroll-to href="#documentation" label="Documentation"}}</li>
+        </ul>
+      </div>
+    </nav>
+    <!-- /main nav -->
+  </div>
+</header>
