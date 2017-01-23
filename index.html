@@ -3,58 +3,74 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Monarchy</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Monarchy - Hierarchical Access Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+
+    <meta name="name" content="Monarchy - Hierarchical Access Management">
+    <meta name="author" content="Exelord (Maciej Kwaśniak)">
+    <meta name="keywords" content="Monarchy, gem, ruby, RoR, Ruby on Rails, authorization, management, hierarchym, roles, inheritance">
+    <meta name="description" content="Monarchy is a ruby gem offering a complete solution to manage an authorization access in Ruby on Rails applications. A hierarchical structure as well as built-in roles inheritance options make it the most powerful tool to control access to application data resources.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="https://exelord.github.com/Monarchy">
+    <meta name="twitter:creator" content="@TheMacsour">
+    <meta name="twitter:title" content="Monarchy - Hierarchical Access Management">
+    <meta name="twitter:description" content="Monarchy is a ruby gem offering a complete solution to manage an authorization access in Ruby on Rails applications. A hierarchical structure as well as built-in roles inheritance options make it the most powerful tool to control access to application data resources.">
+    <meta name="twitter:image" content="https://exelord.github.com/Monarchy/images/og-image-d7d0a543603145f930e4bb7716c3e2b7.jpg">
+
+    <meta property="og:title" content="Monarchy - Hierarchical Access Management">
+    <meta property="og:url" content="https://exelord.github.com/Monarchy/">
+    <meta property="og:image" content="https://exelord.github.com/Monarchy/images/og-image-d7d0a543603145f930e4bb7716c3e2b7.jpg">
+    <meta property="og:description" content="Monarchy is a ruby gem offering a complete solution to manage an authorization access in Ruby on Rails applications. A hierarchical structure as well as built-in roles inheritance options make it the most powerful tool to control access to application data resources.">
 
     
-<meta name="monarchy/config/environment" content="%7B%22modulePrefix%22%3A%22monarchy%22%2C%22environment%22%3A%22production%22%2C%22rootURL%22%3A%22/Monarchy/%22%2C%22locationType%22%3A%22auto%22%2C%22EmberENV%22%3A%7B%22FEATURES%22%3A%7B%7D%2C%22EXTEND_PROTOTYPES%22%3A%7B%22Date%22%3Afalse%7D%7D%2C%22APP%22%3A%7B%22name%22%3A%22monarchy%22%2C%22version%22%3A%220.0.0+b0304b6c%22%7D%2C%22exportApplicationGlobal%22%3Afalse%7D" />
+<meta name="monarchy/config/environment" content="%7B%22modulePrefix%22%3A%22monarchy%22%2C%22environment%22%3A%22production%22%2C%22rootURL%22%3A%22/Monarchy/%22%2C%22locationType%22%3A%22auto%22%2C%22EmberENV%22%3A%7B%22FEATURES%22%3A%7B%7D%2C%22EXTEND_PROTOTYPES%22%3A%7B%22Date%22%3Afalse%7D%7D%2C%22APP%22%3A%7B%22name%22%3A%22monarchy%22%2C%22version%22%3A%220.0.0+04cdc514%22%7D%2C%22exportApplicationGlobal%22%3Afalse%7D" />
 
     <link rel="stylesheet" href="/Monarchy/assets/vendor-0619b0d7b915d73aa30adbe6e150fb6c.css">
-    <link rel="stylesheet" href="/Monarchy/assets/monarchy-a39b51309448a0b81a27ed3fac6039d6.css">
+    <link rel="stylesheet" href="/Monarchy/assets/monarchy-af2a344bdb67e595eba53f01487774fe.css">
 
     
-  <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57-d6fa77e866c7d38c5e4c253289502d27.png">
-<link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60-2facc16075c1e5e9785e006b0eb78f92.png">
-<link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72-58e975b0389925e66b4fd35d31a6fe6c.png">
-<link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon-76x76-c578f24c0b4ee6d98ed6b17fb27ec5ee.png">
-<link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114x114-08784fb28996ab9cd4425f12fc30f319.png">
-<link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon-120x120-07ef21f3eabcb5ab04f9e8d91e6a1eb3.png">
-<link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon-144x144-2b11bf1666f18d00c84d47409428695f.png">
-<link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152-fb4bdb0882ae8b5d495e69dab2e8f71f.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180-61f21c328754295822379b1a82071328.png">
+  <link rel="apple-touch-icon" sizes="57x57" href="/Monarchy/apple-touch-icon-57x57-d6fa77e866c7d38c5e4c253289502d27.png">
+<link rel="apple-touch-icon" sizes="60x60" href="/Monarchy/apple-touch-icon-60x60-2facc16075c1e5e9785e006b0eb78f92.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/Monarchy/apple-touch-icon-72x72-58e975b0389925e66b4fd35d31a6fe6c.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/Monarchy/apple-touch-icon-76x76-c578f24c0b4ee6d98ed6b17fb27ec5ee.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/Monarchy/apple-touch-icon-114x114-08784fb28996ab9cd4425f12fc30f319.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/Monarchy/apple-touch-icon-120x120-07ef21f3eabcb5ab04f9e8d91e6a1eb3.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/Monarchy/apple-touch-icon-144x144-2b11bf1666f18d00c84d47409428695f.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/Monarchy/apple-touch-icon-152x152-fb4bdb0882ae8b5d495e69dab2e8f71f.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/Monarchy/apple-touch-icon-180x180-61f21c328754295822379b1a82071328.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title">
-<link rel="icon" type="image/png" sizes="228x228" href="/coast-228x228-ec02148d9fae2ed5305054c0793a4fa2.png">
-<link rel="yandex-tableau-widget" href="/yandex-browser-manifest.json">
-<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-title" content="Monarchy">
+<link rel="icon" type="image/png" sizes="228x228" href="/Monarchy/coast-228x228-ec02148d9fae2ed5305054c0793a4fa2.png">
+<link rel="yandex-tableau-widget" href="/Monarchy/yandex-browser-manifest.json">
+<link rel="manifest" href="/Monarchy/manifest.json">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#fff">
-<meta name="application-name">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32-0615de36672b7fed2ef9e08e34ba6696.png">
-<link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192-2f34476f36fa75b9e554d955b286d210.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16-c1d187735cfa4ce1a1f83869572d0f06.png">
-<link rel="shortcut icon" href="/favicon.ico">
-<meta name="msapplication-TileColor" content="#fff">
-<meta name="msapplication-TileImage" content="/mstile-144x144-195c4be91366c9862d43e0f4b1859afd.png">
-<meta name="msapplication-config" content="/browserconfig.xml">
-<link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 1)" href="/apple-touch-startup-image-320x460-8fda27d501626e5ac8657201babfec73.png">
-<link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 2)" href="/apple-touch-startup-image-640x920-3e41dcde6f0d22d166de40e5122213c8.png">
-<link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" href="/apple-touch-startup-image-640x1096-887818b3a4fab1c41ac4e533fb048d97.png">
-<link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="/apple-touch-startup-image-750x1294-61b3f705dfc57b90d51d5c578012cdb3.png">
-<link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 3)" href="/apple-touch-startup-image-1182x2208-1a69d0d61c0d52f803f6e13973216a74.png">
-<link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 3)" href="/apple-touch-startup-image-1242x2148-52fff88375db8773108b552dae180e3f.png">
-<link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 1)" href="/apple-touch-startup-image-748x1024-ecb2656f192dbaa6f1558a1addb31c8b.png">
-<link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 1)" href="/apple-touch-startup-image-768x1004-0ecc7754c648f94696345ddcb453574b.png">
-<link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 2)" href="/apple-touch-startup-image-1496x2048-5570a2e2f3efac4662a5c139daf92885.png">
-<link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 2)" href="/apple-touch-startup-image-1536x2008-f64ea48fceed87e7f2597c86bb42d1ce.png">
+<meta name="theme-color" content="#ffffff">
+<meta name="application-name" content="Monarchy">
+<link rel="icon" type="image/png" sizes="32x32" href="/Monarchy/favicon-32x32-0615de36672b7fed2ef9e08e34ba6696.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/Monarchy/android-chrome-192x192-2f34476f36fa75b9e554d955b286d210.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/Monarchy/favicon-16x16-c1d187735cfa4ce1a1f83869572d0f06.png">
+<link rel="shortcut icon" href="/Monarchy/favicon.ico">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="/Monarchy/mstile-144x144-195c4be91366c9862d43e0f4b1859afd.png">
+<meta name="msapplication-config" content="/Monarchy/browserconfig.xml">
+<link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 1)" href="/Monarchy/apple-touch-startup-image-320x460-8fda27d501626e5ac8657201babfec73.png">
+<link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 2)" href="/Monarchy/apple-touch-startup-image-640x920-3e41dcde6f0d22d166de40e5122213c8.png">
+<link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" href="/Monarchy/apple-touch-startup-image-640x1096-887818b3a4fab1c41ac4e533fb048d97.png">
+<link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="/Monarchy/apple-touch-startup-image-750x1294-61b3f705dfc57b90d51d5c578012cdb3.png">
+<link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 3)" href="/Monarchy/apple-touch-startup-image-1182x2208-1a69d0d61c0d52f803f6e13973216a74.png">
+<link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 3)" href="/Monarchy/apple-touch-startup-image-1242x2148-52fff88375db8773108b552dae180e3f.png">
+<link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 1)" href="/Monarchy/apple-touch-startup-image-748x1024-ecb2656f192dbaa6f1558a1addb31c8b.png">
+<link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 1)" href="/Monarchy/apple-touch-startup-image-768x1004-0ecc7754c648f94696345ddcb453574b.png">
+<link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 2)" href="/Monarchy/apple-touch-startup-image-1496x2048-5570a2e2f3efac4662a5c139daf92885.png">
+<link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 2)" href="/Monarchy/apple-touch-startup-image-1536x2008-f64ea48fceed87e7f2597c86bb42d1ce.png">
 </head>
   <body>
     
 
     <script src="/Monarchy/assets/vendor-620172fb9764c314aa0c1b39e3c82b3b.js"></script>
-    <script src="/Monarchy/assets/monarchy-9abfbbbfc23f3bd244e24687c6408e47.js"></script>
+    <script src="/Monarchy/assets/monarchy-b707e94b994b1dd46bafbf0def43c20d.js"></script>
 
     
   </body>
