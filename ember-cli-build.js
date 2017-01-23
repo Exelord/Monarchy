@@ -17,7 +17,7 @@ module.exports = function(defaults) {
         developerURL: 'www.macsour.com',
         background: '#ffffff',
         path: config.rootURL,  // Path for overriding default icons path. `string`
-        url: 'https://exelord.github.com/Monarchy/images/og-image.jpg',  // Absolute URL for OpenGraph image. `string`
+        url: 'https://exelord.github.io/Monarchy/images/og-image.jpg',  // Absolute URL for OpenGraph image. `string`
       }
     }
   });
