@@ -3,9 +3,22 @@
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 module.exports = function(defaults) {
+  var config = defaults.project.config(EmberApp.env());
+
   var app = new EmberApp(defaults, {
     sassOptions: {
       extension: 'sass',
+    },
+    favicons: {
+      faviconsConfig: {
+        appName: 'Monarchy',
+        appDescription: 'Monarchy is a ruby gem offering a complete solution to manage an authorization access in Ruby on Rails applications. A hierarchical structure as well as built-in roles inheritance options make it the most powerful tool to control access to application data resources.',
+        developerName: 'Exelord',
+        developerURL: 'www.macsour.com',
+        background: '#ffffff',
+        path: config.rootURL,  // Path for overriding default icons path. `string`
+        url: 'https://exelord.github.com/Monarchy/images/og-image.jpg',  // Absolute URL for OpenGraph image. `string`
+      }
     }
   });
 
