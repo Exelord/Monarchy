@@ -9,6 +9,9 @@ module.exports = function(defaults) {
     sassOptions: {
       extension: 'sass',
     },
+    'ember-bootstrap': {
+      'importBootstrapFont': false
+    },
     favicons: {
       faviconsConfig: {
         appName: 'Monarchy',
@@ -37,6 +40,7 @@ module.exports = function(defaults) {
   app.import('bower_components/animate.css/animate.min.css');
   app.import('bower_components/wow/dist/wow.min.js');
   app.import('bower_components/bootstrap/dist/js/bootstrap.min.js');
+  app.import('bower_components/isMobile/isMobile.min.js');
 
   return app.toTree();
 };

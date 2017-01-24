@@ -4,6 +4,7 @@
     "ember": "~2.10.0",
     "ember-cli-shims": "0.1.3",
     "bootstrap": "~3.3.5",
-    "ionicons": "^2.0.1"
+    "ionicons": "^2.0.1",
+    "isMobile": "^0.4.0"
   }
 }

@@ -153,10 +153,14 @@ a:hover
   visibility: hidden
   opacity: 0
 
+.mobile-browser
+  #hero-area
+    background-attachment: scroll
+
 #hero-area
   background: url("../images/slider.jpg") no-repeat 50%
-  background-size: cover
   background-attachment: fixed
+  background-size: cover
   padding: 230px 0
   color: #fff
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3)
@@ -192,6 +196,10 @@ a:hover
       font-size: 20px
       vertical-align: middle
       margin-right: 5px
+
+.mobile-browser
+  #documentation
+    background-attachment: scroll
 
 #documentation
   background-image: url('../images/doc.jpg')
@@ -507,15 +515,15 @@ figure
   .content
     display: flex
     justify-content: space-between
-    align-items: baseline
+    align-items: center
 
   .copyright
     font-size: 13px
     margin-bottom: 0
 
     img
-      width: 20px
-      margin-bottom: 3px
+      width: 24px
+      vertical-align: bottom
 
     a
       color: black
