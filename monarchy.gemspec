@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.3'
 
   s.add_dependency 'activerecord', '>=4.2.7.1'
-  s.add_dependency 'closure_tree', '6.2.0'
+  s.add_dependency 'closure_tree', '6.3.0'
   s.add_dependency 'configurations', '2.2.2'
   s.add_dependency 'active_record_union', '1.2.0'
   s.add_dependency 'tqdm', '0.3.0'

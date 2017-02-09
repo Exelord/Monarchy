@@ -10,7 +10,7 @@ SimpleCov.start('rails') do
   add_filter 'lib/generators/'
   add_filter 'lib/monarchy/version.rb'
   add_filter do |src|
-    !(src.filename =~ /^#{SimpleCov.root}/) unless src.filename =~ %r{/\/monarchy\//}
+    !(src.filename =~ /^#{SimpleCov.root}/) unless src.filename.match?(%r{/\/monarchy\//})
   end
 
   groups.clear

@@ -1,5 +1,5 @@
 AllCops:
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.4
   Exclude:
    - 'dummy/db/seeds.rb'
    - 'dummy/db/migrate/**'
@@ -11,6 +11,8 @@ Metrics/LineLength:
   Max: 125
 Metrics/ModuleLength:
   Max: 150
+Metrics/BlockLength:
+  ExcludedMethods: ['describe', 'context']
 Style/CaseIndentation:
   Enabled: false
 Style/StructInheritance:

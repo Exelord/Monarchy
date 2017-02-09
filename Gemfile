@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 source 'https://rubygems.org'
-ruby '2.3.1'
+ruby '2.4.0'
 
 # Declare your gem's dependencies in monarchy.gemspec.
 # Bundler will treat runtime dependencies like base dependencies, and
@@ -22,11 +22,10 @@ group :development, :test do
   gem 'pry-rails', '0.3.4'
   gem 'rails', '5.0.1'
   gem 'rspec-rails', '3.5.2'
-  gem 'rubocop', '0.46.0'
+  gem 'rubocop', '0.47.1'
   gem 'shoulda-matchers', '3.1.1'
   gem 'sqlite3', '1.3.13'
-  gem 'tqdm', '0.3.0'
 end
 
-gem 'codeclimate-test-reporter', '1.0.4', group: :test
-gem 'simplecov', '0.12.0', group: :test
+gem 'codeclimate-test-reporter', '~>1.0.5', group: :test
+gem 'simplecov', '0.13.0', group: :test
