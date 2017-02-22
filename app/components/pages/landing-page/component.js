@@ -7,7 +7,7 @@ export default Component.extend({
     this._super(...arguments);
 
     if (isMobile.any) {
-      this.get('classNames').push('mobile-browser')
+      this.get('classNames').push('mobile-browser');
     }
   }
 });
