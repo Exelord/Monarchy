@@ -22,6 +22,13 @@ You can select all members accessible for specific user by using a scope: `acces
 ``` ruby
 Monarchy::member_class.accessible_for(current_user)   # returns [member1, member2, member5]
 ```
+
+### .with_access_to
+You can select all members with access to the specific resource by using a scope: `with_access_to`, eg:
+``` ruby
+Monarchy::member_class.with_access_to(resource)   # returns [member1, member2, member5]
+```
+
 ## Public Relations:
 
 ### #roles

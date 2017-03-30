@@ -22,6 +22,12 @@ Returns all memberships (`member` model) of the user
 Returns all users accessible for the specific user
 It includes all users from all resource which the user has any access.
 
+### .with_access_to
+You can select all users with access to the specific resource by using a scope: `with_access_to`, eg:
+``` ruby
+Monarchy::user_class.with_access_to(resource)   # returns [user1, user2, user5]
+```
+
 ## Methods
 
 ### #roles_for(resource, inheritance = true)

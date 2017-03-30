@@ -92,6 +92,37 @@ describe Monarchy::Member, type: :model do
     it { is_expected.to eq(member.resource.hierarchy) }
   end
 
+  describe '.with_access_to' do
+    let!(:project) { create :project }
+    let!(:memo1) { create :memo, parent: project }
+    let!(:memo2) { create :memo, parent: project }
+    let!(:memo3) { create :memo, parent: memo2 }
+    let!(:memo4) { create :memo, parent: memo3 }
+    let!(:memo5) { create :memo, parent: memo2 }
+    let!(:memo6) { create :memo, parent: memo3 }
+
+    let!(:guest_role) { create(:role, name: :guest, level: 0, inherited: false) }
+    let!(:member_role) { create(:role, name: :member, level: 1, inherited: true, inherited_role: guest_role) }
+    let!(:manager_role) { create(:role, name: :manager, level: 2, inherited: true, inherited_role: owner_role) }
+    let!(:owner_role) { create(:role, name: :owner, level: 3, inherited: true) }
+
+    let!(:member1) { create(:user).grant(:owner, project) }
+    let!(:member2) { create(:user).grant(:manager, memo2) }
+    let!(:member3) { create(:user).grant(:guest, memo6) }
+    let!(:member4) { create(:user).grant(:member, memo3) }
+    let!(:member5) { create(:user).grant(:member, memo1) }
+    let!(:member6) { create(:user).grant(:guest, memo1) }
+
+    subject { Member.with_access_to(memo3) }
+
+    it { is_expected.to match_array([member1, member2, member3, member4]) }
+
+    context 'resource is not a monarchy resource' do
+      subject { Member.with_access_to(member1) }
+      it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
+    end
+  end
+
   describe '.accessible_for' do
     let!(:project) { create :project }
     let!(:memo1) { create :memo, parent: project }

@@ -26,6 +26,11 @@ module Monarchy
           Monarchy::Validators.user(user)
           where(hierarchy: Monarchy.hierarchy_class.accessible_for(user))
         end)
+
+        scope :with_access_to, (lambda do |resource|
+          Monarchy::Validators.resource(resource)
+          with_ancestors_access(resource).union(with_descendants_access(resource))
+        end)
       end
 
       def include_callbacks
@@ -44,6 +49,17 @@ module Monarchy
 
         belongs_to :user, class_name: "::#{Monarchy.user_class}"
         belongs_to :hierarchy, class_name: "::#{Monarchy.hierarchy_class}"
+      end
+
+      private
+
+      def with_ancestors_access(resource)
+        unscoped.where(hierarchy: resource.hierarchy.self_and_ancestors)
+                .joins(:roles).where(monarchy_roles: { inherited: true })
+      end
+
+      def with_descendants_access(resource)
+        unscoped.where(hierarchy: resource.hierarchy.descendants)
       end
     end
 
