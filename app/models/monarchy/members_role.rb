@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Monarchy::MembersRole < ActiveRecord::Base
   self.table_name = 'monarchy_members_roles'
 

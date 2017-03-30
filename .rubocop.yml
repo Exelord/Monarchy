@@ -1,5 +1,5 @@
 AllCops:
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.3
   Exclude:
    - 'dummy/db/seeds.rb'
    - 'dummy/db/migrate/**'
@@ -21,3 +21,9 @@ Style/ClassAndModuleChildren:
   Enabled: false
 Rails/HasAndBelongsToMany:
   Enabled: false
+Style/MixinGrouping:
+  Exclude:
+    - 'spec/**/*.rb'
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - 'spec/**/*.rb'

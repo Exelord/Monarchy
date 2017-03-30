@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Monarchy
   module ActsAsUser
     extend ActiveSupport::Concern

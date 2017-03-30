@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 Monarchy.configure do |config|
   # REQUIRED SETTINGS
 

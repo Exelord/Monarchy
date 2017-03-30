@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 
 describe Monarchy::Validators do
@@ -71,12 +72,12 @@ describe Monarchy::Validators do
     end
 
     context 'roles exist' do
-      let(:role_names) { [:member, :guest] }
+      let(:role_names) { %i(member guest) }
       it { is_expected.to match_array [member_role, guest_role] }
     end
 
     context 'role not exist' do
-      let(:role_names) { [:member, :manager] }
+      let(:role_names) { %i(member manager) }
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::RoleNotExist) }
     end
   end
