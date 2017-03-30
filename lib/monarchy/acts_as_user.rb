@@ -5,14 +5,26 @@ module Monarchy
 
     module ClassMethods
       def acts_as_user
+        extend Monarchy::ActsAsUser::SupportMethods
+
         has_many :members, class_name: "::#{Monarchy.member_class}", dependent: :destroy
         has_many :hierarchies, through: :members, class_name: "::#{Monarchy.hierarchy_class}"
 
+        include_scopes
+
+        include Monarchy::ActsAsUser::InstanceMethods
+      end
+    end
+
+    module SupportMethods
+      def include_scopes
         scope :accessible_for, (lambda do |user|
           where(id: Monarchy.member_class.accessible_for(user).select('user_id AS id')).union(where(id: user.id))
         end)
 
-        include Monarchy::ActsAsUser::InstanceMethods
+        scope :with_access_to, (lambda do |resource|
+          User.where(id: Member.with_access_to(resource).select(:user_id))
+        end)
       end
     end
 
