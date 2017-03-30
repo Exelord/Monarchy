@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 source 'https://rubygems.org'
 ruby '2.4.0'
 
@@ -18,14 +19,14 @@ gemspec
 group :development, :test do
   gem 'database_cleaner', '1.5.3'
   gem 'factory_girl_rails', '4.8.0'
-  gem 'ffaker', '2.4.0'
-  gem 'pry-rails', '0.3.4'
-  gem 'rails', '5.0.1'
+  gem 'ffaker', '2.5.0'
+  gem 'pry-rails', '0.3.6'
+  gem 'rails', '5.0.2'
   gem 'rspec-rails', '3.5.2'
-  gem 'rubocop', '0.47.1'
+  gem 'rubocop', '0.48.0'
   gem 'shoulda-matchers', '3.1.1'
   gem 'sqlite3', '1.3.13'
 end
 
-gem 'codeclimate-test-reporter', '~>1.0.5', group: :test
+gem 'codeclimate-test-reporter', '~>1.0.8', group: :test
 gem 'simplecov', '0.13.0', group: :test
