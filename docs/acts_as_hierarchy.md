@@ -4,6 +4,15 @@
 > hmm... sounds like `private`
 
 ## Methods
+
+### #accessible_for
+You can check if user has an access to the hierarchy by calling `accessible_for(user, options = {})` on hierarchy instance, eg:
+```ruby
+resource_hierarchy.accessible_for(user) # returns TRUE or FALSE
+```
+
+Optionally, you can pass an `options` argument to specify custom strategy.
+
 ** We do not recommend to use it but if yo have to: **
 We are using [Closure Tree][e5c808aa] behind `Hierarchy` class. There is a bunch of methods and functions available behind the hood. Check their documentation.
 

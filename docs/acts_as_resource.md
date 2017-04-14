@@ -62,6 +62,14 @@ Returns default role name for the class
 ### .default_role
 Returns default role object `Monarchy::Role` for the class
 
+### #accessible_for
+You can check if user has an access to the resource by calling `accessible_for(user, options = {})` on resource instance, eg:
+```ruby
+resource.accessible_for(user) # returns TRUE or FALSE
+```
+
+Optionally, you can pass an `options` argument to specify custom strategy.
+
 ### Scopes:
 
 ### .accessible_for

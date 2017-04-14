@@ -82,7 +82,7 @@ describe Resource, type: :model do
   end
 
   describe 'after create' do
-    describe 'children' do
+    describe 'ensure_hierarchy' do
       subject { resource.hierarchy }
 
       context 'create hierarchy if not exist' do
