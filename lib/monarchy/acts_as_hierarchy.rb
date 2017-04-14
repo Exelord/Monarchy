@@ -18,6 +18,14 @@ module Monarchy
 
         validates :resource_type, presence: true
         validates :resource_id, uniqueness: { scope: [:resource_type] }, presence: true
+
+        include Monarchy::ActsAsHierarchy::InstanceMethods
+      end
+    end
+
+    module InstanceMethods
+      def accessible_for(user, options = {})
+        self.class.accessible_for(user, options).find_by(id: id).present?
       end
     end
 

@@ -24,7 +24,7 @@ module Monarchy
         end)
 
         scope :with_access_to, (lambda do |resource|
-          User.where(id: Member.with_access_to(resource).select(:user_id))
+          where(id: Monarchy.member_class.with_access_to(resource).select(:user_id))
         end)
       end
     end

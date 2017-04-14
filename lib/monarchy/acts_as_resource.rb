@@ -95,6 +95,10 @@ module Monarchy
         )
       end
 
+      def accessible_for(user)
+        hierarchy.accessible_for(user)
+      end
+
       private
 
       def assign_parent(force = false)

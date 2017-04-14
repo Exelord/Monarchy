@@ -39,6 +39,37 @@ describe Monarchy::Hierarchy, type: :model do
     end
   end
 
+  describe '#accessible_for' do
+    let!(:project) { create(:project) }
+    let!(:hierarchy1) { create(:memo, parent: project).hierarchy }
+
+    let!(:user) { create :user }
+    subject { hierarchy1.accessible_for(user) }
+
+    context 'when user is not monarchy user' do
+      let!(:user) { hierarchy3 }
+      let!(:hierarchy3) { create(:memo, parent: project).hierarchy }
+
+      it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotUser) }
+    end
+
+    context 'when user is nil' do
+      let!(:user) { nil }
+      it { is_expected_block.to raise_exception(Monarchy::Exceptions::UserIsNil) }
+    end
+
+    context 'where user has not access' do
+      it { is_expected.to be false }
+    end
+
+    context 'where user has an access' do
+      let!(:member_role) { create(:role, name: :member, level: 1, inherited: false) }
+      let!(:memo_member) { create(:member, user: user, hierarchy: hierarchy1) }
+
+      it { is_expected.to be true }
+    end
+  end
+
   describe '.accessible_for' do
     let!(:project) { create :project }
     let!(:memo1) { create :memo, parent: project }
