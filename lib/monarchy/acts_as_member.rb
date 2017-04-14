@@ -30,7 +30,7 @@ module Monarchy
 
         scope :with_access_to, (lambda do |resource|
           Monarchy::Validators.resource(resource)
-          with_ancestors_access(resource).union(with_descendants_access(resource))
+          where(id: with_ancestors_access(resource).union(with_descendants_access(resource)))
         end)
       end
 
