@@ -1,7 +1,23 @@
 # Change Log
 
-## [2.1.0](https://github.com/Exelord/Monarchy/tree/2.1.0) (2017-03-30)
-[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.0.8...2.1.0)
+## [2.2.0](https://github.com/Exelord/Monarchy/tree/2.2.0) (2017-04-14)
+[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.1.0...2.2.0)
+
+**Merged pull requests:**
+
+- Feature model accessible for [\#72](https://github.com/Exelord/Monarchy/pull/72) ([Exelord](https://github.com/Exelord))
+- Update gems [\#71](https://github.com/Exelord/Monarchy/pull/71) ([Exelord](https://github.com/Exelord))
+
+## [v2.1.0](https://github.com/Exelord/Monarchy/tree/v2.1.0) (2017-03-30)
+[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.0.8...v2.1.0)
+
+**Fixed bugs:**
+
+- Fix roles order [\#63](https://github.com/Exelord/Monarchy/pull/63) ([Exelord](https://github.com/Exelord))
+
+**Closed issues:**
+
+- Improve performance [\#59](https://github.com/Exelord/Monarchy/issues/59)
 
 **Merged pull requests:**
 
@@ -27,10 +43,6 @@
 ## [v2.0.6](https://github.com/Exelord/Monarchy/tree/v2.0.6) (2016-11-29)
 [Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.0.5...v2.0.6)
 
-**Fixed bugs:**
-
-- Fix roles order [\#63](https://github.com/Exelord/Monarchy/pull/63) ([Exelord](https://github.com/Exelord))
-
 ## [v2.0.5](https://github.com/Exelord/Monarchy/tree/v2.0.5) (2016-11-10)
 [Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.0.4...v2.0.5)
 
@@ -44,7 +56,6 @@
 
 **Closed issues:**
 
-- Improve performance [\#59](https://github.com/Exelord/Monarchy/issues/59)
 - Default role - is it still needed? [\#48](https://github.com/Exelord/Monarchy/issues/48)
 - Complete Readme and WIKI [\#5](https://github.com/Exelord/Monarchy/issues/5)
 
