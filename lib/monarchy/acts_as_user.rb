@@ -63,7 +63,8 @@ module Monarchy
       private
 
       def accessible_roles_for(resource, inheritnce)
-        return Monarchy.role_class.none unless resource.hierarchy
+        return Monarchy.role_class.none unless resource.persisted?
+
         accessible_roles = if inheritnce
                              resource_and_inheritance_roles(resource)
                            else
@@ -75,29 +76,32 @@ module Monarchy
       end
 
       def resource_and_inheritance_roles(resource)
-        hierarchy_ids = resource.hierarchy.ancestors.select(:id)
-
         Monarchy.role_class.where(id:
           Monarchy.role_class
             .joins('INNER JOIN monarchy_members_roles ON monarchy_roles.id = monarchy_members_roles.role_id')
             .joins("INNER JOIN (SELECT id, hierarchy_id FROM monarchy_members WHERE user_id = #{id}) as " \
               'monarchy_members ON monarchy_members.id = monarchy_members_roles.member_id')
             .where('monarchy_roles.inherited': 't')
-            .where('monarchy_members.hierarchy_id': hierarchy_ids)
+            .where('monarchy_members.hierarchy_id': ancestors_for(resource).select(:id))
             .select('monarchy_roles.inherited_role_id'))
                 .union(resource_roles(resource))
       end
 
       def resource_roles(resource)
+        resource_hierarchy = hierarchies_for(resource).select(:id)
+
+        user_memberships = Monarchy.member_class
+                                   .where(hierarchy_id: resource_hierarchy, user_id: id)
+                                   .select(:id, :hierarchy_id).to_sql
+
         Monarchy.role_class
                 .joins('INNER JOIN monarchy_members_roles ON monarchy_roles.id = monarchy_members_roles.role_id')
-                .joins('INNER JOIN (SELECT id, hierarchy_id FROM monarchy_members WHERE ' \
-                  "hierarchy_id = #{resource.hierarchy.id} AND user_id = #{id}) as monarchy_members ON " \
+                .joins("INNER JOIN (#{user_memberships}) as monarchy_members ON " \
                   'monarchy_members.id = monarchy_members_roles.member_id')
       end
 
       def descendant_role(resource)
-        descendants = resource.hierarchy.descendants
+        descendants = descendants_for(resource)
         children_access = members_for(descendants).present?
 
         if children_access
@@ -148,12 +152,38 @@ module Monarchy
         member
       end
 
+      def inherited_default_role
+        @inherited_default_role ||= Monarchy.role_class.find_by(name: Monarchy.configuration.inherited_default_role)
+      end
+
+      # TODO: Make these methods public in related interfaces
+
       def members_for(hierarchies)
         Monarchy.member_class.where(hierarchy: hierarchies, user_id: id)
       end
 
-      def inherited_default_role
-        @inherited_default_role ||= Monarchy.role_class.find_by(name: Monarchy.configuration.inherited_default_role)
+      def hierarchies_for(resources)
+        Monarchy.hierarchy_class.where(resource: resources)
+      end
+
+      def descendants_for(resources)
+        resources_hierarchies = hierarchies_for(resources).select(:id)
+
+        Monarchy.hierarchy_class
+                .joins('INNER JOIN monarchy_hierarchy_hierarchies ON ' \
+                  'monarchy_hierarchies.id = monarchy_hierarchy_hierarchies.descendant_id')
+                .where(monarchy_hierarchy_hierarchies: { ancestor_id: resources_hierarchies })
+                .where.not(monarchy_hierarchies: { id: resources_hierarchies })
+      end
+
+      def ancestors_for(resources)
+        resources_hierarchies = hierarchies_for(resources).select(:id)
+
+        Monarchy.hierarchy_class
+                .joins('INNER JOIN monarchy_hierarchy_hierarchies ON ' \
+                  'monarchy_hierarchies.id = monarchy_hierarchy_hierarchies.ancestor_id')
+                .where(monarchy_hierarchy_hierarchies: { descendant_id: resources_hierarchies })
+                .where.not(monarchy_hierarchies: { id: resources_hierarchies })
       end
     end
   end
