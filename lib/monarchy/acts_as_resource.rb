@@ -105,7 +105,11 @@ module Monarchy
         parentize = self.class.parentize_name
         return unless parentize
 
-        was_changed = changes["#{parentize}_id"] || changes["#{parentize}_type"]
+        reflection = self.class.reflections[parentize.to_s]
+        foreign_key = reflection.foreign_key
+        foreign_type = reflection.foreign_type
+
+        was_changed = changes[foreign_key] || changes[foreign_type]
         Monarchy::Validators.resource(send(parentize), true, false)
         self.parent = send(parentize) if was_changed || force
       end
