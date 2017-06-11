@@ -10,15 +10,11 @@ module Monarchy
         self.table_name = 'monarchy_hierarchies'
         has_closure_tree dependent: :destroy
 
-        has_many :members, class_name: "::#{Monarchy.member_class}", dependent: :destroy
-        has_many :users, through: :members, class_name: "::#{Monarchy.user_class}"
-        belongs_to :resource, polymorphic: true
-
+        include_relations
         include_scopes
+        include_validators
 
-        validates :resource_type, presence: true
-        validates :resource_id, uniqueness: { scope: [:resource_type] }, presence: true
-
+        extend Monarchy::ActsAsHierarchy::ClassMethods
         include Monarchy::ActsAsHierarchy::InstanceMethods
       end
     end
@@ -29,23 +25,59 @@ module Monarchy
       end
     end
 
+    module ClassMethods
+      def hierarchies_for(resources)
+        unscoped.where(resource: resources)
+      end
+
+      def children_for(hierarchies)
+        unscoped.where(parent: hierarchies)
+      end
+
+      def parents_for(hierarchies)
+        unscoped.joins('INNER JOIN monarchy_hierarchies AS hierarchies_children ON '\
+                       'monarchy_hierarchies.id = hierarchies_children.parent_id')
+                .where(hierarchies_children: { id: hierarchies.select(:id) })
+      end
+
+      def descendants_for(hierarchies)
+        unscoped.with_ancestor(hierarchies)
+      end
+
+      def ancestors_for(hierarchies)
+        unscoped.joins('INNER JOIN monarchy_hierarchy_hierarchies ON '\
+                       'monarchy_hierarchies.id = monarchy_hierarchy_hierarchies.ancestor_id')
+                .where(monarchy_hierarchy_hierarchies: { descendant_id: hierarchies.select(:id) })
+                .where('monarchy_hierarchy_hierarchies.generations > 0')
+      end
+    end
+
     module SupportMethods
       private
+
+      def include_relations
+        belongs_to :resource, polymorphic: true
+        has_many :members, class_name: "::#{Monarchy.member_class}", dependent: :destroy
+        has_many :users, through: :members, class_name: "::#{Monarchy.user_class}"
+      end
+
+      def include_validators
+        validates :resource_type, presence: true
+        validates :resource_id, uniqueness: { scope: [:resource_type] }, presence: true
+      end
 
       # rubocop:disable all
       def include_scopes
         scope :in, (lambda do |hierarchy, descendants = true|
-          Monarchy::Validators.hierarchy(hierarchy)
-          where(id: descendants ? hierarchy.descendants : hierarchy.children)
+          where(id: descendants ? descendants_for(hierarchy) : children_for(hierarchy))
         end)
 
         scope :accessible_for, (lambda do |user, options = {}|
-          Monarchy::Validators.user(user)
           user_id = user.id
 
           custom_options = accessible_for_options(options)
           where(id: accessible_roots_ids(user_id, custom_options[:parent_access])
-                      .union_all(accessible_leaves_ids(user_id, custom_options[:inherited_roles])))
+               .union_all(accessible_leaves_ids(user_id, custom_options[:inherited_roles])))
         end)
       end
       # rubocop:enable all

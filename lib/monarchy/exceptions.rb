@@ -44,16 +44,6 @@ module Monarchy
       end
     end
 
-    class ModelNotHierarchy < Error
-      def initialize(resource)
-        @resource = resource
-      end
-
-      def message
-        "Model '#{@resource.class}' is not a hierarchy!"
-      end
-    end
-
     class ModelNotMember < Error
       def initialize(member)
         @member = member
@@ -97,12 +87,6 @@ module Monarchy
       end
     end
 
-    class HierarchyIsNil < Error
-      def message
-        'Hierarchy can NOT be nil!'
-      end
-    end
-
     class UserIsNil < Error
       def message
         'User can NOT be nil!'
@@ -122,12 +106,6 @@ module Monarchy
     end
 
     class ResourceNotPersist < Error
-      def message
-        'Resource has to persisted!'
-      end
-    end
-
-    class HierarchyNotPersist < Error
       def message
         'Resource has to persisted!'
       end

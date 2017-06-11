@@ -45,18 +45,22 @@ module Monarchy
         @parentize_name = name
       end
 
+      # rubocop:disable all
       def include_scopes
         scope :in, (lambda do |resource, descendants = true|
           Monarchy::Validators.resource(resource)
-          hierarchies = Monarchy.hierarchy_class.in(resource.hierarchy, descendants)
+          hierarchy = Monarchy.hierarchy_class.hierarchies_for(resource)
+          hierarchies = Monarchy.hierarchy_class.in(hierarchy, descendants)
           joins(:hierarchy).where(monarchy_hierarchies: { id: hierarchies })
         end)
 
         scope :accessible_for, (lambda do |user, options = {}|
+          Monarchy::Validators.user(user)
           joins(:hierarchy).where(monarchy_hierarchies: { id: Monarchy.hierarchy_class
                                                                       .accessible_for(user, options) })
         end)
       end
+      # rubocop:enable all
 
       def include_relationships
         has_many :members, through: :hierarchy, class_name: "::#{Monarchy.member_class}"
@@ -67,7 +71,7 @@ module Monarchy
 
     module InstanceMethods
       def parent
-        @parent = hierarchy.try(:parent).try(:resource) || @parent
+        @parent = parent_resource || @parent
       end
 
       def parent=(resource)
@@ -81,7 +85,7 @@ module Monarchy
       end
 
       def children=(array)
-        hierarchy&.update(children: hierarchies_for(array))
+        hierarchy&.update(children: children_hierarchies(array))
         @children = array
       end
 
@@ -91,12 +95,13 @@ module Monarchy
         self.hierarchy ||= Monarchy.hierarchy_class.create(
           resource: self,
           parent: parent.try(:hierarchy),
-          children: hierarchies_for(children)
+          children: children_hierarchies(children)
         )
       end
 
-      def accessible_for(user)
-        hierarchy.accessible_for(user)
+      def accessible_for(user, options = {})
+        Monarchy::Validators.user(user)
+        hierarchy.accessible_for(user, options)
       end
 
       private
@@ -117,12 +122,18 @@ module Monarchy
       end
 
       def children_resources
-        c = hierarchy.try(:children)
-        return nil if c.nil?
-        c.includes(:resource).map(&:resource)
+        resource_hierarchy = Monarchy.hierarchy_class.hierarchies_for(self)
+        hierarchy_children = Monarchy.hierarchy_class.children_for(resource_hierarchy)
+        hierarchy_children.includes(:resource).map(&:resource)
       end
 
-      def hierarchies_for(array)
+      def parent_resource
+        resource_hierarchy = Monarchy.hierarchy_class.hierarchies_for(self)
+        hierarchy_parent = Monarchy.hierarchy_class.parents_for(resource_hierarchy)
+        hierarchy_parent.first&.resource
+      end
+
+      def children_hierarchies(array)
         array&.compact!
         Array(array).map { |resource| Monarchy::Validators.resource(resource).hierarchy }
       end
