@@ -59,9 +59,9 @@ module Monarchy
       end
 
       def include_relationships
+        has_one :hierarchy, as: :resource, dependent: :destroy, class_name: "::#{Monarchy.hierarchy_class}"
         has_many :members, through: :hierarchy, class_name: "::#{Monarchy.member_class}"
         has_many :users, through: :members, class_name: "::#{Monarchy.user_class}"
-        has_one :hierarchy, as: :resource, dependent: :destroy, class_name: "::#{Monarchy.hierarchy_class}"
       end
     end
 
@@ -104,8 +104,7 @@ module Monarchy
       def assign_parent(force = false)
         parentize = self.class.parentize_name
         return unless parentize
-
-        was_changed = changes["#{parentize}_id"] || changes["#{parentize}_type"]
+        was_changed = saved_changes["#{parentize}_id"] || saved_changes["#{parentize}_type"]
         Monarchy::Validators.resource(send(parentize), true, false)
         self.parent = send(parentize) if was_changed || force
       end
