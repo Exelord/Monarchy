@@ -26,12 +26,14 @@ describe User, type: :model do
       let!(:manager_role) { create(:role, name: :manager, level: 2, inherited_role: owner_role) }
 
       it { is_expected.to match_array([owner_role, member_role]) }
+      it { is_expected_block.to make_database_queries(count: 1) }
 
       context 'do not map self roles' do
         let!(:memo_member) { create(:member, user: user, hierarchy: memo.hierarchy, roles: [manager_role]) }
         let!(:project_member) { create(:member, user: user, hierarchy: project.hierarchy, roles: [member_role]) }
 
         it { is_expected.to eq([manager_role, member_role]) }
+        it { is_expected_block.to make_database_queries(count: 1) }
       end
 
       context 'sort roles by name' do
@@ -40,6 +42,7 @@ describe User, type: :model do
         let!(:project_member) { create(:member, user: user, hierarchy: project.hierarchy, roles: [member_role]) }
 
         it { is_expected.to eq([manager_role, member_role]) }
+        it { is_expected_block.to make_database_queries(count: 1) }
       end
     end
 
@@ -49,12 +52,14 @@ describe User, type: :model do
 
       it { expect(project_roles).to match_array([manager_role]) }
       it { is_expected.to match_array([member_role]) }
+      it { is_expected_block.to make_database_queries(count: 1) }
 
       context 'where memo has no roles' do
         let!(:memo_member) {}
 
         it { expect(project_roles).to match_array([manager_role]) }
         it { is_expected.to eq([]) }
+        it { is_expected_block.to make_database_queries(count: 1) }
       end
 
       context 'when user has access to child of the memo' do
@@ -62,6 +67,7 @@ describe User, type: :model do
         let!(:memo_member) { create(:member, user: user, hierarchy: child_memo.hierarchy, roles: [member_role]) }
 
         it { is_expected.to eq([]) }
+        it { is_expected_block.to make_database_queries(count: 1) }
       end
     end
 
@@ -70,6 +76,7 @@ describe User, type: :model do
 
       it { expect(project_roles).to match_array([manager_role]) }
       it { is_expected.to match_array([manager_role]) }
+      it { is_expected_block.to make_database_queries(count: 1) }
     end
 
     context 'user has no direct access to project' do
@@ -77,11 +84,14 @@ describe User, type: :model do
 
       it { expect(project_roles).to match_array([guest_role]) }
       it { is_expected.to match_array([member_role]) }
+      it { is_expected_block.to make_database_queries(count: 1) }
 
       context 'when there is no memo member ' do
         let!(:memo_member) {}
+        before { user.touch }
 
         it { is_expected.to be_empty }
+        it { is_expected_block.to make_database_queries(count: 2) }
       end
     end
 
@@ -90,6 +100,7 @@ describe User, type: :model do
 
       it { expect(project_roles).to match_array([manager_role]) }
       it { is_expected.to eq([manager_role, member_role]) }
+      it { is_expected_block.to make_database_queries(count: 1) }
 
       context 'returns non duplicated roles' do
         let!(:project_member) do
@@ -100,6 +111,7 @@ describe User, type: :model do
 
         it { expect(project_roles).to eq([manager_role, member_role]) }
         it { is_expected.to eq([manager_role, member_role]) }
+        it { is_expected_block.to make_database_queries(count: 1) }
       end
     end
 
@@ -108,6 +120,7 @@ describe User, type: :model do
 
       it { expect(project_roles).to match_array([manager_role]) }
       it { is_expected.to match_array([member_role]) }
+      it { is_expected_block.to make_database_queries(count: 1) }
     end
 
     context 'when model is not acting_as_resource' do
@@ -199,10 +212,12 @@ describe User, type: :model do
 
     context 'member exist' do
       it { expect(user.member_for(memo)).to eq(memo_member) }
+      it { expect { user.member_for(memo) }.to make_database_queries(count: 1) }
     end
 
     context 'member not exist' do
       it { expect(user.member_for(project)).to be_nil }
+      it { expect { user.member_for(project) }.to make_database_queries(count: 1) }
     end
 
     context 'when model is not acting_as_resource' do
@@ -293,6 +308,7 @@ describe User, type: :model do
         user.grant(:member, memo4)
       end
 
+      it { is_expected_block.to make_database_queries(count: 4) }
       it { is_expected_block.to change { Monarchy::MembersRole.count }.by(-1) }
       it { is_expected.to be 1 }
 
@@ -303,8 +319,10 @@ describe User, type: :model do
     end
 
     context 'when user has not member' do
+      before { user.touch }
       subject { user.revoke_role(:manager, memo4) }
 
+      it { is_expected_block.to make_database_queries(count: 2) }
       it { is_expected_block.not_to change { Monarchy::MembersRole.count } }
       it { is_expected_block.not_to change { Member.count } }
       it { is_expected.to be 0 }
@@ -517,8 +535,11 @@ describe User, type: :model do
     let!(:user5) { create(:user).tap { |model| model.grant(:member, memo1) } }
     let!(:user6) { create(:user).tap { |model| model.grant(:guest, memo1) } }
 
+    before { user4.grant(:member, project) }
+
     subject { described_class.with_access_to(memo3) }
 
+    it { expect { subject.to_a }.to make_database_queries(count: 1) }
     it { is_expected.to match_array([user1, user2, user3, user4]) }
 
     context 'resource is not a monarchy resource' do

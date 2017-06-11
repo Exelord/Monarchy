@@ -116,6 +116,7 @@ describe Monarchy::Member, type: :model do
 
     subject { Member.with_access_to(memo3) }
 
+    it { expect { subject.to_a }.to make_database_queries(count: 1) }
     it { is_expected.to match_array([member1, member2, member3, member4]) }
 
     context 'resource is not a monarchy resource' do
