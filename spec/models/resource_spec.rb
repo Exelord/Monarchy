@@ -13,6 +13,7 @@ describe Resource, type: :model do
 
     context 'has correct parentize_name' do
       subject { Project.parentize_name }
+
       it { is_expected.to eq(:resource) }
     end
 
@@ -64,11 +65,13 @@ describe Resource, type: :model do
 
     context 'when user is nil' do
       let!(:user) { nil }
+
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::UserIsNil) }
     end
 
     context 'where user has not access' do
       it { is_expected.to be false }
+      it { is_expected_block.to make_database_queries(count: 1) }
     end
 
     context 'where user has an access' do
@@ -76,6 +79,7 @@ describe Resource, type: :model do
       let!(:memo_member) { create(:member, user: user, hierarchy: memo.hierarchy) }
 
       it { is_expected.to be true }
+      it { is_expected_block.to make_database_queries(count: 1) }
     end
   end
 
@@ -169,9 +173,10 @@ describe Resource, type: :model do
     subject { Project.find(project.id).children }
 
     context 'getter' do
-      let(:project) { create(:project, children: [memo, memo2, project2]) }
+      let!(:project) { create(:project, children: [memo, memo2, project2]) }
 
       it { is_expected.to eq([memo, memo2, project2, project.status]) }
+      it { expect { subject.to_a }.to make_database_queries(count: 5) }
     end
 
     context 'setter' do
@@ -206,9 +211,10 @@ describe Resource, type: :model do
     subject { Memo.find(memo.id).parent }
 
     context 'getter' do
-      let(:memo) { create :memo, parent: project }
+      let!(:memo) { create :memo, parent: project }
 
       it { is_expected.to eq(project) }
+      it { is_expected_block.to make_database_queries(count: 3) }
     end
 
     context 'setter' do
@@ -248,6 +254,7 @@ describe Resource, type: :model do
       subject { Memo.in(project) }
 
       it { is_expected.to match_array([memo1, memo2, memo3]) }
+      it { expect { subject.to_a }.to make_database_queries(count: 1) }
     end
 
     context 'without descendants' do
@@ -256,6 +263,14 @@ describe Resource, type: :model do
       subject { Memo.in(project, false) }
 
       it { is_expected.to match_array([memo1, memo4]) }
+      it { expect { subject.to_a }.to make_database_queries(count: 1) }
+    end
+
+    context 'when model is not monarchy resource' do
+      let!(:user) { create(:user) }
+
+      it { expect { Memo.in(user) }.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
+      it { expect { Memo.in(nil) }.to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
     end
   end
 
@@ -276,6 +291,7 @@ describe Resource, type: :model do
 
       it { is_expected.to match_array([memo2, memo3, memo4]) }
       it { is_expected.not_to include(memo5, memo1) }
+      it { expect { subject.to_a }.to make_database_queries(count: 1) }
 
       context 'user has access to resources bellow if has manager role' do
         let!(:manager_role) { create(:role, name: :manager, level: 2, inherited: true) }
@@ -283,6 +299,7 @@ describe Resource, type: :model do
 
         it { is_expected.to match_array([memo2, memo3, memo4, memo6]) }
         it { is_expected.not_to include(memo5, memo1) }
+        it { expect { subject.to_a }.to make_database_queries(count: 1) }
       end
 
       context 'user has access to resources bellow if has guest role' do
@@ -290,6 +307,7 @@ describe Resource, type: :model do
 
         it { is_expected.to match_array([memo2, memo3]) }
         it { is_expected.not_to include(memo5, memo1, memo4, memo6) }
+        it { expect { subject.to_a }.to make_database_queries(count: 1) }
       end
 
       context 'user has access to resources bellow if has guest role' do
@@ -299,6 +317,7 @@ describe Resource, type: :model do
 
         it { is_expected.to match_array([memo2, memo3, memo6, memo7]) }
         it { is_expected.not_to include(memo5, memo1, memo4) }
+        it { expect { subject.to_a }.to make_database_queries(count: 1) }
       end
     end
 
@@ -306,6 +325,7 @@ describe Resource, type: :model do
       let!(:memo_member) { create(:member, user: user, hierarchy: memo4.hierarchy) }
 
       it { expect(Memo.accessible_for(user).in(memo2)).to match_array([memo3, memo4]) }
+      it { expect { subject.to_a }.to make_database_queries(count: 1) }
     end
 
     context 'with specified allowed roles' do
@@ -319,21 +339,23 @@ describe Resource, type: :model do
 
         context 'user has a member role in project' do
           before { user.grant(:member, memo3) }
-          it do
-            is_expected.to match_array([memo2, memo3, memo4, memo6, memo7])
-          end
+
+          it { is_expected.to match_array([memo2, memo3, memo4, memo6, memo7]) }
+          it { expect { subject.to_a }.to make_database_queries(count: 1) }
         end
 
         context 'user has a inherited role' do
           before { user.grant(:owner, memo3) }
-          it do
-            is_expected.to match_array([memo2, memo3, memo4, memo6, memo7])
-          end
+
+          it { is_expected.to match_array([memo2, memo3, memo4, memo6, memo7]) }
+          it { expect { subject.to_a }.to make_database_queries(count: 1) }
         end
 
         context 'user has other role without inheritance' do
           before { user.grant(:blocked, memo3) }
+
           it { is_expected.to match_array([memo3, memo2]) }
+          it { expect { subject.to_a }.to make_database_queries(count: 1) }
         end
       end
     end
@@ -344,9 +366,13 @@ describe Resource, type: :model do
       before { user.grant(:member, memo5) }
       subject { Memo.accessible_for(user, parent_access: true) }
 
-      it do
-        is_expected.to match_array([memo2, memo1, memo5, memo3])
-      end
+      it { is_expected.to match_array([memo2, memo1, memo5, memo3]) }
+      it { expect { subject.to_a }.to make_database_queries(count: 1) }
+    end
+
+    context 'when user is not monarchy user' do
+      it { expect { described_class.accessible_for(project) }.to raise_exception(Monarchy::Exceptions::ModelNotUser) }
+      it { expect { described_class.accessible_for(nil) }.to raise_exception(Monarchy::Exceptions::UserIsNil) }
     end
   end
 
