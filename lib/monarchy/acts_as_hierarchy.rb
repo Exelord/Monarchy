@@ -27,28 +27,44 @@ module Monarchy
 
     module ClassMethods
       def hierarchies_for(resources)
-        unscoped.where(resource: resources)
+        check_argument_type(resources)
+        resources ? unscoped.where(resource: resources) : none
       end
 
       def children_for(hierarchies)
-        unscoped.where(parent: hierarchies)
+        check_argument_type(hierarchies)
+        hierarchies ? unscoped.where(parent: hierarchies) : none
       end
 
       def parents_for(hierarchies)
+        check_argument_type(hierarchies)
+        return none unless hierarchies
+
         unscoped.joins('INNER JOIN monarchy_hierarchies AS hierarchies_children ON '\
                        'monarchy_hierarchies.id = hierarchies_children.parent_id')
-                .where(hierarchies_children: { id: hierarchies.select(:id) })
+                .where(hierarchies_children: { id: hierarchies })
       end
 
       def descendants_for(hierarchies)
-        unscoped.with_ancestor(hierarchies)
+        check_argument_type(hierarchies)
+        hierarchies ? unscoped.with_ancestor(hierarchies) : none
       end
 
       def ancestors_for(hierarchies)
+        check_argument_type(hierarchies)
+        return none unless hierarchies
+
         unscoped.joins('INNER JOIN monarchy_hierarchy_hierarchies ON '\
                        'monarchy_hierarchies.id = monarchy_hierarchy_hierarchies.ancestor_id')
                 .where(monarchy_hierarchy_hierarchies: { descendant_id: hierarchies.select(:id) })
                 .where('monarchy_hierarchy_hierarchies.generations > 0')
+      end
+
+      private
+
+      def check_argument_type(argument)
+        condition = argument.nil? || argument.is_a?(ActiveRecord::Base) || argument.is_a?(ActiveRecord::Relation)
+        raise(ArgumentError, 'Argument has to be ActiveRecord!') unless condition
       end
     end
 

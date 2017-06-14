@@ -9,6 +9,198 @@ describe Monarchy::Hierarchy, type: :model do
   it { is_expected.to validate_presence_of(:resource_id) }
   it { is_expected.to validate_presence_of(:resource_type) }
 
+  describe '.hierarchies_for' do
+    subject { described_class.hierarchies_for(projects) }
+
+    context 'when projects are ActiveRecord relation' do
+      let!(:projects) { Project.where(id: create_list(:project, 3)) }
+
+      it { expect { subject.to_a }.to make_database_queries(count: 1) }
+      it { expect(subject.uniq.count).to be(3) }
+      it { is_expected.to match_array(projects.map(&:hierarchy)) }
+    end
+
+    context 'when projects is ActiveRecord object' do
+      let!(:projects) { create(:project) }
+
+      it { expect { subject.to_a }.to make_database_queries(count: 1) }
+      it { expect(subject.uniq.count).to be(1) }
+      it { is_expected.to match_array([projects.hierarchy]) }
+    end
+
+    context 'when project is nil' do
+      let!(:projects) { nil }
+
+      it { expect { subject.to_a }.to make_database_queries(count: 0) }
+      it { expect(subject.uniq.count).to be(0) }
+    end
+
+    context 'when project is an array' do
+      let!(:projects) { [] }
+
+      it { is_expected_block.to raise_exception(ArgumentError) }
+    end
+  end
+
+  describe '.children_for' do
+    let!(:project) { create :project }
+    let!(:memo1) { create :memo, parent: project }
+
+    subject { described_class.children_for(hierarchies) }
+
+    context 'when hierarchies are ActiveRecord relation' do
+      let!(:project2) { create :project }
+      let!(:memo3) { create :memo, parent: project2 }
+
+      let!(:hierarchies) { described_class.where(resource: Project.all) }
+
+      it { expect { subject.to_a }.to make_database_queries(count: 1) }
+      it { expect(subject.uniq.count).to be(4) }
+      it { is_expected.to match_array(project.hierarchy.children.reload + project2.hierarchy.children.reload) }
+    end
+
+    context 'when hierarchies is ActiveRecord object' do
+      let!(:hierarchies) { project.hierarchy }
+
+      it { expect { subject.to_a }.to make_database_queries(count: 1) }
+      it { expect(subject.uniq.count).to be(2) }
+      it { is_expected.to match_array(project.hierarchy.children.reload) }
+    end
+
+    context 'when project is nil' do
+      let!(:hierarchies) { nil }
+
+      it { expect { subject.to_a }.to make_database_queries(count: 0) }
+      it { expect(subject.uniq.count).to be(0) }
+    end
+
+    context 'when project is an array' do
+      let!(:hierarchies) { [] }
+
+      it { is_expected_block.to raise_exception(ArgumentError) }
+    end
+  end
+
+  describe '.descendants_for' do
+    let!(:project) { create :project }
+    let!(:memo1) { create :memo, parent: project }
+    let!(:memo2) { create :memo, parent: memo1 }
+
+    subject { described_class.descendants_for(hierarchies) }
+
+    context 'when hierarchies are ActiveRecord relation' do
+      let!(:project2) { create :project }
+      let!(:memo3) { create :memo, parent: project2 }
+
+      let!(:hierarchies) { described_class.where(resource: Project.all) }
+
+      it { expect { subject.to_a }.to make_database_queries(count: 1) }
+      it { expect(subject.uniq.count).to be(5) }
+      it { is_expected.to match_array([memo1, memo2, memo3, project2.status, project.status].map(&:hierarchy)) }
+    end
+
+    context 'when hierarchies is ActiveRecord object' do
+      let!(:hierarchies) { project.hierarchy }
+
+      it { expect { subject.to_a }.to make_database_queries(count: 1) }
+      it { expect(subject.uniq.count).to be(3) }
+      it { is_expected.to match_array([memo1, memo2, project.status].map(&:hierarchy)) }
+    end
+
+    context 'when project is nil' do
+      let!(:hierarchies) { nil }
+
+      it { expect { subject.to_a }.to make_database_queries(count: 0) }
+      it { expect(subject.uniq.count).to be(0) }
+    end
+
+    context 'when project is an array' do
+      let!(:hierarchies) { [] }
+
+      it { is_expected_block.to raise_exception(ArgumentError) }
+    end
+  end
+
+  describe '.parents_for' do
+    let!(:project) { create :project }
+    let!(:memo1) { create :memo, parent: project }
+    let!(:memo2) { create :memo, parent: memo1 }
+
+    subject { described_class.parents_for(hierarchies) }
+
+    context 'when hierarchies are ActiveRecord relation' do
+      let!(:project2) { create :project }
+      let!(:memo3) { create :memo, parent: project2 }
+
+      let!(:hierarchies) { described_class.where(resource: Memo.where(id: [memo2, memo3])) }
+
+      it { expect { subject.to_a }.to make_database_queries(count: 1) }
+      it { expect(subject.uniq.count).to be(2) }
+      it { is_expected.to match_array([memo1, project2].map(&:hierarchy)) }
+    end
+
+    context 'when hierarchies is ActiveRecord object' do
+      let!(:hierarchies) { described_class.where(resource: memo2) }
+
+      it { expect { subject.to_a }.to make_database_queries(count: 1) }
+      it { expect(subject.uniq.count).to be(1) }
+      it { is_expected.to match_array([memo1.hierarchy]) }
+    end
+
+    context 'when project is nil' do
+      let!(:hierarchies) { nil }
+
+      it { expect { subject.to_a }.to make_database_queries(count: 0) }
+      it { expect(subject.uniq.count).to be(0) }
+    end
+
+    context 'when project is an array' do
+      let!(:hierarchies) { [] }
+
+      it { is_expected_block.to raise_exception(ArgumentError) }
+    end
+  end
+
+  describe '.ancestors_for' do
+    let!(:project) { create :project }
+    let!(:memo1) { create :memo, parent: project }
+    let!(:memo2) { create :memo, parent: memo1 }
+
+    subject { described_class.ancestors_for(hierarchies) }
+
+    context 'when hierarchies are ActiveRecord relation' do
+      let!(:project2) { create :project }
+      let!(:memo3) { create :memo, parent: project2 }
+
+      let!(:hierarchies) { described_class.where(resource: Memo.where(id: [memo2, memo3])) }
+
+      it { expect { subject.to_a }.to make_database_queries(count: 1) }
+      it { expect(subject.uniq.count).to be(3) }
+      it { is_expected.to match_array([memo1, project, project2].map(&:hierarchy)) }
+    end
+
+    context 'when hierarchies is ActiveRecord object' do
+      let!(:hierarchies) { described_class.where(resource: memo2) }
+
+      it { expect { subject.to_a }.to make_database_queries(count: 1) }
+      it { expect(subject.uniq.count).to be(2) }
+      it { is_expected.to match_array([memo1.hierarchy, project.hierarchy]) }
+    end
+
+    context 'when project is nil' do
+      let!(:hierarchies) { nil }
+
+      it { expect { subject.to_a }.to make_database_queries(count: 0) }
+      it { expect(subject.uniq.count).to be(0) }
+    end
+
+    context 'when project is an array' do
+      let!(:hierarchies) { [] }
+
+      it { is_expected_block.to raise_exception(ArgumentError) }
+    end
+  end
+
   describe '.in' do
     let(:project) { create :project }
     let!(:project2) { create :project, parent: project }
