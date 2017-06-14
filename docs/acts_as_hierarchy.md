@@ -18,6 +18,51 @@ We are using [Closure Tree][e5c808aa] behind `Hierarchy` class. There is a bunch
 
   [e5c808aa]: https://github.com/mceachen/closure_tree "Closure Tree"
 
+#### .hierarchies_for
+You can use this method if you want to get all hierarchies for specific resources, eg:
+
+```
+  Monarchy.hierarchy_class.hierarchies_for(Project.all) # returns hierarchies
+```
+
+** Remember: `hierarchies_for` can receive only `ActiveRecord` class argument! **
+
+#### .children_for
+You can use this method if you want to get all explicit children for specific hierarchies, eg:
+
+```
+  Monarchy.hierarchy_class.children_for(my_hierarchy) # returns children hierarchies
+```
+
+** Remember: `children_for` can receive only `ActiveRecord` class argument! **
+
+#### .parents_for
+You can use this method if you want to get all explicit parents for specific hierarchies, eg:
+
+```
+  Monarchy.hierarchy_class.parents_for(my_hierarchy) # returns parents hierarchies
+```
+
+** Remember: `parents_for` can receive only `ActiveRecord` class argument! **
+
+#### .descendants_for
+You can use this method if you want to get all descendants for specific hierarchies, eg:
+
+```
+  Monarchy.hierarchy_class.descendants_for(my_hierarchy) # returns descendants hierarchies
+```
+
+** Remember: `descendants_for` can receive only `ActiveRecord` class argument! **
+
+#### .ancestors_for
+You can use this method if you want to get all ancestors for specific hierarchies, eg:
+
+```
+  Monarchy.hierarchy_class.ancestors_for(my_hierarchies) # returns ancestors hierarchies
+```
+
+** Remember: `ancestors_for` can receive only `ActiveRecord` class argument! **
+
 ## Scopes:
 
 ### .accessible_for
