@@ -6,46 +6,44 @@ describe Resource, type: :model do
   it { is_expected.to have_many(:members).through(:hierarchy) }
   it { is_expected.to have_one(:hierarchy).dependent(:destroy) }
 
-  describe 'acts_as_resource' do
-    context 'parent_as' do
-      let!(:resource) { Resource.create }
-      let!(:project) { create :project }
-      let!(:memo) { create :memo }
+  describe '.parent_as' do
+    let!(:resource) { Resource.create }
+    let!(:project) { create :project }
+    let!(:memo) { create :memo }
 
-      context 'has correct parentize_name' do
-        subject { Project.parentize_name }
-        it { is_expected.to eq(:resource) }
+    context 'has correct parentize_name' do
+      subject { Project.parentize_name }
+      it { is_expected.to eq(:resource) }
+    end
+
+    context 'project parent' do
+      subject { project.parent }
+
+      it 'assign parent if assing resource' do
+        project.update(resource: resource)
+        is_expected.to eq(resource)
       end
 
-      context 'project parent' do
-        subject { project.parent }
+      it 'assign parent if assigning explict column name' do
+        project.update(parent_id: resource.id)
+        is_expected.to eq(resource)
+      end
+    end
 
-        it 'assign parent if assing resource' do
-          project.update(resource: resource)
-          is_expected.to eq(resource)
-        end
+    context 'memo parent' do
+      let!(:project) { create :project, resource: resource }
+      subject { memo.parent }
 
-        it 'assign parent if assing resource_id' do
-          project.update(resource_id: resource.id)
-          is_expected.to eq(resource)
-        end
+      it { expect(project.parent).to eq(resource) }
+
+      it 'assign parent if assing project' do
+        memo.update(project: project)
+        is_expected.to eq(project)
       end
 
-      context 'memo parent' do
-        let!(:project) { create :project, resource: resource }
-        subject { memo.parent }
-
-        it { expect(project.parent).to eq(resource) }
-
-        it 'assign parent if assing project' do
-          memo.update(project: project)
-          is_expected.to eq(project)
-        end
-
-        it 'assign parent if assing project_id' do
-          memo.update(project_id: project.id)
-          is_expected.to eq(project)
-        end
+      it 'assign parent if assing project_id' do
+        memo.update(project_id: project.id)
+        is_expected.to eq(project)
       end
     end
   end
