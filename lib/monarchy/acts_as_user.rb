@@ -88,8 +88,7 @@ module Monarchy
       end
 
       def resource_roles(resource)
-        resource_hierarchy = hierarchies_for(resource).select(:id)
-
+        resource_hierarchy = Monarchy.hierarchy_class.hierarchies_for(resource).select(:id)
         user_memberships = Monarchy.member_class
                                    .where(hierarchy_id: resource_hierarchy, user_id: id)
                                    .select(:id, :hierarchy_id).to_sql
@@ -156,34 +155,18 @@ module Monarchy
         @inherited_default_role ||= Monarchy.role_class.find_by(name: Monarchy.configuration.inherited_default_role)
       end
 
-      # TODO: Make these methods public in related interfaces
-
       def members_for(hierarchies)
         Monarchy.member_class.where(hierarchy: hierarchies, user_id: id)
       end
 
-      def hierarchies_for(resources)
-        Monarchy.hierarchy_class.where(resource: resources)
-      end
-
       def descendants_for(resources)
-        resources_hierarchies = hierarchies_for(resources).select(:id)
-
-        Monarchy.hierarchy_class
-                .joins('INNER JOIN monarchy_hierarchy_hierarchies ON ' \
-                  'monarchy_hierarchies.id = monarchy_hierarchy_hierarchies.descendant_id')
-                .where(monarchy_hierarchy_hierarchies: { ancestor_id: resources_hierarchies })
-                .where.not(monarchy_hierarchies: { id: resources_hierarchies })
+        resources_hierarchies = Monarchy.hierarchy_class.hierarchies_for(resources).select(:id)
+        Monarchy.hierarchy_class.descendants_for(resources_hierarchies)
       end
 
       def ancestors_for(resources)
-        resources_hierarchies = hierarchies_for(resources).select(:id)
-
-        Monarchy.hierarchy_class
-                .joins('INNER JOIN monarchy_hierarchy_hierarchies ON ' \
-                  'monarchy_hierarchies.id = monarchy_hierarchy_hierarchies.ancestor_id')
-                .where(monarchy_hierarchy_hierarchies: { descendant_id: resources_hierarchies })
-                .where.not(monarchy_hierarchies: { id: resources_hierarchies })
+        resources_hierarchies = Monarchy.hierarchy_class.hierarchies_for(resources).select(:id)
+        Monarchy.hierarchy_class.ancestors_for(resources_hierarchies)
       end
     end
   end

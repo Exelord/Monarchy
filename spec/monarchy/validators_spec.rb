@@ -145,69 +145,6 @@ describe Monarchy::Validators do
     end
   end
 
-  describe '.hierarchy' do
-    context 'allow nil' do
-      context 'persistance' do
-        context 'turn on by default' do
-          subject { described_class.hierarchy(nil, true) }
-          it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::HierarchyNotPersist) }
-        end
-
-        context 'turn off by default' do
-          subject { described_class.hierarchy(nil, true, false) }
-          it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::HierarchyNotPersist) }
-        end
-      end
-
-      context 'model is nil' do
-        subject { described_class.hierarchy(nil, true) }
-        it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::HierarchyIsNil) }
-        it { is_expected.to be nil }
-      end
-
-      context 'model is hierarchy' do
-        subject { described_class.hierarchy(hierarchy, true) }
-        it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::ModelNotHierarchy) }
-        it { is_expected.to eq hierarchy }
-      end
-
-      context 'model not hierarchy' do
-        subject { described_class.hierarchy(user, true) }
-        it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotHierarchy) }
-      end
-    end
-
-    context 'not allow nil' do
-      context 'persistance' do
-        context 'turn on by default' do
-          subject { described_class.hierarchy(build(:hierarchy)) }
-          it { is_expected_block.to raise_exception(Monarchy::Exceptions::HierarchyNotPersist) }
-        end
-
-        context 'turn off by default' do
-          subject { described_class.hierarchy(build(:hierarchy), false, false) }
-          it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::HierarchyNotPersist) }
-        end
-      end
-
-      context 'model is nil' do
-        subject { described_class.hierarchy(nil) }
-        it { is_expected_block.to raise_exception(Monarchy::Exceptions::HierarchyIsNil) }
-      end
-
-      context 'model is hierarchy' do
-        subject { described_class.hierarchy(hierarchy) }
-        it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::ModelNotHierarchy) }
-        it { is_expected.to eq hierarchy }
-      end
-
-      context 'model not hierarchy' do
-        subject { described_class.hierarchy(user) }
-        it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotHierarchy) }
-      end
-    end
-  end
-
   describe '.user' do
     context 'allow nil' do
       context 'model is nil' do

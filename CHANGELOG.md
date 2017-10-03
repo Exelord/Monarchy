@@ -1,7 +1,26 @@
 # Change Log
 
-## [2.2.1](https://github.com/Exelord/Monarchy/tree/2.2.1) (2017-05-29)
-[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.2.0...2.2.1)
+## [2.3.0](https://github.com/Exelord/Monarchy/tree/2.3.0) (2017-06-14)
+[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.2.2...2.3.0)
+
+**Closed issues:**
+
+- Remove potential n-query [\#79](https://github.com/Exelord/Monarchy/issues/79)
+
+**Merged pull requests:**
+
+- Improve performance and specs [\#76](https://github.com/Exelord/Monarchy/pull/76) ([Exelord](https://github.com/Exelord))
+
+## [v2.2.2](https://github.com/Exelord/Monarchy/tree/v2.2.2) (2017-06-14)
+[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.2.1...v2.2.2)
+
+**Fixed bugs:**
+
+- Fix parent as [\#78](https://github.com/Exelord/Monarchy/issues/78)
+- Fix parent\_as [\#75](https://github.com/Exelord/Monarchy/pull/75) ([Exelord](https://github.com/Exelord))
+
+## [v2.2.1](https://github.com/Exelord/Monarchy/tree/v2.2.1) (2017-05-29)
+[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.2.0...v2.2.1)
 
 **Merged pull requests:**
 

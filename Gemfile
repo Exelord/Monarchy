@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org'
-ruby '2.4.1'
+ruby '2.4.2'
 
 # Declare your gem's dependencies in monarchy.gemspec.
 # Bundler will treat runtime dependencies like base dependencies, and
@@ -18,6 +18,7 @@ gemspec
 
 group :development, :test do
   gem 'database_cleaner', '1.6.1'
+  gem 'db-query-matchers', '0.8.0'
   gem 'factory_girl_rails', '4.8.0'
   gem 'ffaker', '2.5.0'
   gem 'pry-rails', '0.3.6'
