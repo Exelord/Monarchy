@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org'
-ruby '2.4.0'
+ruby '2.4.2'
 
 # Declare your gem's dependencies in monarchy.gemspec.
 # Bundler will treat runtime dependencies like base dependencies, and
@@ -17,15 +17,15 @@ gemspec
 # gem 'byebug', group: [:development, :test]
 
 group :development, :test do
-  gem 'database_cleaner', '1.5.3'
-  gem 'db-query-matchers', '0.8.0'
+  gem 'database_cleaner', '1.6.1'
+  gem 'db-query-matchers', '0.9.0'
   gem 'factory_girl_rails', '4.8.0'
-  gem 'ffaker', '2.5.0'
+  gem 'ffaker', '2.7.0'
   gem 'pry-rails', '0.3.6'
-  gem 'rails', '5.0.2'
-  gem 'rspec-rails', '3.5.2'
-  gem 'rubocop', '0.48.0'
-  gem 'shoulda-matchers', '3.1.1'
+  gem 'rails', '5.1.4'
+  gem 'rspec-rails', '3.6.1'
+  gem 'rubocop', '0.50.0'
+  gem 'shoulda-matchers', '3.1.2'
   gem 'sqlite3', '1.3.13'
 end
 

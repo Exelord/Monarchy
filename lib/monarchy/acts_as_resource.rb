@@ -63,9 +63,9 @@ module Monarchy
       # rubocop:enable all
 
       def include_relationships
+        has_one :hierarchy, as: :resource, dependent: :destroy, class_name: "::#{Monarchy.hierarchy_class}"
         has_many :members, through: :hierarchy, class_name: "::#{Monarchy.member_class}"
         has_many :users, through: :members, class_name: "::#{Monarchy.user_class}"
-        has_one :hierarchy, as: :resource, dependent: :destroy, class_name: "::#{Monarchy.hierarchy_class}"
       end
     end
 
@@ -111,7 +111,7 @@ module Monarchy
         return unless parentize
 
         keys = relation_keys(parentize)
-        was_changed = changes[keys[:foreign_key]] || changes[keys[:foreign_type]]
+        was_changed = saved_changes[keys[:foreign_key]] || saved_changes[keys[:foreign_type]]
         Monarchy::Validators.resource(send(parentize), true, false)
         self.parent = send(parentize) if was_changed || force
       end
