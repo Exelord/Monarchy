@@ -1,7 +1,14 @@
 # Change Log
 
-## [2.3.0](https://github.com/Exelord/Monarchy/tree/2.3.0) (2017-06-14)
-[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.2.2...2.3.0)
+## [2.4.0](https://github.com/Exelord/Monarchy/tree/2.4.0) (2017-10-03)
+[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.3.0...2.4.0)
+
+**Merged pull requests:**
+
+- Support for Rails 5.1 [\#77](https://github.com/Exelord/Monarchy/pull/77) ([Exelord](https://github.com/Exelord))
+
+## [v2.3.0](https://github.com/Exelord/Monarchy/tree/v2.3.0) (2017-06-14)
+[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.2.2...v2.3.0)
 
 **Closed issues:**
 
