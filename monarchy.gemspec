@@ -1,4 +1,3 @@
-# coding: utf-8
 # frozen_string_literal: true
 
 lib = File.expand_path('../lib', __FILE__)
@@ -28,7 +27,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.3'
 
   s.add_dependency 'activerecord', '>=4.2.7.1'
-  s.add_dependency 'closure_tree', '6.5.0'
+  s.add_dependency 'closure_tree', '6.6.0'
   s.add_dependency 'configurations', '2.2.2'
   s.add_dependency 'active_record_union', '1.2.0'
   s.add_dependency 'tqdm', '0.3.0'
