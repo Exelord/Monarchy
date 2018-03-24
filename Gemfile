@@ -17,14 +17,14 @@ gemspec
 # gem 'byebug', group: [:development, :test]
 
 group :development, :test do
-  gem 'database_cleaner', '1.6.1'
+  gem 'database_cleaner', '1.6.2'
   gem 'db-query-matchers', '0.9.0'
-  gem 'factory_girl_rails', '4.8.0'
-  gem 'ffaker', '2.7.0'
+  gem 'factory_girl_rails', '4.9.0'
+  gem 'ffaker', '2.8.1'
   gem 'pry-rails', '0.3.6'
-  gem 'rails', '5.1.4'
-  gem 'rspec-rails', '3.6.1'
-  gem 'rubocop', '0.50.0'
+  gem 'rails', '5.1.5'
+  gem 'rspec-rails', '3.7.2'
+  gem 'rubocop', '0.54.0'
   gem 'shoulda-matchers', '3.1.2'
   gem 'sqlite3', '1.3.13'
 end
