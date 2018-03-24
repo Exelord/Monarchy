@@ -27,3 +27,5 @@ Style/MixinGrouping:
 Lint/AmbiguousBlockAssociation:
   Exclude:
     - 'spec/**/*.rb'
+Gemspec/RequiredRubyVersion:
+  Enabled: false

@@ -7,7 +7,7 @@ module Monarchy
     include Rails::Generators::Migration
 
     desc 'This generator setups Monarchy'
-    source_root File.expand_path('../../templates', __FILE__)
+    source_root File.expand_path('../templates', __dir__)
 
     def setup_monarchy
       template 'config.rb', 'config/initializers/monarchy.rb'

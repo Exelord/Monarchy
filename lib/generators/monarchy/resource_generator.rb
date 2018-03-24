@@ -7,7 +7,7 @@ module Monarchy
     include Rails::Generators::Migration
 
     desc 'This generator creates a resourcify model'
-    source_root File.expand_path('../../templates', __FILE__)
+    source_root File.expand_path('../templates', __dir__)
 
     def create_resource_file
       template 'models/resource.rb', "app/models/#{file_name}.rb"
