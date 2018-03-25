@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-lib = File.expand_path('../lib', __FILE__)
+lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'monarchy/version'
 
@@ -26,13 +26,13 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
   s.required_ruby_version = '>= 2.3'
 
+  s.add_dependency 'active_record_union', '1.3.0'
   s.add_dependency 'activerecord', '>=4.2.7.1'
   s.add_dependency 'closure_tree', '6.6.0'
   s.add_dependency 'configurations', '2.2.2'
-  s.add_dependency 'active_record_union', '1.2.0'
   s.add_dependency 'tqdm', '0.3.0'
 
   s.add_development_dependency 'bundler', '~> 1.12'
-  s.add_development_dependency 'rake', '~> 12.0'
-  s.add_development_dependency 'rspec', '3.6.0'
+  s.add_development_dependency 'rake', '~> 12.3.1'
+  s.add_development_dependency 'rspec', '3.7.0'
 end
