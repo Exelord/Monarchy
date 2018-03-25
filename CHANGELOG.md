@@ -1,7 +1,18 @@
 # Change Log
 
-## [2.4.0](https://github.com/Exelord/Monarchy/tree/2.4.0) (2017-10-03)
-[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.3.0...2.4.0)
+## [2.5.0](https://github.com/Exelord/Monarchy/tree/2.5.0) (2018-03-25)
+[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.4.0...2.5.0)
+
+**Fixed bugs:**
+
+- Validate name and role level [\#80](https://github.com/Exelord/Monarchy/pull/80) ([Exelord](https://github.com/Exelord))
+
+**Merged pull requests:**
+
+- Feature upgrades [\#81](https://github.com/Exelord/Monarchy/pull/81) ([Exelord](https://github.com/Exelord))
+
+## [v2.4.0](https://github.com/Exelord/Monarchy/tree/v2.4.0) (2017-10-03)
+[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.3.0...v2.4.0)
 
 **Merged pull requests:**
 
