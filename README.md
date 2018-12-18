@@ -3,9 +3,6 @@
   <a href="https://travis-ci.org/Exelord/Monarchy">
     <img src="https://travis-ci.org/Exelord/Monarchy.svg?branch=master">
   </a>
-  <a href="https://gemnasium.com/github.com/Exelord/Monarchy">
-    <img src="https://gemnasium.com/badges/github.com/Exelord/Monarchy.svg">
-  </a>
   <a href="https://gitter.im/Exelord/Monarchy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
     <img src="https://badges.gitter.im/Exelord/Monarchy.svg">
   </a>
