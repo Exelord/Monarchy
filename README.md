@@ -1,5 +1,8 @@
 <p align="center">
   <img src="monarchy.png?raw=true" alt="Sublime's custom image"/>
+</p>
+
+<p align="center">
   <a href="https://travis-ci.org/Exelord/Monarchy">
     <img src="https://travis-ci.org/Exelord/Monarchy.svg?branch=master">
   </a>
