@@ -69,6 +69,26 @@ module Monarchy
     end
 
     module SupportMethods
+      def accessible_roots_ids(user_id, parent_access)
+        accessible_roots = unscoped.joins('INNER JOIN monarchy_hierarchy_hierarchies ON ' \
+          'monarchy_hierarchies.id = monarchy_hierarchy_hierarchies.ancestor_id')
+                                   .joins('INNER JOIN (SELECT hierarchy_id FROM monarchy_members ' \
+              "WHERE monarchy_members.user_id = #{user_id}) as members ON " \
+                'members.hierarchy_id = monarchy_hierarchy_hierarchies.descendant_id').select(:id)
+
+        parent_access ? roots_with_children(accessible_roots) : accessible_roots
+      end
+
+      def accessible_leaves_ids(user_id, inherited_roles = [])
+        ancestor_leaves_for_user(user_id, false)
+          .select('monarchy_hierarchy_hierarchies.ancestor_id AS id')
+          .union_all(descendant_leaves_for_user(user_id, inherited_roles)).select(:id)
+      end
+
+      def accessible_for_options(options = {})
+        Monarchy.configuration.accessible_for_options.to_h.merge(options)
+      end
+
       private
 
       def include_relations
@@ -98,25 +118,9 @@ module Monarchy
       end
       # rubocop:enable all
 
-      def accessible_roots_ids(user_id, parent_access)
-        accessible_roots = unscoped.joins('INNER JOIN monarchy_hierarchy_hierarchies ON ' \
-          'monarchy_hierarchies.id = monarchy_hierarchy_hierarchies.ancestor_id')
-                                   .joins('INNER JOIN (SELECT hierarchy_id FROM monarchy_members ' \
-              "WHERE monarchy_members.user_id = #{user_id}) as members ON " \
-                'members.hierarchy_id = monarchy_hierarchy_hierarchies.descendant_id').select(:id)
-
-        parent_access ? roots_with_children(accessible_roots) : accessible_roots
-      end
-
       def roots_with_children(accessible_roots)
         accessible_children = unscoped.where(parent_id: accessible_roots).select(:id)
         accessible_roots.union_all(accessible_children)
-      end
-
-      def accessible_leaves_ids(user_id, inherited_roles = [])
-        ancestor_leaves_for_user(user_id, false)
-          .select('monarchy_hierarchy_hierarchies.ancestor_id AS id')
-          .union_all(descendant_leaves_for_user(user_id, inherited_roles)).select(:id)
       end
 
       def descendant_leaves_for_user(user_id, inherited_roles = [])
@@ -144,10 +148,6 @@ module Monarchy
         else
           Monarchy.role_class.select(:id, :inherited).where(inherited: inherited).to_sql
         end
-      end
-
-      def accessible_for_options(options = {})
-        Monarchy.configuration.accessible_for_options.to_h.merge(options)
       end
     end
   end

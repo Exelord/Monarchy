@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :hierarchy, class: Monarchy::Hierarchy do
     before(:create) do |hierarchy|
       unless hierarchy.resource

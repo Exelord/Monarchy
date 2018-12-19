@@ -20,7 +20,7 @@ group :development, :test do
   gem 'bundler', '~> 1.12'
   gem 'database_cleaner', '1.7.0'
   gem 'db-query-matchers', '0.9.0'
-  gem 'factory_girl_rails', '4.9.0'
+  gem 'factory_bot_rails', '4.11.1'
   gem 'ffaker', '2.10.0'
   gem 'pry-rails', '0.3.8'
   gem 'rails', '5.2.2'
@@ -28,6 +28,7 @@ group :development, :test do
   gem 'rspec', '3.8.0'
   gem 'rspec-rails', '3.8.1'
   gem 'rubocop', '0.61.1'
+  gem 'rubocop-rspec', '1.30.1'
   gem 'shoulda-matchers', '3.1.2'
   gem 'sqlite3', '1.3.13'
 end

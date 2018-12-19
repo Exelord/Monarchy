@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :project do
-    name FFaker::Product.product
+    name { FFaker::Product.product }
   end
 end
