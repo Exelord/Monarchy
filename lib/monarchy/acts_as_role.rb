@@ -14,7 +14,7 @@ module Monarchy
         belongs_to :inherited_role, class_name: "::#{Monarchy.role_class}"
 
         after_create :default_inherited_role
-        
+
         validates :name, presence: true
         validates :level, presence: true
 

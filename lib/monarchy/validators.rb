@@ -41,16 +41,19 @@ module Monarchy
 
       def user(user, allow_nil = false)
         raise Monarchy::Exceptions::UserIsNil if !user && !allow_nil
+
         model_is_class(user, Monarchy.user_class, 'ModelNotUser')
       end
 
       def member(member, allow_nil = false)
         raise Monarchy::Exceptions::MemberIsNil if !member && !allow_nil
+
         model_is_class(member, Monarchy.member_class, 'ModelNotMember')
       end
 
       def role(role, allow_nil = false)
         raise Monarchy::Exceptions::RoleIsNil if !role && !allow_nil
+
         model_is_class(role, Monarchy.role_class, 'ModelNotRole')
       end
 
