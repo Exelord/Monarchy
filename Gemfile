@@ -17,14 +17,14 @@ gemspec
 # gem 'byebug', group: [:development, :test]
 
 group :development, :test do
-  gem 'bundler', '~> 1.12'
+  gem 'bundler', '~> 1.17'
   gem 'database_cleaner', '1.7.0'
   gem 'db-query-matchers', '0.9.0'
   gem 'factory_bot_rails', '4.11.1'
   gem 'ffaker', '2.10.0'
   gem 'pry-rails', '0.3.8'
   gem 'rails', '5.2.2'
-  gem 'rake', '~> 12.3.1'
+  gem 'rake', '~> 12.3.2'
   gem 'rspec', '3.8.0'
   gem 'rspec-rails', '3.8.1'
   gem 'rubocop', '0.61.1'
@@ -33,5 +33,4 @@ group :development, :test do
   gem 'sqlite3', '1.3.13'
 end
 
-gem 'codeclimate-test-reporter', '~>1.0.9', group: :test
-gem 'simplecov', '0.13.0', group: :test
+gem 'simplecov', '0.16.1', group: :test
