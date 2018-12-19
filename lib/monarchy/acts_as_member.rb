@@ -52,8 +52,6 @@ module Monarchy
         belongs_to :hierarchy, class_name: "::#{Monarchy.hierarchy_class}"
       end
 
-      private
-
       def with_ancestors_access(resource)
         unscoped.where(hierarchy: resource.hierarchy.self_and_ancestors)
                 .joins(:roles).where(monarchy_roles: { inherited: true })

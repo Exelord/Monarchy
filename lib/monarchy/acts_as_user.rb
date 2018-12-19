@@ -72,6 +72,7 @@ module Monarchy
                            end
 
         return accessible_roles.order(level: :desc, name: :asc) if accessible_roles.present?
+
         inheritnce ? descendant_role(resource) : Monarchy.role_class.none
       end
 
