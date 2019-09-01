@@ -70,11 +70,13 @@ module Monarchy
 
     module SupportMethods
       def accessible_roots_ids(user_id, parent_access)
+        user_query = sanitize_sql_for_assignment(['INNER JOIN (SELECT hierarchy_id FROM monarchy_members ' \
+          'WHERE monarchy_members.user_id = ?) as members ON ' \
+            'members.hierarchy_id = monarchy_hierarchy_hierarchies.descendant_id', user_id])
+
         accessible_roots = unscoped.joins('INNER JOIN monarchy_hierarchy_hierarchies ON ' \
           'monarchy_hierarchies.id = monarchy_hierarchy_hierarchies.ancestor_id')
-                                   .joins('INNER JOIN (SELECT hierarchy_id FROM monarchy_members ' \
-              "WHERE monarchy_members.user_id = #{user_id}) as members ON " \
-                'members.hierarchy_id = monarchy_hierarchy_hierarchies.descendant_id').select(:id)
+                                   .joins(user_query).select(:id)
 
         parent_access ? roots_with_children(accessible_roots) : accessible_roots
       end
@@ -131,11 +133,13 @@ module Monarchy
       end
 
       def ancestor_leaves_for_user(user_id, inherited, inherited_roles = [])
+        user_query = sanitize_sql_for_assignment(['INNER JOIN (SELECT id, hierarchy_id FROM monarchy_members WHERE ' \
+          'user_id = ?) as monarchy_members ON monarchy_members.hierarchy_id = monarchy_hierarchies.id', user_id])
+
         unscoped
           .joins('INNER JOIN monarchy_hierarchy_hierarchies ON ' \
             'monarchy_hierarchies.id = monarchy_hierarchy_hierarchies.descendant_id')
-          .joins('INNER JOIN (SELECT id, hierarchy_id FROM monarchy_members WHERE ' \
-            "user_id = #{user_id}) as monarchy_members ON monarchy_members.hierarchy_id = monarchy_hierarchies.id")
+          .joins(user_query)
           .joins('INNER JOIN monarchy_members_roles ON monarchy_members_roles.member_id = monarchy_members.id')
           .joins("INNER JOIN (#{inheritance_query(inherited_roles, inherited)}) as " \
             'monarchy_roles ON monarchy_members_roles.role_id = monarchy_roles.id')
