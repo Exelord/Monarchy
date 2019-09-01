@@ -11,9 +11,9 @@ describe Monarchy::Validators do
   let!(:hierarchy) { resource.hierarchy }
 
   describe '.last_role?' do
-    let(:member) { user.member_for(resource) }
-
     subject { described_class.last_role?(member, member_role) }
+
+    let(:member) { user.member_for(resource) }
 
     context 'is last role' do
       before { user.grant(:member, resource) }
@@ -49,11 +49,13 @@ describe Monarchy::Validators do
 
     context 'role exist' do
       let(:role_name) { :member }
+
       it { is_expected.to eq member_role }
     end
 
     context 'role not exist' do
       let(:role_name) { :manager }
+
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::RoleNotExist) }
     end
   end
@@ -63,21 +65,25 @@ describe Monarchy::Validators do
 
     context 'only one role' do
       let(:role_names) { [:member] }
+
       it { is_expected.to match_array [member_role] }
 
       context 'as symbol' do
         let(:role_names) { :member }
+
         it { is_expected.to match_array [member_role] }
       end
     end
 
     context 'roles exist' do
       let(:role_names) { %i[member guest] }
+
       it { is_expected.to match_array [member_role, guest_role] }
     end
 
     context 'role not exist' do
       let(:role_names) { %i[member manager] }
+
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::RoleNotExist) }
     end
   end
@@ -87,29 +93,34 @@ describe Monarchy::Validators do
       context 'persistance' do
         context 'turn on by default' do
           subject { described_class.resource(nil, true) }
+
           it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::ResourceNotPersist) }
         end
 
         context 'turn off by default' do
           subject { described_class.resource(nil, true, false) }
+
           it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::ResourceNotPersist) }
         end
       end
 
       context 'model is nil' do
         subject { described_class.resource(nil, true) }
+
         it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
         it { is_expected.to be nil }
       end
 
       context 'model is resource' do
         subject { described_class.resource(resource, true) }
+
         it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::ModelNotResource) }
         it { is_expected.to eq resource }
       end
 
       context 'model not resource' do
         subject { described_class.resource(user, true) }
+
         it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
       end
     end
@@ -118,28 +129,33 @@ describe Monarchy::Validators do
       context 'persistance' do
         context 'turn on by default' do
           subject { described_class.resource(build(:memo)) }
+
           it { is_expected_block.to raise_exception(Monarchy::Exceptions::ResourceNotPersist) }
         end
 
         context 'turn off by default' do
           subject { described_class.resource(build(:memo), false, false) }
+
           it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::ResourceNotPersist) }
         end
       end
 
       context 'model is nil' do
         subject { described_class.resource(nil) }
+
         it { is_expected_block.to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
       end
 
       context 'model is resource' do
         subject { described_class.resource(resource) }
+
         it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::ModelNotResource) }
         it { is_expected.to eq resource }
       end
 
       context 'model not resource' do
         subject { described_class.resource(user) }
+
         it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
       end
     end
@@ -149,18 +165,21 @@ describe Monarchy::Validators do
     context 'allow nil' do
       context 'model is nil' do
         subject { described_class.user(nil, true) }
+
         it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::UserIsNil) }
         it { is_expected.to be nil }
       end
 
       context 'model is user' do
         subject { described_class.user(user, true) }
+
         it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::ModelNotUser) }
         it { is_expected.to eq user }
       end
 
       context 'model not user' do
         subject { described_class.user(resource, true) }
+
         it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotUser) }
       end
     end
@@ -168,17 +187,20 @@ describe Monarchy::Validators do
     context 'not allow nil' do
       context 'model is nil' do
         subject { described_class.user(nil) }
+
         it { is_expected_block.to raise_exception(Monarchy::Exceptions::UserIsNil) }
       end
 
       context 'model is user' do
         subject { described_class.user(user) }
+
         it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::ModelNotUser) }
         it { is_expected.to eq user }
       end
 
       context 'model not user' do
         subject { described_class.user(resource) }
+
         it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotUser) }
       end
     end
@@ -190,18 +212,21 @@ describe Monarchy::Validators do
     context 'allow nil' do
       context 'model is nil' do
         subject { described_class.member(nil, true) }
+
         it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::MemberIsNil) }
         it { is_expected.to be nil }
       end
 
       context 'model is member' do
         subject { described_class.member(member, true) }
+
         it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::ModelNotMember) }
         it { is_expected.to eq member }
       end
 
       context 'model not member' do
         subject { described_class.member(resource, true) }
+
         it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotMember) }
       end
     end
@@ -209,17 +234,20 @@ describe Monarchy::Validators do
     context 'not allow nil' do
       context 'model is nil' do
         subject { described_class.member(nil) }
+
         it { is_expected_block.to raise_exception(Monarchy::Exceptions::MemberIsNil) }
       end
 
       context 'model is member' do
         subject { described_class.member(member) }
+
         it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::ModelNotMember) }
         it { is_expected.to eq member }
       end
 
       context 'model not member' do
         subject { described_class.member(resource) }
+
         it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotMember) }
       end
     end
@@ -231,18 +259,21 @@ describe Monarchy::Validators do
     context 'allow nil' do
       context 'model is nil' do
         subject { described_class.role(nil, true) }
+
         it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::RoleIsNil) }
         it { is_expected.to be nil }
       end
 
       context 'model is role' do
         subject { described_class.role(role, true) }
+
         it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::ModelNotRole) }
         it { is_expected.to eq role }
       end
 
       context 'model not role' do
         subject { described_class.role(resource, true) }
+
         it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotRole) }
       end
     end
@@ -250,17 +281,20 @@ describe Monarchy::Validators do
     context 'not allow nil' do
       context 'model is nil' do
         subject { described_class.role(nil) }
+
         it { is_expected_block.to raise_exception(Monarchy::Exceptions::RoleIsNil) }
       end
 
       context 'model is role' do
         subject { described_class.role(role) }
+
         it { is_expected_block.not_to raise_exception(Monarchy::Exceptions::ModelNotRole) }
         it { is_expected.to eq role }
       end
 
       context 'model not role' do
         subject { described_class.role(resource) }
+
         it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotRole) }
       end
     end

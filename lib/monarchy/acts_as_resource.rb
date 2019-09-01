@@ -30,7 +30,7 @@ module Monarchy
       end
 
       def default_role
-        @default_role ||= Monarchy.role_class.find_by(name: default_role_name)
+        Monarchy.role_class.find_by(name: default_role_name)
       end
 
       private

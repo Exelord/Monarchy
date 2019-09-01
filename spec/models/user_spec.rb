@@ -3,23 +3,23 @@
 require 'rails_helper'
 
 describe User, type: :model do
+  let!(:memo) { create :memo, parent: project }
+  let!(:project) { create :project }
+  let(:user) { create :user }
+  let!(:manager_role) { create(:role, name: :manager, level: 2) }
+  let!(:member_role) { create(:role, name: :member, level: 1) }
+  let!(:guest_role) { create(:role, name: :guest, level: 0, inherited: false) }
+
   it { is_expected.to have_many(:members).dependent(:destroy) }
   it { is_expected.to have_many(:hierarchies).through(:members) }
 
-  let!(:guest_role) { create(:role, name: :guest, level: 0, inherited: false) }
-  let!(:member_role) { create(:role, name: :member, level: 1) }
-  let!(:manager_role) { create(:role, name: :manager, level: 2) }
-
-  let(:user) { create :user }
-  let!(:project) { create :project }
-  let!(:memo) { create :memo, parent: project }
-
   describe '#roles_for' do
+    subject { user.roles_for(memo) }
+
     let!(:memo_member) { create(:member, user: user, hierarchy: memo.hierarchy, roles: [member_role]) }
     let!(:project_member) { create(:member, user: user, hierarchy: project.hierarchy, roles: [manager_role]) }
 
     let(:project_roles) { user.roles_for(project) }
-    subject { user.roles_for(memo) }
 
     context 'inherited_role from higher level' do
       let!(:owner_role) { create(:role, name: :owner, level: 3) }
@@ -47,8 +47,9 @@ describe User, type: :model do
     end
 
     context 'roles without inheritece' do
-      let(:project_roles) { user.roles_for(project, false) }
       subject { user.roles_for(memo, false) }
+
+      let(:project_roles) { user.roles_for(project, false) }
 
       it { expect(project_roles).to match_array([manager_role]) }
       it { is_expected.to match_array([member_role]) }
@@ -88,6 +89,7 @@ describe User, type: :model do
 
       context 'when there is no memo member ' do
         let!(:memo_member) {}
+
         before { user.touch }
 
         it { is_expected.to be_empty }
@@ -125,21 +127,25 @@ describe User, type: :model do
 
     context 'when model is not acting_as_resource' do
       subject { user.roles_for(user) }
+
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
 
     context 'when model is nil' do
       subject { user.roles_for(nil) }
+
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
     end
 
     context 'when model is not model' do
       subject { user.roles_for('oko') }
+
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
 
     context 'when model is not persist' do
       subject { user.roles_for(build(:memo)) }
+
       it { is_expected.to match_array([]) }
     end
   end
@@ -193,16 +199,19 @@ describe User, type: :model do
 
     context 'when model is not acting_as_resource' do
       subject { user.grant(:manager, user) }
+
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
 
     context 'when model is nil' do
       subject { user.grant(:manager, nil) }
+
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
     end
 
     context 'when model is not model' do
       subject { user.grant(:manager, 'oko') }
+
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
   end
@@ -222,16 +231,19 @@ describe User, type: :model do
 
     context 'when model is not acting_as_resource' do
       subject { user.member_for(user) }
+
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
 
     context 'when model is nil' do
       subject { user.member_for(nil) }
+
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
     end
 
     context 'when model is not model' do
       subject { user.member_for('oko') }
+
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
   end
@@ -281,16 +293,19 @@ describe User, type: :model do
 
     context 'when model is not acting_as_resource' do
       subject { user.revoke_access(user) }
+
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
 
     context 'when model is nil' do
       subject { user.revoke_access(nil) }
+
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
     end
 
     context 'when model is not model' do
       subject { user.revoke_access('oko') }
+
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
   end
@@ -319,12 +334,13 @@ describe User, type: :model do
     end
 
     context 'when user has not member' do
-      before { user.touch }
       subject { user.revoke_role(:manager, memo4) }
+
+      before { user.touch }
 
       it { is_expected_block.to make_database_queries(count: 2) }
       it { is_expected_block.not_to change { Monarchy::MembersRole.count } }
-      it { is_expected_block.not_to change { Member.count } }
+      it { is_expected_block.not_to change(Member, :count) }
       it { is_expected.to be 0 }
     end
 
@@ -352,16 +368,19 @@ describe User, type: :model do
 
     context 'when model is not acting_as_resource' do
       subject { user.revoke_role(:guest, user) }
+
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
 
     context 'when model is nil' do
       subject { user.revoke_role(:guest, nil) }
+
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
     end
 
     context 'when model is not model' do
       subject { user.revoke_role(:guest, 'oko') }
+
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
   end
@@ -393,10 +412,12 @@ describe User, type: :model do
       context 'with revoke_member strategy' do
         subject { user.revoke_role!(:manager, memo2) }
 
-        it { is_expected_block.to change { Member.count }.by(-1) }
+        it { is_expected_block.to change(Member, :count).by(-1) }
       end
 
       context 'with revoke_access strategy' do
+        subject { user.revoke_role!(:manager, memo2) }
+
         before do
           Monarchy.configure do |config|
             config.inherited_default_role = :guest
@@ -413,9 +434,7 @@ describe User, type: :model do
           user.grant(:member, memo3)
         end
 
-        subject { user.revoke_role!(:manager, memo2) }
-
-        it { is_expected_block.to change { Member.count }.by(-2) }
+        it { is_expected_block.to change(Member, :count).by(-2) }
       end
 
       context 'which is default role' do
@@ -452,21 +471,26 @@ describe User, type: :model do
 
     context 'when model is not acting_as_resource' do
       subject { user.revoke_role!(:guest, user) }
+
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
 
     context 'when model is nil' do
       subject { user.revoke_role!(:guest, nil) }
+
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::ResourceIsNil) }
     end
 
     context 'when model is not model' do
       subject { user.revoke_role!(:guest, 'oko') }
+
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
   end
 
   describe '.accessible_for' do
+    subject { described_class.accessible_for(member.user) }
+
     let!(:project) { create :project }
     let!(:memo1) { create :memo, parent: project }
     let!(:memo2) { create :memo, parent: project }
@@ -481,16 +505,14 @@ describe User, type: :model do
     let!(:member3) { create :member, resource: memo5 }
     let!(:member4) { create :member, resource: memo6 }
 
-    subject { User.accessible_for(member.user) }
-
     context 'when user is not monarchy user' do
-      subject { User.accessible_for(member2) }
+      subject { described_class.accessible_for(member2) }
 
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotUser) }
     end
 
     context 'when user is nil' do
-      subject { User.accessible_for(nil) }
+      subject { described_class.accessible_for(nil) }
 
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::UserIsNil) }
     end
@@ -515,6 +537,8 @@ describe User, type: :model do
   end
 
   describe '.with_access_to' do
+    subject { described_class.with_access_to(memo3) }
+
     let!(:project) { create :project }
     let!(:memo1) { create :memo, parent: project }
     let!(:memo2) { create :memo, parent: project }
@@ -537,13 +561,12 @@ describe User, type: :model do
 
     before { user4.grant(:member, project) }
 
-    subject { described_class.with_access_to(memo3) }
-
     it { expect { subject.to_a }.to make_database_queries(count: 1) }
     it { is_expected.to match_array([user1, user2, user3, user4]) }
 
     context 'resource is not a monarchy resource' do
       subject { described_class.with_access_to(user1) }
+
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
   end
