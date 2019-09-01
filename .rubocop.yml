@@ -1,7 +1,7 @@
 require: rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.6
   Exclude:
    - 'dummy/db/seeds.rb'
    - 'dummy/db/migrate/**'
@@ -21,8 +21,6 @@ Style/StructInheritance:
   Enabled: false
 Style/ClassAndModuleChildren:
   Enabled: false
-Rails/HasAndBelongsToMany:
-  Enabled: false
 Style/MixinGrouping:
   Exclude:
     - 'spec/**/*.rb'
@@ -30,4 +28,16 @@ Lint/AmbiguousBlockAssociation:
   Exclude:
     - 'spec/**/*.rb'
 Gemspec/RequiredRubyVersion:
+  Enabled: false
+RSpec/ContextWording:
+  Enabled: false
+RSpec/NestedGroups:
+  Enabled: false
+RSpec/LetSetup:
+  Enabled: false
+RSpec/NamedSubject:
+  Enabled: false
+RSpec/FilePath:
+  Enabled: false
+RSpec/MultipleExpectations:
   Enabled: false

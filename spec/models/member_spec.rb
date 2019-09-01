@@ -16,8 +16,9 @@ describe Monarchy::Member, type: :model do
 
     context 'valdiate resource' do
       context 'is present' do
-        let!(:resource) { create(:project) }
         subject { Member.create(user: user, resource: resource) }
+
+        let!(:resource) { create(:project) }
 
         it { expect(subject.valid?).to be true }
       end
@@ -31,8 +32,9 @@ describe Monarchy::Member, type: :model do
 
     context 'valdiate hierarchy' do
       context 'is present' do
-        let!(:hierarchy) { create(:hierarchy) }
         subject { Member.create(user: user, hierarchy: hierarchy) }
+
+        let!(:hierarchy) { create(:hierarchy) }
 
         it { expect(subject.valid?).to be true }
       end
@@ -46,9 +48,10 @@ describe Monarchy::Member, type: :model do
 
     context 'valdiate hierarchy and resource' do
       context 'is present' do
+        subject { Member.create(user: user, hierarchy: hierarchy, resource: resource) }
+
         let!(:resource) { create(:project) }
         let!(:hierarchy) { create(:hierarchy) }
-        subject { Member.create(user: user, hierarchy: hierarchy, resource: resource) }
 
         it { expect(subject.valid?).to be true }
         it { expect(subject.hierarchy).to eq(hierarchy) }
@@ -58,6 +61,8 @@ describe Monarchy::Member, type: :model do
 
   describe 'after destroy' do
     context 'revoke access' do
+      subject { memo_member.destroy }
+
       let!(:guest_role) { create(:role, name: :guest, level: 0, inherited: false) }
       let!(:member_role) { create(:role, name: :member, level: 1, inherited: false) }
 
@@ -76,24 +81,25 @@ describe Monarchy::Member, type: :model do
         user.grant(:member, memo3)
       end
 
-      subject { memo_member.destroy }
-
-      it { is_expected_block.to change { Member.count }.to(1) }
+      it { is_expected_block.to change(Member, :count).to(1) }
       it { is_expected_block.to change { memo2.members.count }.to(0) }
       it { is_expected_block.to change { memo3.members.count }.to(0) }
     end
   end
 
   describe 'resource=' do
+    subject { member.hierarchy }
+
     let!(:project) { create :project }
     let!(:user) { create :user }
     let!(:member) { Member.create(user: user, resource: project) }
 
-    subject { member.hierarchy }
     it { is_expected.to eq(member.resource.hierarchy) }
   end
 
   describe '.with_access_to' do
+    subject { Member.with_access_to(memo3) }
+
     let!(:project) { create :project }
     let!(:memo1) { create :memo, parent: project }
     let!(:memo2) { create :memo, parent: project }
@@ -114,18 +120,19 @@ describe Monarchy::Member, type: :model do
     let!(:member5) { create(:user).grant(:member, memo1) }
     let!(:member6) { create(:user).grant(:guest, memo1) }
 
-    subject { Member.with_access_to(memo3) }
-
     it { expect { subject.to_a }.to make_database_queries(count: 1) }
     it { is_expected.to match_array([member1, member2, member3, member4]) }
 
     context 'resource is not a monarchy resource' do
       subject { Member.with_access_to(member1) }
+
       it { is_expected_block.to raise_exception(Monarchy::Exceptions::ModelNotResource) }
     end
   end
 
   describe '.accessible_for' do
+    subject { Member.accessible_for(member.user) }
+
     let!(:project) { create :project }
     let!(:memo1) { create :memo, parent: project }
     let!(:memo2) { create :memo, parent: project }
@@ -139,8 +146,6 @@ describe Monarchy::Member, type: :model do
     let!(:member2) { create :member, resource: memo1 }
     let!(:member3) { create :member, resource: memo5 }
     let!(:member4) { create :member, resource: memo6 }
-
-    subject { Member.accessible_for(member.user) }
 
     context 'when user is not monarchy user' do
       subject { Member.accessible_for(member2) }
