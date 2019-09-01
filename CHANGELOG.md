@@ -1,5 +1,15 @@
 # Change Log
 
+## [2.7.0](https://github.com/Exelord/Monarchy/tree/2.7.0) (2019-09-01)
+[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.6.1...2.7.0)
+
+**Merged pull requests:**
+
+- Updates [\#83](https://github.com/Exelord/Monarchy/pull/83) ([Exelord](https://github.com/Exelord))
+
+## [v2.6.1](https://github.com/Exelord/Monarchy/tree/v2.6.1) (2019-01-08)
+[Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.6.0...v2.6.1)
+
 ## [v2.6.0](https://github.com/Exelord/Monarchy/tree/v2.6.0) (2018-12-19)
 [Full Changelog](https://github.com/Exelord/Monarchy/compare/v2.5.0...v2.6.0)
 
